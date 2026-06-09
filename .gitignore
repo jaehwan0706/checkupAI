@@ -1,0 +1,13 @@
+# Front
+front/node_modules/
+front/build/
+
+# Back
+back/.gradle/
+back/build/
+back/bin/
+
+# 환경변수
+.env
+*.env
+application-secret.properties

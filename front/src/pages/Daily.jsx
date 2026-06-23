@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { T, STATUS, Icon, Card, Button, Segmented, Modal } from '../components/UI';
+import { T, STATUS, Icon, Card, Segmented } from '../components/UI';
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis,
   CartesianGrid, Tooltip, ReferenceLine,
@@ -197,14 +197,6 @@ const DEFAULT_FOOD = {
   avoids: [{ title: '가공식품·인스턴트', desc: '나트륨과 포화지방이 많아요' }, { title: '단 음료·디저트', desc: '빈 칼로리로 건강에 도움이 안 돼요' }],
 };
 
-function getFoodRecs(metrics) {
-  const abnormal = (metrics || []).filter(m => m.status !== 'NORMAL');
-  for (const m of abnormal) {
-    const key = m.name === '혈당' ? '혈당' : m.name === '혈압' ? '혈압' : m.name === '콜레스테롤' ? '콜레스테롤' : null;
-    if (key && FOOD_DB[key]) return FOOD_DB[key];
-  }
-  return DEFAULT_FOOD;
-}
 
 const EXERCISES = [
   { icon: 'run',   title: '빠르게 걷기',  duration: '30분', intensity: '중강도', desc: '옆 사람과 대화가 가능한 속도로' },
@@ -239,95 +231,8 @@ function TipCard({ tip }) {
   );
 }
 
-function FoodTab({ recs, avoids }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div>
-        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 8 }}>오늘의 식단 추천</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-          {recs.map((r, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 12, background: T.greenSoft }}>
-              <div style={{ width: 22, height: 22, borderRadius: 999, background: T.ok, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon name="check" size={13} color="#fff" stroke={2.8} />
-              </div>
-              <div>
-                <span style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>{r.title}</span>
-                <span style={{ fontSize: 11.5, color: T.inkSoft, marginLeft: 6 }}>{r.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div>
-        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 8 }}>피해야 할 음식</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-          {avoids.map((a, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 13px', borderRadius: 12, background: T.dangerSoft }}>
-              <div style={{ width: 22, height: 22, borderRadius: 999, background: T.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon name="cross" size={13} color="#fff" stroke={2.8} />
-              </div>
-              <div>
-                <span style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>{a.title}</span>
-                <span style={{ fontSize: 11.5, color: T.inkSoft, marginLeft: 6 }}>{a.desc}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function ExerciseTab() {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-      {EXERCISES.map((ex, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
-          <div style={{ width: 44, height: 44, borderRadius: 13, background: T.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icon name={ex.icon} size={23} color={T.green} stroke={2.1} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 14.5, fontWeight: 700, color: T.ink }}>{ex.title}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: T.blue, background: T.blueSoft, padding: '2px 7px', borderRadius: 999 }}>{ex.duration}</span>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: T.ok, background: T.okSoft, padding: '2px 7px', borderRadius: 999 }}>{ex.intensity}</span>
-            </div>
-            <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 4 }}>{ex.desc}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
-function SleepTab() {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 16, background: T.blueSoft, border: `1px solid ${T.blue}22` }}>
-        <div style={{ fontSize: 36, fontWeight: 800, color: T.blue, letterSpacing: '-0.03em', lineHeight: 1 }}>7~8h</div>
-        <div style={{ width: 1, height: 36, background: T.blue + '33' }} />
-        <div>
-          <div style={{ fontSize: 14.5, fontWeight: 800, color: T.ink }}>권장 수면 시간</div>
-          <div style={{ fontSize: 12.5, color: T.inkMid, marginTop: 2 }}>규칙적인 시간에 자고 일어나기</div>
-        </div>
-      </div>
-      <div style={{ fontSize: 13, fontWeight: 800, color: T.ink }}>수면 개선 팁</div>
-      {SLEEP_TIPS.map((tip, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '13px 14px', borderRadius: 13, background: '#fff', border: '1px solid ' + T.line }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <Icon name={tip.icon} size={20} color={T.blue} stroke={2.1} />
-          </div>
-          <div>
-            <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink, marginBottom: 3 }}>{tip.title}</div>
-            <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.5 }}>{tip.desc}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function GuideBody({ metrics, onPremium }) {
   const tips    = getPersonalizedTips(metrics);

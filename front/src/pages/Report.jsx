@@ -69,31 +69,6 @@ function LockedPreview({ children, onClick }) {
   );
 }
 
-/* ─────────────────────────────────────────
-   진행바 게이트 카드
-───────────────────────────────────────── */
-function ProgressGate({ total, free, onUnlock, showButton = true }) {
-  const locked = total - free;
-  const pct = Math.round((free / total) * 100);
-  return (
-    <div style={{ background: '#fff', borderRadius: 16, border: '1px solid ' + T.line, padding: '14px 16px', boxShadow: '0 1px 2px rgba(26,43,69,0.04), 0 6px 18px rgba(26,43,69,0.05)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-        <span style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>총 {total}개 항목 중 {free}개 확인 완료</span>
-        <span style={{ fontSize: 12, fontWeight: 800, color: T.blue }}>{free}/{total}</span>
-      </div>
-      <div style={{ height: 8, borderRadius: 999, background: T.line, overflow: 'hidden', marginBottom: showButton ? 12 : 0 }}>
-        <div style={{ height: '100%', width: pct + '%', borderRadius: 999, background: `linear-gradient(90deg, ${T.blue}, ${T.green})`, transition: 'width .4s ease' }} />
-      </div>
-      {showButton && (
-        <button onClick={onUnlock} style={{ width: '100%', height: 48, borderRadius: 12, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: 14.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 6px 16px rgba(0,184,148,0.28)' }}>
-          <Icon name="lock" size={15} color="rgba(255,255,255,0.9)" stroke={2.2} />
-          나머지 {locked}개 항목 상세 분석 보기
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginLeft: 2 }}>· 1,900원</span>
-        </button>
-      )}
-    </div>
-  );
-}
 
 /* ─────────────────────────────────────────
    AI 총평 카드
@@ -147,55 +122,6 @@ function AiSummaryCard({ items }) {
   );
 }
 
-/* ─────────────────────────────────────────
-   프리미엄 미리보기 Fake 컴포넌트
-───────────────────────────────────────── */
-function FakeDetail({ items }) {
-  const first = items.find(m => m.status !== '정상') || items[0];
-  if (!first) return null;
-  const s = STATUS[first.status] || STATUS['정상'];
-  return (
-    <div style={{ background: '#fff', padding: 16 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 11, background: s.soft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name={first.icon} size={19} color={s.color} stroke={2.1} />
-        </div>
-        <div>
-          <div style={{ fontSize: 14.5, fontWeight: 800, color: T.ink }}>{first.name} 상세 해석</div>
-          <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 3 }}>{first.status} · {first.value} {first.unit}</div>
-        </div>
-      </div>
-      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: T.inkMid }}>이 수치의 원인과 의미, 생활습관 개선 방법을 AI가 상세히 분석해 드려요.</p>
-    </div>
-  );
-}
-
-function FakeGuide() {
-  return (
-    <div style={{ background: '#fff', padding: 16 }}>
-      <div style={{ fontSize: 14.5, fontWeight: 800, color: T.ink, marginBottom: 12 }}>맞춤 생활습관 가이드</div>
-      {['현미밥·잡곡밥으로 바꾸기', '하루 30분 빠르게 걷기', '취침 1시간 전 스마트폰 줄이기'].map((t, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0' }}>
-          <div style={{ width: 24, height: 24, borderRadius: 999, background: T.greenSoft }} />
-          <span style={{ fontSize: 13.5, fontWeight: 600, color: T.ink }}>{t}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function FakeTrend() {
-  return (
-    <div style={{ background: '#fff', padding: 16 }}>
-      <div style={{ fontSize: 14.5, fontWeight: 800, color: T.ink, marginBottom: 12 }}>연도별 트렌드</div>
-      <svg width="100%" height="96" viewBox="0 0 300 96" preserveAspectRatio="none">
-        <path d="M6 70 L66 60 L126 64 L186 44 L246 36 L294 24" fill="none" stroke={T.blue} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M6 70 L66 60 L126 64 L186 44 L246 36 L294 24 L294 96 L6 96 Z" fill={T.blue} opacity="0.12" />
-        {[6,66,126,186,246,294].map((x, i) => <circle key={i} cx={x} cy={[70,60,64,44,36,24][i]} r="4.5" fill="#fff" stroke={T.blue} strokeWidth="2.5" />)}
-      </svg>
-    </div>
-  );
-}
 
 /* ─────────────────────────────────────────
    맥락 힌트 계산

@@ -79,12 +79,6 @@ function MetricModal({ m, onClose }) {
   );
 }
 
-const LAYER1_MSGS = {
-  '혈당':        { msg: '🩸 간수치 관리 중이니 오늘도 금주 유지하세요',         bg: T.warnSoft,  tc: '#9A6A12' },
-  '혈압':        { msg: '❤️ 혈압 관리 중이에요 · 오늘 나트륨 섭취 줄여보세요', bg: T.warnSoft,  tc: '#9A6A12' },
-  '콜레스테롤':  { msg: '⚡ 콜레스테롤 관리 중이에요 · 튀긴 음식 피해보세요',  bg: T.warnSoft,  tc: '#9A6A12' },
-};
-const LAYER1_DEFAULT = { msg: '✅ 모든 수치 정상이에요 · 오늘도 좋은 습관 유지해요', bg: T.greenSoft, tc: '#2E7D55' };
 
 const DAYS = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 

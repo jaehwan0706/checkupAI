@@ -178,35 +178,6 @@ function getPersonalizedTips(metrics) {
   return [...abnormalTips, ...DEFAULT_TIPS].slice(0, 3);
 }
 
-const FOOD_DB = {
-  혈당: {
-    recs:   [{ title: '현미·잡곡밥', desc: '혈당이 천천히 올라요' }, { title: '채소·나물 반찬', desc: '식이섬유가 혈당 조절을 도와요' }, { title: '견과류 한 줌', desc: '포만감을 주고 혈당을 안정시켜요' }],
-    avoids: [{ title: '흰쌀밥·정제탄수화물', desc: '혈당을 빠르게 올려요' }, { title: '단 음료·과자', desc: '빈 칼로리로 혈당 급등을 유발해요' }],
-  },
-  혈압: {
-    recs:   [{ title: '칼륨 풍부한 채소', desc: '바나나·시금치가 혈압 조절을 도와요' }, { title: '저지방 유제품', desc: '칼슘이 혈압을 낮추는 데 효과적이에요' }, { title: '등푸른생선', desc: '오메가3가 혈관 건강을 지켜요' }],
-    avoids: [{ title: '짠 음식·국물류', desc: '나트륨이 혈압을 올려요' }, { title: '가공육·훈제류', desc: '나트륨과 포화지방이 모두 높아요' }],
-  },
-  콜레스테롤: {
-    recs:   [{ title: '등푸른생선 🐟', desc: '오메가3가 LDL 콜레스테롤을 낮춰요' }, { title: '귀리·통보리', desc: '베타글루칸이 콜레스테롤을 흡착해요' }, { title: '올리브오일', desc: '불포화지방산이 혈관 건강을 지켜요' }],
-    avoids: [{ title: '붉은 육류·삼겹살', desc: '포화지방이 LDL을 높여요' }, { title: '튀긴 음식·패스트푸드', desc: '트랜스지방이 콜레스테롤에 최악이에요' }],
-  },
-};
-const DEFAULT_FOOD = {
-  recs:   [{ title: '채소 위주 균형 식단', desc: '다양한 영양소를 섭취하세요' }, { title: '등푸른생선 주 2회', desc: '오메가3로 혈관 건강을 지켜요' }, { title: '통곡물 탄수화물', desc: '혈당이 안정적으로 유지돼요' }],
-  avoids: [{ title: '가공식품·인스턴트', desc: '나트륨과 포화지방이 많아요' }, { title: '단 음료·디저트', desc: '빈 칼로리로 건강에 도움이 안 돼요' }],
-};
-
-
-const EXERCISES = [
-  { icon: 'run',   title: '빠르게 걷기',  duration: '30분', intensity: '중강도', desc: '옆 사람과 대화가 가능한 속도로' },
-  { icon: 'drop',  title: '수영',          duration: '30분', intensity: '중강도', desc: '관절 부담 없는 전신 유산소 운동' },
-  { icon: 'trend', title: '자전거 타기',   duration: '40분', intensity: '중강도', desc: '허벅지 근육 강화로 혈당 조절에 효과적' },
-];
-const SLEEP_TIPS = [
-  { icon: 'moon',  title: '취침 1시간 전 스마트폰 끄기', desc: '블루라이트가 멜라토닌 분비를 방해해요' },
-  { icon: 'heart', title: '일정한 기상 시간 유지하기',    desc: '주말에도 같은 시간에 일어나면 생체리듬이 안정돼요' },
-];
 
 /* ─────────────────────────────────────────
    맞춤 가이드 컴포넌트

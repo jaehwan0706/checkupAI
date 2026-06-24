@@ -209,7 +209,7 @@ const STATUS_LABEL_MAP = { NORMAL: '정상', WARNING: '주의', DANGER: '위험'
 const ICON_MAP = { '혈압': 'heart', '혈당': 'drop', '콜레스테롤': 'spark', '간수치(ALT)': 'flask', '간수치 ALT': 'flask' };
 const UNIT_MAP = { '혈압': 'mmHg', '혈당': 'mg/dL', '콜레스테롤': 'mg/dL', '간수치(ALT)': 'U/L', '간수치 ALT': 'U/L' };
 
-export default function Home({ onNav }) {
+export default function Home({ onNav, toast }) {
   const [user] = useState(() => {
     try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; }
   });
@@ -282,9 +282,8 @@ export default function Home({ onNav }) {
             {hasWarn ? '⚠️ ' : ''}{statusMsg}
           </div>
         </div>
-        <button style={{ width: 42, height: 42, borderRadius: 13, background: '#fff', border: '1px solid ' + T.line, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', position: 'relative', marginTop: 4 }}>
+        <button onClick={() => toast && toast('준비 중인 기능입니다', 'bell')} style={{ width: 42, height: 42, borderRadius: 13, background: '#fff', border: '1px solid ' + T.line, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 4 }}>
           <Icon name="bell" size={21} color={T.inkMid} stroke={1.9} />
-          <span style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 999, background: T.danger, border: '1.5px solid #fff' }} />
         </button>
       </div>
 

@@ -236,7 +236,7 @@ export default function App() {
       case 'login':      return <Login onLogin={() => go('home')} onNav={go} />;
       case 'signup':     return <Signup onSignup={() => { toast('가입이 완료되었어요', 'check'); go('login'); }} onNav={go} />;
       case 'reset':      return <ResetPw onNav={go} toast={toast} />;
-      case 'home':       return <Home onNav={goWrapped} />;
+      case 'home':       return <Home onNav={goWrapped} toast={toast} />;
       case 'input':      return <Input onAnalyze={analyze} toast={toast} />;
       case 'report':     return <Report source={reportSource} onPremium={() => go('premium')} toast={toast} />;
       case 'daily':      return <Daily toast={toast} initialMode="맞춤 가이드" onNav={goWrapped} />;

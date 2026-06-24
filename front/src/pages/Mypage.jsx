@@ -62,8 +62,8 @@ export default function Mypage({ onNav, onLogout, toast, consent }) {
           ))}
         </Card>
 
-        <button onClick={onLogout} style={{ height: 50, borderRadius: 14, background: '#fff', border: '1px solid ' + T.line, color: T.inkMid, fontSize: 14.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 1px 3px rgba(26,43,69,0.05)' }}>
-          <Icon name="logout" size={18} color={T.inkMid} stroke={2} /> 로그아웃
+        <button onClick={onLogout} style={{ height: 50, borderRadius: 14, background: '#fff', border: '1px solid ' + T.line, color: T.inkMid, fontSize: 14.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 3px rgba(26,43,69,0.05)' }}>
+          로그아웃
         </button>
       </div>
     </div>

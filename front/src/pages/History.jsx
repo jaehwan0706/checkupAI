@@ -25,16 +25,6 @@ const fmtDate = d => {
   return `${dt.getFullYear()}. ${dt.getMonth() + 1}. ${dt.getDate()}`;
 };
 
-// Dummy records for upload-based categories
-const DUMMY_PHARMACY = [
-  { id: 'p1', date: '2025-11-03', name: '아모잘탄정 외 2종', pharmacy: '한마음약국' },
-  { id: 'p2', date: '2025-09-14', name: '리피토정 30정', pharmacy: '건강약국' },
-];
-const DUMMY_HOSPITAL = [
-  { id: 'h1', date: '2025-12-10', name: '내과 진료', hospital: '서울내과의원' },
-  { id: 'h2', date: '2025-08-22', name: '심장내과 진료', hospital: '세브란스병원' },
-];
-
 function bpColor(sys) {
   if (sys == null) return T.inkMid;
   if (sys < 120) return T.green;
@@ -87,7 +77,7 @@ function VitalCard({ r }) {
         <div style={{ display: 'flex', gap: 10, marginTop: 4, flexWrap: 'wrap' }}>
           {hasBP && (
             <span style={{ fontSize: 12.5, fontWeight: 600, color: bpColor(r.systolic) }}>
-              혈압 {r.systolic}/{r.diastolic ?? r.diastolicBp ?? '—'} mmHg
+              혈압 {r.systolic}/{r.diastolic ?? '—'} mmHg
             </span>
           )}
           {hasBS && (
@@ -110,8 +100,10 @@ function PharmacyCard({ r }) {
         <Icon name="flask" size={22} color="#9C27B0" stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.date)}</div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3 }}>{r.name} · {r.pharmacy}</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
+        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {r.title}
+        </div>
       </div>
       <span style={{ fontSize: 11, fontWeight: 700, color: '#7B1FA2', background: '#F3E5F5', padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>약국봉투</span>
     </Card>
@@ -125,8 +117,10 @@ function HospitalCard({ r }) {
         <Icon name="doc" size={22} color={T.blue} stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.date)}</div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3 }}>{r.name} · {r.hospital}</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
+        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {r.title}
+        </div>
       </div>
       <span style={{ fontSize: 11, fontWeight: 700, color: T.blue, background: T.blueSoft, padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>병원진료</span>
     </Card>
@@ -143,16 +137,14 @@ function EmptyState({ cat, onNav }) {
       <div style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.6 }}>
         {(cat === '건강검진' || cat === '전체')
           ? '검진 결과를 입력하거나 PDF를 업로드해보세요'
-          : '해당 카테고리의 기록을 추가해보세요'}
+          : '입력 탭에서 기록을 추가해보세요'}
       </div>
-      {(cat === '건강검진' || cat === '전체') && (
-        <button
-          onClick={() => onNav('input')}
-          style={{ marginTop: 4, padding: '10px 22px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: 14, fontWeight: 700 }}
-        >
-          기록 추가하기
-        </button>
-      )}
+      <button
+        onClick={() => onNav('input')}
+        style={{ marginTop: 4, padding: '10px 22px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: 14, fontWeight: 700 }}
+      >
+        기록 추가하기
+      </button>
     </div>
   );
 }
@@ -161,36 +153,48 @@ export default function History({ onNav }) {
   const [cat, setCat] = useState('전체');
   const [checkups, setCheckups] = useState([]);
   const [vitals, setVitals] = useState([]);
+  const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.get('/api/checkup/history').then(r => r.data.data || []).catch(() => []),
-      api.get('/api/vitals').then(r => r.data.data || []).catch(() => []),
-    ]).then(([c, v]) => {
+      api.get('/api/vitals/history').then(r => r.data.data || []).catch(() => []),
+      api.get('/api/medical-records/history').then(r => r.data.data || []).catch(() => []),
+    ]).then(([c, v, m]) => {
       setCheckups(c);
       setVitals(v);
+      setMedicals(m);
     }).finally(() => setLoading(false));
   }, []);
 
   const latestCheckupId = checkups.length > 0 ? checkups[0].id : null;
 
+  const pharmacyRecords = useMemo(
+    () => medicals.filter(m => m.type === 'PHARMACY'),
+    [medicals]
+  );
+  const hospitalRecords = useMemo(
+    () => medicals.filter(m => m.type === 'HOSPITAL'),
+    [medicals]
+  );
+
   const allRecords = useMemo(() => [
-    ...checkups.map(r => ({ ...r, _type: 'checkup', _date: r.checkupDate })),
-    ...vitals.map(r => ({ ...r, _type: 'vital', _date: r.recordedDate })),
-    ...DUMMY_PHARMACY.map(r => ({ ...r, _type: 'pharmacy', _date: r.date })),
-    ...DUMMY_HOSPITAL.map(r => ({ ...r, _type: 'hospital', _date: r.date })),
-  ].sort((a, b) => new Date(b._date) - new Date(a._date)), [checkups, vitals]);
+    ...checkups.map(r => ({ ...r, _type: 'checkup',  _date: r.checkupDate })),
+    ...vitals.map(r =>   ({ ...r, _type: 'vital',    _date: r.recordedDate })),
+    ...pharmacyRecords.map(r => ({ ...r, _type: 'pharmacy', _date: r.recordedDate })),
+    ...hospitalRecords.map(r => ({ ...r, _type: 'hospital', _date: r.recordedDate })),
+  ].sort((a, b) => new Date(b._date) - new Date(a._date)), [checkups, vitals, pharmacyRecords, hospitalRecords]);
 
   const records = useMemo(() => {
     switch (cat) {
-      case '건강검진': return checkups.map(r => ({ ...r, _type: 'checkup' }));
-      case '혈압·혈당': return vitals.map(r => ({ ...r, _type: 'vital' }));
-      case '약국봉투':  return DUMMY_PHARMACY.map(r => ({ ...r, _type: 'pharmacy' }));
-      case '병원진료':  return DUMMY_HOSPITAL.map(r => ({ ...r, _type: 'hospital' }));
+      case '건강검진': return checkups.map(r =>       ({ ...r, _type: 'checkup' }));
+      case '혈압·혈당': return vitals.map(r =>        ({ ...r, _type: 'vital' }));
+      case '약국봉투':  return pharmacyRecords.map(r => ({ ...r, _type: 'pharmacy' }));
+      case '병원진료':  return hospitalRecords.map(r => ({ ...r, _type: 'hospital' }));
       default: return allRecords;
     }
-  }, [cat, checkups, vitals, allRecords]);
+  }, [cat, checkups, vitals, pharmacyRecords, hospitalRecords, allRecords]);
 
   return (
     <div data-screen-label="기록" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg, position: 'relative' }}>
@@ -244,8 +248,8 @@ export default function History({ onNav }) {
           records.map((r, i) => {
             if (r._type === 'checkup')  return <CheckupCard  key={r.id ?? `c${i}`} r={r} isLatest={r.id === latestCheckupId} onNav={onNav} />;
             if (r._type === 'vital')    return <VitalCard    key={r.id ?? `v${i}`} r={r} />;
-            if (r._type === 'pharmacy') return <PharmacyCard key={r.id} r={r} />;
-            if (r._type === 'hospital') return <HospitalCard key={r.id} r={r} />;
+            if (r._type === 'pharmacy') return <PharmacyCard key={r.id ?? `p${i}`} r={r} />;
+            if (r._type === 'hospital') return <HospitalCard key={r.id ?? `h${i}`} r={r} />;
             return null;
           })
         )}

@@ -440,10 +440,13 @@ function Hub({ onSelect }) {
   );
 }
 
+const DOC_TYPE_MAP = { pharmacy: 'PHARMACY', medical: 'HOSPITAL' };
+
 function DocumentCapture({ docType, toast }) {
   const cfg = DOC_CONFIGS[docType];
   const [imgSrc, setImgSrc] = useState(null);
   const [phase, setPhase]   = useState('idle');
+  const [saving, setSaving] = useState(false);
   const cameraRef  = useRef(null);
   const galleryRef = useRef(null);
 
@@ -455,7 +458,26 @@ function DocumentCapture({ docType, toast }) {
   };
 
   const analyze = () => { setPhase('loading'); setTimeout(() => setPhase('result'), 1500); };
-  const reset   = () => { setImgSrc(null); setPhase('idle'); };
+  const reset   = () => { setImgSrc(null); setPhase('idle'); setSaving(false); };
+
+  const saveRecord = async () => {
+    setSaving(true);
+    try {
+      const fields = cfg.result.fields;
+      await api.post('/api/medical-records', {
+        type: DOC_TYPE_MAP[docType],
+        title: fields[0]?.value ?? cfg.label,
+        description: fields.slice(1).map(f => `${f.label}: ${f.value}`).join(' | ') || null,
+        recordedDate: new Date().toISOString().slice(0, 10),
+      });
+      toast('기록이 저장됐어요', 'check');
+      reset();
+    } catch {
+      toast('저장에 실패했어요', 'cross');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   if (phase === 'loading') return (
     <Card pad={24} style={{ textAlign: 'center' }}>
@@ -491,7 +513,7 @@ function DocumentCapture({ docType, toast }) {
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Button variant="outline" onClick={() => toast('준비 중이에요', 'info')}>저장하기</Button>
+        <Button variant="outline" onClick={saveRecord} disabled={saving}>{saving ? '저장 중...' : '저장하기'}</Button>
         <Button variant="ghost" onClick={reset}>다시 분석하기</Button>
       </div>
     </div>

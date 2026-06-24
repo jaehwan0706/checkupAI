@@ -7,13 +7,13 @@ export default function ExtraInfo({ onDone, toast }) {
   const [birth, setBirth] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const valid = gender && birth.match(/^\d{4}\.\d{2}\.\d{2}$/);
+  const valid = gender && birth.match(/^\d{8}$/);
 
   const save = async () => {
     if (!valid || saving) return;
     setSaving(true);
     try {
-      const birthDate = birth.replace(/\./g, '-');
+      const birthDate = `${birth.slice(0,4)}-${birth.slice(4,6)}-${birth.slice(6,8)}`;
       const saved = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
       await api.put('/api/user/me', { name: saved.name || '', email: saved.email || '', birthDate, gender });
       const updated = { ...saved, birthDate, gender };
@@ -55,7 +55,7 @@ export default function ExtraInfo({ onDone, toast }) {
             onChange={setBirth}
             icon="cal"
             inputMode="numeric"
-            placeholder="YYYY.MM.DD"
+            placeholder="YYYYMMDD"
           />
         </div>
       </div>

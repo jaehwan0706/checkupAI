@@ -1,5 +1,20 @@
-import React from 'react';
-import { T, Icon, Button, Modal } from '../components/UI';
+import React, { useState } from 'react';
+import { T, Icon, Button, Modal, Spinner } from '../components/UI';
+
+const TOSS_CLIENT_KEY = 'test_ck_LlDJaYngroyvdyXpMqRX3ezGdRpX';
+
+function loadTossScript() {
+  return new Promise((resolve, reject) => {
+    if (window.TossPayments) { resolve(window.TossPayments); return; }
+    const existing = document.querySelector('script[src*="tosspayments"]');
+    if (existing) { existing.addEventListener('load', () => resolve(window.TossPayments)); return; }
+    const script = document.createElement('script');
+    script.src = 'https://js.tosspayments.com/v1/payment';
+    script.onload = () => resolve(window.TossPayments);
+    script.onerror = () => reject(new Error('Toss SDK load failed'));
+    document.head.appendChild(script);
+  });
+}
 
 function PlanFeature({ children, light }) {
   return (
@@ -27,7 +42,62 @@ export function PremiumLockModal({ open, onClose, onUpgrade }) {
 }
 
 export default function Premium({ onClose, toast, onNav }) {
-  const buy = () => toast && toast('서비스 준비 중이에요 🚀 곧 만나요!', 'crown');
+  const [paying, setPaying] = useState(null); // null | 'single' | 'annual'
+
+  const startPayment = async (type) => {
+    if (paying) return;
+    setPaying(type);
+    try {
+      const TossPayments = await loadTossScript();
+      const toss = TossPayments(TOSS_CLIENT_KEY);
+      const user = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
+      const customerName = user.name || '검진AI 사용자';
+      const origin = window.location.origin;
+
+      if (type === 'single') {
+        const checkupId = localStorage.getItem('lastCheckupId');
+        if (!checkupId) {
+          toast?.('먼저 검진 결과를 입력해주세요', 'info');
+          setPaying(null);
+          return;
+        }
+        const orderId = `ORDER-SINGLE-${checkupId}-${Date.now()}`;
+        await toss.requestPayment('카드', {
+          amount: 1900,
+          orderId,
+          orderName: '건강검진 AI 리포트',
+          customerName,
+          successUrl: origin,
+          failUrl: origin,
+        });
+      } else {
+        const orderId = `ORDER-ANNUAL-${Date.now()}`;
+        await toss.requestPayment('카드', {
+          amount: 9900,
+          orderId,
+          orderName: '건강검진AI 연간 패스',
+          customerName,
+          successUrl: origin,
+          failUrl: origin,
+        });
+      }
+    } catch (err) {
+      const isCancelled = err?.code === 'USER_CANCEL' || err?.message === 'cancel' || err?.message?.includes('취소');
+      if (!isCancelled) toast?.('결제를 시작할 수 없어요', 'bolt');
+      setPaying(null);
+    }
+  };
+
+  const BuyBtn = ({ type, children, style }) => (
+    <button
+      onClick={() => startPayment(type)}
+      disabled={paying !== null}
+      style={{ width: '100%', height: type === 'annual' ? 50 : 48, borderRadius: type === 'annual' ? 14 : 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: type === 'annual' ? 15.5 : 15, fontWeight: 800, opacity: paying ? 0.75 : 1, ...style }}
+    >
+      {paying === type ? <Spinner size={20} color={type === 'annual' ? '#3A2A06' : '#fff'} stroke={2.5} /> : children}
+    </button>
+  );
+
   return (
     <div data-screen-label="프리미엄" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg, display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '52px 24px 0', textAlign: 'center' }}>
@@ -50,7 +120,7 @@ export default function Premium({ onClose, toast, onNav }) {
             <PlanFeature>생활습관 개선 가이드</PlanFeature>
             <PlanFeature>PDF 리포트 저장 1회</PlanFeature>
           </div>
-          <button onClick={buy} style={{ width: '100%', height: 48, borderRadius: 13, background: '#00B894', color: '#fff', fontSize: 15, fontWeight: 700 }}>지금 해석받기</button>
+          <BuyBtn type="single" style={{ background: '#00B894', color: '#fff' }}>지금 해석받기</BuyBtn>
         </div>
 
         {/* 연간 패스 */}
@@ -69,7 +139,7 @@ export default function Premium({ onClose, toast, onNav }) {
             <PlanFeature light>가족 계정 1개 추가</PlanFeature>
           </div>
           <div style={{ textAlign: 'center', marginBottom: 8, fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>이번 달 2,847명이 선택했어요 ⭐ 4.9</div>
-          <button onClick={buy} style={{ width: '100%', height: 50, borderRadius: 14, background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', fontSize: 15.5, fontWeight: 800, boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>연간 패스 시작하기</button>
+          <BuyBtn type="annual" style={{ background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>연간 패스 시작하기</BuyBtn>
         </div>
       </div>
 
@@ -89,7 +159,7 @@ export default function Premium({ onClose, toast, onNav }) {
             <Icon name="chevR" size={14} color={T.blue} />
           </button>
         )}
-        <button onClick={onClose} style={{ fontSize: 13.5, fontWeight: 700, color: T.inkSoft, padding: 8 }}>나중에 하기</button>
+        <button onClick={onClose} disabled={paying !== null} style={{ fontSize: 13.5, fontWeight: 700, color: T.inkSoft, padding: 8, opacity: paying ? 0.5 : 1 }}>나중에 하기</button>
       </div>
     </div>
   );

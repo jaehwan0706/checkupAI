@@ -22,6 +22,28 @@ import TermsDocument from './pages/TermsDocument';
 import PremiumReport from './pages/PremiumReport';
 
 const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'trends', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile', 'premium', 'premiumReport', 'notif-list'];
+
+/* 결제 리디렉션 여부 감지 (렌더 전) */
+function detectPaymentRedirect() {
+  const params = new URLSearchParams(window.location.search);
+  return !!(params.get('paymentKey') || (params.get('code') && params.get('orderId')));
+}
+
+/* 결제 처리 중 로딩 화면 */
+function PaymentProcessing() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20, background: T.bg }}>
+      <div style={{ width: 64, height: 64, borderRadius: 20, background: 'linear-gradient(135deg,#00B894,#00A382)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 28px rgba(0,184,148,0.3)' }}>
+        <Icon name="lock" size={28} color="#fff" stroke={2} />
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>결제를 확인하고 있어요</div>
+        <div style={{ fontSize: 13.5, color: T.inkSoft, marginTop: 7 }}>잠시만 기다려주세요...</div>
+      </div>
+      <Spinner size={32} color={T.blue} stroke={2.8} />
+    </div>
+  );
+}
 const ONB_KEY = 'kac_onboarded_v1';
 
 function parseJwt(token) {
@@ -122,7 +144,7 @@ function MoreSheet({ open, onClose, onNav }) {
 
 /* ── Main App ── */
 export default function App() {
-  const [screen, setScreen] = useState('splash');
+  const [screen, setScreen] = useState(() => detectPaymentRedirect() ? 'payment-processing' : 'splash');
   const [more, setMore] = useState(false);
   const [logout, setLogout] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -135,6 +157,44 @@ export default function App() {
   const pendingAction = useRef(null);
   const [toastState, setToastState] = useState(null);
   const toastTimer = useRef(null);
+
+  /* 결제 리디렉션 처리 */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    // Toss 결제 성공 리디렉션
+    const paymentKey = params.get('paymentKey');
+    if (paymentKey) {
+      const orderId = params.get('orderId') || '';
+      const amount = parseInt(params.get('amount') || '0');
+      window.history.replaceState({}, '', '/');
+
+      const isSingle = orderId.startsWith('ORDER-SINGLE-');
+      const endpoint = isSingle ? '/api/payment/confirm' : '/api/payment/annual';
+      const checkupId = isSingle ? parseInt(orderId.split('-')[2]) : undefined;
+      const body = isSingle
+        ? { paymentKey, orderId, amount, checkupId }
+        : { paymentKey, orderId, amount };
+
+      import('./api').then(({ default: api }) => {
+        api.post(endpoint, body)
+          .then(() => { toast('결제가 완료됐어요! 🎉', 'check'); go(isSingle ? 'report' : 'home'); })
+          .catch(err => { toast(err?.response?.data?.message || '결제 확인에 실패했어요', 'bolt'); go('home'); });
+      });
+      return;
+    }
+
+    // Toss 결제 실패/취소 리디렉션
+    const tossCode = params.get('code');
+    if (tossCode && params.get('orderId')) {
+      window.history.replaceState({}, '', '/');
+      const isCancelled = tossCode === 'PAY_PROCESS_CANCELED' || tossCode === 'USER_CANCEL';
+      const msg = isCancelled ? '결제가 취소됐어요' : decodeURIComponent(params.get('message') || '결제에 실패했어요');
+      toast(msg, isCancelled ? 'info' : 'bolt');
+      go('premium');
+      return;
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* OAuth callback */
   useEffect(() => {
@@ -232,6 +292,7 @@ export default function App() {
 
   const renderPage = () => {
     switch (screen) {
+      case 'payment-processing': return <PaymentProcessing />;
       case 'splash':     return <Splash onDone={afterSplash} />;
       case 'onboarding': return <Onboarding onDone={finishOnboarding} />;
       case 'login':      return <Login onLogin={() => go('home')} onNav={go} />;

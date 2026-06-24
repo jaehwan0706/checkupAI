@@ -13,10 +13,11 @@ export default function ProfileEdit({ onNav, toast }) {
   const saved = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
   const [f, setF] = useState({
     name:   saved.name   || '',
-    email:  saved.email  || '',
     birth:  toDisplayBirth(saved.birthDate || saved.birth) || '',
     gender: saved.gender || '',
   });
+  const [kakaoEmail, setKakaoEmail] = useState(null);
+  const [emailLoaded, setEmailLoaded] = useState(false);
   const set = k => v => setF(s => ({ ...s, [k]: v }));
   const initial = (f.name || '?').charAt(0);
 
@@ -25,19 +26,20 @@ export default function ProfileEdit({ onNav, toast }) {
       const u = res.data.data || {};
       setF(s => ({
         name:   u.name   || s.name,
-        email:  u.email  || s.email,
         birth:  toDisplayBirth(u.birthDate) || s.birth,
         gender: u.gender || s.gender,
       }));
-    }).catch(() => {});
+      setKakaoEmail(u.kakaoEmail || null);
+      setEmailLoaded(true);
+    }).catch(() => { setEmailLoaded(true); });
   }, []);
 
   const save = async () => {
     try {
       const birthDate = f.birth ? f.birth.replace(/\./g, '-') : null;
-      const payload = { name: f.name, email: f.email, birthDate, gender: f.gender };
+      const payload = { name: f.name, email: saved.email || '', birthDate, gender: f.gender };
       await api.put('/api/user/me', payload);
-      const updated = { ...saved, ...payload };
+      const updated = { ...saved, name: f.name, birthDate, gender: f.gender };
       localStorage.setItem('user', JSON.stringify(updated));
       toast && toast('프로필이 저장되었어요', 'check');
       onNav('my');
@@ -60,7 +62,18 @@ export default function ProfileEdit({ onNav, toast }) {
 
       <div style={{ padding: '24px 26px 0', display: 'flex', flexDirection: 'column', gap: 14 }}>
         <Field label="이름"     value={f.name}   onChange={set('name')}   icon="user" />
-        <Field label="이메일"   type="email"  value={f.email}  onChange={set('email')}  icon="mail" inputMode="email" />
+        {emailLoaded && (
+          <div>
+            <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>이메일</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, height: 52, padding: '0 14px', borderRadius: 14, background: T.bg, border: '1.5px solid ' + T.line }}>
+              <Icon name="mail" size={19} color="#A6B1C2" stroke={2} />
+              <span style={{ flex: 1, fontSize: 15, color: kakaoEmail ? T.ink : T.inkSoft }}>
+                {kakaoEmail || '이메일 미제공'}
+              </span>
+              <span style={{ fontSize: 11.5, color: T.inkSoft, background: T.line, borderRadius: 6, padding: '2px 7px' }}>수정불가</span>
+            </div>
+          </div>
+        )}
         <Field label="생년월일" value={f.birth}  onChange={set('birth')}  icon="cal"  inputMode="numeric" placeholder="YYYY.MM.DD" />
         <div>
           <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>성별</label>

@@ -16,6 +16,7 @@ import HealthGoal from './pages/HealthGoal';
 import NotificationSettings from './pages/NotificationSettings';
 import ConsentManagement from './pages/ConsentManagement';
 import ProfileEdit from './pages/ProfileEdit';
+import ExtraInfo from './pages/ExtraInfo';
 import TermsDocument from './pages/TermsDocument';
 import PremiumReport from './pages/PremiumReport';
 
@@ -132,13 +133,23 @@ export default function App() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    if (token) {
-      const claims = parseJwt(token);
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify({ userId: Number(claims.sub), email: claims.email || '', name: claims.name || '카카오 사용자' }));
-      window.history.replaceState({}, '', '/');
-      setScreen('home');
-    }
+    if (!token) return;
+    const claims = parseJwt(token);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify({ userId: Number(claims.sub), email: claims.email || '', name: claims.name || '카카오 사용자' }));
+    window.history.replaceState({}, '', '/');
+
+    // 성별/생년월일 미입력 유저는 추가정보 화면으로
+    import('./api').then(({ default: api }) => {
+      api.get('/api/user/me').then(res => {
+        const u = res.data.data || {};
+        if (!u.gender || !u.birthDate) {
+          setScreen('extra-info');
+        } else {
+          setScreen('home');
+        }
+      }).catch(() => setScreen('home'));
+    });
   }, []);
 
   const toast = useCallback((msg, icon) => {
@@ -231,6 +242,7 @@ export default function App() {
       case 'privacy':    return <TermsDocument kind="privacy" onNav={goWrapped} />;
       case 'terms':      return <TermsDocument kind="terms" onNav={goWrapped} />;
       case 'profile':    return <ProfileEdit onNav={goWrapped} toast={toast} />;
+      case 'extra-info': return <ExtraInfo onDone={() => go('home')} toast={toast} />;
       default:           return <Home onNav={goWrapped} />;
     }
   };

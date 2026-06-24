@@ -1,49 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { T, STATUS, Icon, Badge, Card } from '../components/UI';
+import { T, STATUS, Icon, Badge, Card, Spinner } from '../components/UI';
 import api from '../api';
 
 /* ─────────────────────────────────────────
-   수치 행: 좌측 경고 바 + 진단 힌트 + 맥락 한줄
+   수치 행
 ───────────────────────────────────────── */
 function SummaryRow({ m, last }) {
   const s = STATUS[m.status] || STATUS['정상'];
   const isAlert = m.status === '주의' || m.status === '위험';
-
   return (
     <div style={{
-      position: 'relative',
-      display: 'flex', alignItems: 'center', gap: 12,
+      position: 'relative', display: 'flex', alignItems: 'center', gap: 12,
       padding: `13px 16px 13px ${isAlert ? '20px' : '16px'}`,
       borderBottom: last ? 'none' : '1px solid ' + T.line,
     }}>
-      {/* 좌측 경고 세로 바 */}
-      {isAlert && (
-        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: s.color }} />
-      )}
-
-      {/* 아이콘 */}
+      {isAlert && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: s.color }} />}
       <div style={{ width: 38, height: 38, borderRadius: 11, background: s.soft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <Icon name={m.icon} size={20} color={s.color} stroke={2.1} />
       </div>
-
-      {/* 이름 + 진단 힌트 + 맥락 */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
           <span style={{ fontSize: 14.5, fontWeight: 700, color: T.ink, whiteSpace: 'nowrap' }}>{m.name}</span>
           {isAlert && m.diagHint && (
-            <span style={{ fontSize: 10.5, color: s.color, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', opacity: 0.9 }}>
-              — {m.diagHint}
-            </span>
+            <span style={{ fontSize: 10.5, color: s.color, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', opacity: 0.9 }}>— {m.diagHint}</span>
           )}
         </div>
         {m.hint && (
-          <div style={{ fontSize: 11.5, fontWeight: 600, marginTop: 2, color: isAlert ? s.color : T.inkSoft, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {m.hint}
-          </div>
+          <div style={{ fontSize: 11.5, fontWeight: 600, marginTop: 2, color: isAlert ? s.color : T.inkSoft, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.hint}</div>
         )}
       </div>
-
-      {/* 수치 */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 3, marginRight: 10, flexShrink: 0 }}>
         <span style={{ fontSize: 17, fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{m.value}</span>
         <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{m.unit}</span>
@@ -69,30 +54,28 @@ function LockedPreview({ children, onClick }) {
   );
 }
 
-
 /* ─────────────────────────────────────────
    AI 총평 카드
 ───────────────────────────────────────── */
 const WARN_MSGS = {
-  '혈압':           '혈압이 정상 범위 상단에 있어요. 지금 관리하지 않으면 고혈압으로 발전할 수 있어요.',
-  '공복혈당':       '혈당이 정상 범위 상단에 있어요. 지금 관리하지 않으면 당뇨 전단계 진입 가능성이 있어요.',
-  '총콜레스테롤':   '콜레스테롤이 경계 수준이에요. 포화지방 섭취를 줄이면 개선할 수 있어요.',
+  '혈압': '혈압이 정상 범위 상단에 있어요. 지금 관리하지 않으면 고혈압으로 발전할 수 있어요.',
+  '공복혈당': '혈당이 정상 범위 상단에 있어요. 지금 관리하지 않으면 당뇨 전단계 진입 가능성이 있어요.',
+  '총콜레스테롤': '콜레스테롤이 경계 수준이에요. 포화지방 섭취를 줄이면 개선할 수 있어요.',
   'LDL 콜레스테롤': 'LDL(나쁜) 콜레스테롤이 높아요. 동맥경화 위험이 서서히 높아지고 있어요.',
   'HDL 콜레스테롤': 'HDL(좋은) 콜레스테롤이 낮아요. 유산소 운동으로 높일 수 있어요.',
-  'AST':            '간 수치(AST)가 정상 범위를 넘었어요. 음주량 조절과 식이 관리가 필요해요.',
-  '간수치 ALT':     '간 수치(ALT)가 정상 범위를 넘었어요. 지방간 여부를 확인해 보세요.',
-  '크레아티닌':     '크레아티닌이 높아요. 신장 기능 점검을 권장해요.',
+  'AST': '간 수치(AST)가 정상 범위를 넘었어요. 음주량 조절과 식이 관리가 필요해요.',
+  '간수치 ALT': '간 수치(ALT)가 정상 범위를 넘었어요. 지방간 여부를 확인해 보세요.',
+  '크레아티닌': '크레아티닌이 높아요. 신장 기능 점검을 권장해요.',
 };
 const DANGER_MSGS = {
-  '혈압':           '혈압이 고혈압 범위예요. 심뇌혈관 위험이 높으니 즉시 전문의 상담이 필요해요.',
-  '공복혈당':       '혈당이 당뇨병 기준치를 초과했어요. 즉시 내분비내과 진료를 받아보세요.',
-  '총콜레스테롤':   '콜레스테롤이 매우 높아요. 심혈관 질환 위험이 높으니 전문의 진료가 필요해요.',
+  '혈압': '혈압이 고혈압 범위예요. 심뇌혈관 위험이 높으니 즉시 전문의 상담이 필요해요.',
+  '공복혈당': '혈당이 당뇨병 기준치를 초과했어요. 즉시 내분비내과 진료를 받아보세요.',
+  '총콜레스테롤': '콜레스테롤이 매우 높아요. 심혈관 질환 위험이 높으니 전문의 진료가 필요해요.',
   'LDL 콜레스테롤': 'LDL 콜레스테롤이 위험 수준이에요. 심장 질환 예방을 위해 즉시 관리가 필요해요.',
-  'AST':            '간 수치(AST)가 위험 수준이에요. 즉시 간 전문의 진료를 받으세요.',
-  '간수치 ALT':     '간 수치(ALT)가 위험 수준이에요. 즉시 간 전문의 진료를 받으세요.',
-  '크레아티닌':     '신장 기능 수치가 위험 수준이에요. 즉시 신장내과 진료를 받으세요.',
+  'AST': '간 수치(AST)가 위험 수준이에요. 즉시 간 전문의 진료를 받으세요.',
+  '간수치 ALT': '간 수치(ALT)가 위험 수준이에요. 즉시 간 전문의 진료를 받으세요.',
+  '크레아티닌': '신장 기능 수치가 위험 수준이에요. 즉시 신장내과 진료를 받으세요.',
 };
-
 function generateSummary(items) {
   const dangers  = items.filter(m => m.status === '위험');
   const warnings = items.filter(m => m.status === '주의');
@@ -106,7 +89,6 @@ function generateSummary(items) {
   }
   return { text: '모든 수치가 정상 범위예요. 꾸준한 생활 관리로 현재 건강 상태를 잘 유지하고 있어요.', bg: T.greenSoft, color: T.ok, icon: 'check' };
 }
-
 function AiSummaryCard({ items }) {
   const s = generateSummary(items);
   return (
@@ -122,21 +104,19 @@ function AiSummaryCard({ items }) {
   );
 }
 
-
 /* ─────────────────────────────────────────
    맥락 힌트 계산
 ───────────────────────────────────────── */
 const DIAG_HINTS = {
-  '혈압':           { '주의': '고혈압 전단계',       '위험': '고혈압 확인 필요' },
-  '공복혈당':       { '주의': '당뇨 전단계 주의',    '위험': '당뇨 확인 필요' },
+  '혈압':           { '주의': '고혈압 전단계',        '위험': '고혈압 확인 필요' },
+  '공복혈당':       { '주의': '당뇨 전단계 주의',     '위험': '당뇨 확인 필요' },
   '총콜레스테롤':   { '주의': '콜레스테롤 관리 필요', '위험': '심혈관 위험' },
-  'LDL 콜레스테롤': { '주의': '심혈관 위험 주의',    '위험': '심장 질환 위험' },
-  'HDL 콜레스테롤': { '주의': '운동으로 개선 가능',  '위험': '저HDL 확인 필요' },
-  'AST':            { '주의': '간 기능 확인 필요',    '위험': '간 전문의 진료 필요' },
-  '간수치 ALT':     { '주의': '지방간 가능성 확인',   '위험': '간 전문의 진료 필요' },
-  '크레아티닌':     { '주의': '신장 기능 확인 필요',  '위험': '신장내과 진료 필요' },
+  'LDL 콜레스테롤': { '주의': '심혈관 위험 주의',     '위험': '심장 질환 위험' },
+  'HDL 콜레스테롤': { '주의': '운동으로 개선 가능',   '위험': '저HDL 확인 필요' },
+  'AST':            { '주의': '간 기능 확인 필요',     '위험': '간 전문의 진료 필요' },
+  '간수치 ALT':     { '주의': '지방간 가능성 확인',    '위험': '간 전문의 진료 필요' },
+  '크레아티닌':     { '주의': '신장 기능 확인 필요',   '위험': '신장내과 진료 필요' },
 };
-
 function getHint(name, value, status) {
   if (status === '위험') {
     const m = { '혈압': '고혈압 범위예요 🚨', '공복혈당': '당뇨 기준치 초과예요 🚨', '총콜레스테롤': '높은 수치예요 🚨', 'LDL 콜레스테롤': '위험 수준이에요 🚨', 'HDL 콜레스테롤': '매우 낮아요 🚨', 'AST': '간 수치 위험이에요 🚨', '간수치 ALT': '간 수치 위험이에요 🚨', '크레아티닌': '신장 기능 위험이에요 🚨' };
@@ -146,44 +126,19 @@ function getHint(name, value, status) {
     const m = { '혈압': '정상 범위를 초과했어요 ⚠️', '공복혈당': '당뇨 전단계 경계예요 ⚠️', '총콜레스테롤': '경계 수준이에요 ⚠️', 'LDL 콜레스테롤': '높은 경계 수준이에요 ⚠️', 'HDL 콜레스테롤': '낮은 수준이에요 ⚠️', 'AST': '정상 범위를 초과했어요 ⚠️', '간수치 ALT': '정상 범위를 초과했어요 ⚠️', '크레아티닌': '경계 수준이에요 ⚠️' };
     return m[name] || '주의 범위예요 ⚠️';
   }
-  // 정상 — 범위 내 위치 표현
   const pos = {
-    '혈압': (v) => {
-      const sys = parseInt(String(v).split('/')[0]);
-      if (sys < 100) return '평균 이하';
-      if (sys < 112) return '평균 수준';
-      return '정상 상단';
-    },
-    '공복혈당': (v) => {
-      if (v < 80) return '정상 하단';
-      if (v < 90) return '평균 수준';
-      return '정상 상단';
-    },
-    '총콜레스테롤': (v) => {
-      if (v < 150) return '정상 하단';
-      if (v < 175) return '평균 수준';
-      return '정상 상단';
-    },
-    'LDL 콜레스테롤': (v) => {
-      if (v < 70)  return '정상 하단';
-      if (v < 100) return '평균 수준';
-      return '정상 상단';
-    },
-    'HDL 콜레스테롤': (v) => {
-      if (v >= 80) return '정상 상단';
-      if (v >= 70) return '평균 수준';
-      return '정상 하단';
-    },
-    'AST':          (v) => v <= 25 ? '평균 수준' : '정상 상단',
-    '간수치 ALT':   (v) => v <= 25 ? '평균 수준' : '정상 상단',
-    '크레아티닌':   (v) => v < 0.7 ? '정상 하단' : v < 1.0 ? '평균 수준' : '정상 상단',
+    '혈압':           (v) => { const s = parseInt(String(v).split('/')[0]); return s < 100 ? '평균 이하' : s < 112 ? '평균 수준' : '정상 상단'; },
+    '공복혈당':       (v) => v < 80 ? '정상 하단' : v < 90 ? '평균 수준' : '정상 상단',
+    '총콜레스테롤':   (v) => v < 150 ? '정상 하단' : v < 175 ? '평균 수준' : '정상 상단',
+    'LDL 콜레스테롤': (v) => v < 70  ? '정상 하단' : v < 100 ? '평균 수준' : '정상 상단',
+    'HDL 콜레스테롤': (v) => v >= 80 ? '정상 상단' : v >= 70 ? '평균 수준' : '정상 하단',
+    'AST':            (v) => v <= 25 ? '평균 수준' : '정상 상단',
+    '간수치 ALT':     (v) => v <= 25 ? '평균 수준' : '정상 상단',
+    '크레아티닌':     (v) => v < 0.7 ? '정상 하단' : v < 1.0 ? '평균 수준' : '정상 상단',
   };
   return pos[name] ? pos[name](value) : '정상 범위 안에 있어요';
 }
 
-/* ─────────────────────────────────────────
-   데이터 변환 (hint, diagHint 포함)
-───────────────────────────────────────── */
 const ICON_MAP = { '혈압': 'heart', '공복혈당': 'drop', '총콜레스테롤': 'spark', 'LDL 콜레스테롤': 'spark', 'HDL 콜레스테롤': 'spark', 'AST': 'flask', '간수치 ALT': 'flask', '크레아티닌': 'shield' };
 
 function toMetrics(d) {
@@ -221,178 +176,408 @@ function toMetrics(d) {
     raw.push({ name: '크레아티닌', value: d.creatinine, unit: 'mg/dL', status });
   }
   return raw.map(m => ({
-    id:       m.name,
-    icon:     ICON_MAP[m.name] || 'spark',
-    hint:     getHint(m.name, m.value, m.status),
+    id: m.name, icon: ICON_MAP[m.name] || 'spark',
+    hint: getHint(m.name, m.value, m.status),
     diagHint: (DIAG_HINTS[m.name] || {})[m.status] || null,
     ...m,
   }));
 }
 
 /* ─────────────────────────────────────────
-   메인 컴포넌트
+   카테고리 탭 공통 컴포넌트
 ───────────────────────────────────────── */
+const fmtShort = d => {
+  if (!d) return '';
+  const dt = new Date(d);
+  return `${dt.getMonth() + 1}/${dt.getDate()}`;
+};
+
+function CategoryEmpty({ emoji, title, sub }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '60px 0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+      <div style={{ fontSize: 52, marginBottom: 2 }}>{emoji}</div>
+      <div style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>{title}</div>
+      <div style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{sub}</div>
+    </div>
+  );
+}
+
+function AiAnalyzeBtn({ onPress, label, sub }) {
+  return (
+    <button onClick={onPress} style={{
+      width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+      padding: '14px 16px', borderRadius: 16, textAlign: 'left',
+      background: 'linear-gradient(135deg,#00B894,#00A382)',
+      boxShadow: '0 6px 18px rgba(0,184,148,0.28)',
+    }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Icon name="spark" size={20} color="#fff" stroke={2} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{label}</div>
+        {sub && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>{sub}</div>}
+      </div>
+      <Icon name="chevR" size={18} color="rgba(255,255,255,0.7)" />
+    </button>
+  );
+}
+
+function AiLoadingState() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0', gap: 16 }}>
+      <Spinner size={38} color={T.blue} stroke={3} />
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+        <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
+      </div>
+    </div>
+  );
+}
+
+function AiResultDisplay({ data, onRetry }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>종합 요약</div>
+        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+      </div>
+      {(data?.details || []).map((d, i) => (
+        <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <div style={{ width: 6, height: 6, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
+            <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>{d.title}</div>
+          </div>
+          <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
+        </div>
+      ))}
+      {data?.advice && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.advice}</div>
+        </div>
+      )}
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+        <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
+      </button>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   혈압·혈당 탭
+───────────────────────────────────────── */
+function VitalsTab({ vitals, aiState, onAnalyze }) {
+  if (vitals.length === 0) {
+    return <CategoryEmpty emoji="🩺" title="혈압·혈당 기록이 없어요" sub={'혈압·혈당을 측정하고 기록하면\nAI가 트렌드를 분석해 드려요'} />;
+  }
+  const recent = vitals.slice(0, 5);
+  const idle = !aiState?.loading && !aiState?.data && !aiState?.error;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <Card pad={16}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 12 }}>
+          최근 기록 <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{vitals.length}건</span>
+        </div>
+        {recent.map((v, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderTop: i === 0 ? 'none' : '1px solid ' + T.line }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: T.inkSoft, width: 38, flexShrink: 0 }}>{fmtShort(v.recordedDate)}</span>
+            <div style={{ display: 'flex', gap: 12, flex: 1, flexWrap: 'wrap' }}>
+              {v.systolic != null && (
+                <span style={{ fontSize: 13, fontWeight: 700, color: v.systolic >= 140 ? T.danger : v.systolic >= 120 ? T.warn : T.ok }}>
+                  혈압 {v.systolic}/{v.diastolic ?? '—'} mmHg
+                </span>
+              )}
+              {v.bloodSugar != null && (
+                <span style={{ fontSize: 13, fontWeight: 700, color: v.bloodSugar >= 126 ? T.danger : v.bloodSugar >= 100 ? T.warn : T.ok }}>
+                  혈당 {v.bloodSugar} mg/dL
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+        {vitals.length > 5 && (
+          <div style={{ paddingTop: 8, fontSize: 12, color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{vitals.length - 5}건 더 있어요</div>
+        )}
+      </Card>
+      {idle && <AiAnalyzeBtn onPress={() => onAnalyze('daily')} label="AI 분석받기" sub="혈압·혈당 기록을 AI가 종합 분석해 드려요" />}
+      {aiState?.loading && <AiLoadingState />}
+      {!aiState?.loading && aiState?.error && (
+        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+          {aiState.error}
+          <button onClick={() => onAnalyze('daily')} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+        </div>
+      )}
+      {!aiState?.loading && aiState?.data && <AiResultDisplay data={aiState.data} onRetry={() => onAnalyze('daily')} />}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   약국봉투 / 병원진료 탭 (공통)
+───────────────────────────────────────── */
+function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle, emptyDesc, analyzeLabel, analyzeSub }) {
+  if (records.length === 0) {
+    return <CategoryEmpty emoji={emptyEmoji} title={emptyTitle} sub={emptyDesc} />;
+  }
+  const recent = records.slice(0, 5);
+  const idle = !aiState?.loading && !aiState?.data && !aiState?.error;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <Card pad={16}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 12 }}>
+          최근 기록 <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{records.length}건</span>
+        </div>
+        {recent.map((r, i) => (
+          <div key={i} style={{ padding: '9px 0', borderTop: i === 0 ? 'none' : '1px solid ' + T.line }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: T.inkSoft, flexShrink: 0, width: 38 }}>{fmtShort(r.recordedDate)}</span>
+              <span style={{ fontSize: 13.5, fontWeight: 700, color: T.ink, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
+            </div>
+            {r.description && (
+              <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingLeft: 46 }}>{r.description}</div>
+            )}
+          </div>
+        ))}
+        {records.length > 5 && (
+          <div style={{ paddingTop: 8, fontSize: 12, color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{records.length - 5}건 더 있어요</div>
+        )}
+      </Card>
+      {idle && <AiAnalyzeBtn onPress={() => onAnalyze(type)} label={analyzeLabel} sub={analyzeSub} />}
+      {aiState?.loading && <AiLoadingState />}
+      {!aiState?.loading && aiState?.error && (
+        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+          {aiState.error}
+          <button onClick={() => onAnalyze(type)} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+        </div>
+      )}
+      {!aiState?.loading && aiState?.data && <AiResultDisplay data={aiState.data} onRetry={() => onAnalyze(type)} />}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────
+   메인
+───────────────────────────────────────── */
+const TABS = ['건강검진', '혈압·혈당', '약국봉투', '병원진료'];
+
 export default function Report({ onPremium, toast }) {
-  const [items, setItems]   = useState([]);
-  const [date, setDate]     = useState('');
+  const [tab, setTab]     = useState('건강검진');
+  const [checkupItems, setCheckupItems] = useState([]);
+  const [checkupDate, setCheckupDate]   = useState('');
+  const [vitals, setVitals]   = useState([]);
+  const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [aiState, setAiState] = useState({ daily: null, pharmacy: null, hospital: null });
 
   useEffect(() => {
     const id = localStorage.getItem('lastCheckupId');
-    const endpoint = id ? `/api/checkup/${id}` : '/api/checkup/latest';
-    api.get(endpoint)
-      .then(res => {
-        const d = res.data?.data;
-        if (!d) return;
-        setDate(d.checkupDate || '');
-        setItems(toMetrics(d));
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    Promise.all([
+      api.get(id ? `/api/checkup/${id}` : '/api/checkup/latest').catch(() => null),
+      api.get('/api/vitals/history').catch(() => null),
+      api.get('/api/medical-records/history').catch(() => null),
+    ]).then(([checkupRes, vitalsRes, medicalRes]) => {
+      const d = checkupRes?.data?.data;
+      if (d) { setCheckupDate(d.checkupDate || ''); setCheckupItems(toMetrics(d)); }
+      setVitals(vitalsRes?.data?.data || []);
+      setMedicals(medicalRes?.data?.data || []);
+    }).finally(() => setLoading(false));
   }, []);
 
-  const warnCount  = items.filter(m => m.status === '주의' || m.status === '위험').length;
-  const displayDate = date ? new Date(date).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-  const freeItems   = items.slice(0, 2);
-  const lockedItems = items.slice(2);
+  const pharmacyRecords = medicals.filter(m => m.type === 'PHARMACY');
+  const hospitalRecords = medicals.filter(m => m.type === 'HOSPITAL');
+
+  const runAiAnalysis = async (type) => {
+    const endpoint = type === 'daily' ? '/api/ai/analyze/daily'
+      : type === 'pharmacy' ? '/api/ai/analyze/medical?type=PHARMACY'
+      : '/api/ai/analyze/medical?type=HOSPITAL';
+    setAiState(prev => ({ ...prev, [type]: { loading: true } }));
+    try {
+      const res = await api.post(endpoint);
+      setAiState(prev => ({ ...prev, [type]: { loading: false, data: res.data.data } }));
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'AI 분석 중 오류가 발생했습니다';
+      setAiState(prev => ({ ...prev, [type]: { loading: false, error: msg } }));
+    }
+  };
+
+  const warnCount   = checkupItems.filter(m => m.status === '주의' || m.status === '위험').length;
+  const displayDate = checkupDate ? new Date(checkupDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const freeItems   = checkupItems.slice(0, 2);
+  const lockedItems = checkupItems.slice(2);
 
   return (
     <div data-screen-label="AI 리포트" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
 
       {/* ─ 헤더 ─ */}
-      <div style={{ padding: '56px 20px 14px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: T.greenSoft, color: T.ok, padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 800, marginBottom: 12 }}>무료 플랜</div>
+      <div style={{ padding: '56px 20px 10px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: T.greenSoft, color: T.ok, padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 800, marginBottom: 10 }}>무료 플랜</div>
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>내 건강 리포트</h1>
-        {displayDate && <p style={{ margin: '8px 0 0', fontSize: 13, color: T.inkSoft }}>{displayDate} 검진 기준</p>}
-        {loading ? (
-          <div style={{ marginTop: 14, padding: '13px 15px', borderRadius: 14, background: T.bg, border: '1px solid ' + T.line, fontSize: 13.5, color: T.inkSoft, fontWeight: 600 }}>데이터를 불러오는 중...</div>
-        ) : warnCount > 0 ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 14, padding: '13px 15px', borderRadius: 14, background: T.warnSoft, border: `1px solid ${T.warn}33` }}>
-            <span style={{ fontSize: 17 }}>⚠️</span>
-            <span style={{ fontSize: 14, fontWeight: 700, color: '#9A6A12' }}>주의가 필요한 항목이 {warnCount}개 있어요</span>
-          </div>
-        ) : items.length > 0 ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 14, padding: '13px 15px', borderRadius: 14, background: T.greenSoft }}>
-            <Icon name="check" size={17} color={T.green} stroke={2.6} />
-            <span style={{ fontSize: 14, fontWeight: 700, color: T.ok }}>모든 수치가 정상 범위예요!</span>
-          </div>
-        ) : null}
       </div>
 
-      {/* ─ 데이터 없음 ─ */}
-      {!loading && items.length === 0 && (
-        <div style={{ padding: '0 20px 28px' }}>
-          <Card style={{ textAlign: 'center', padding: '36px 20px' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
-            <div style={{ fontSize: 17, fontWeight: 800, color: T.ink, marginBottom: 8 }}>검진 데이터가 없어요</div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 AI 리포트를 받을 수 있어요</p>
-          </Card>
+      {/* ─ 탭 바 ─ */}
+      <div className="nd-no-scrollbar" style={{ overflowX: 'auto', padding: '6px 20px 14px', display: 'flex', gap: 8 }}>
+        {TABS.map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{
+            flexShrink: 0, padding: '8px 15px', borderRadius: 999,
+            fontSize: 13, fontWeight: 700,
+            background: tab === t ? T.blue : '#fff',
+            color: tab === t ? '#fff' : T.inkMid,
+            border: `1.5px solid ${tab === t ? T.blue : T.line}`,
+            transition: 'all .15s ease',
+          }}>{t}</button>
+        ))}
+      </div>
+
+      {/* ─ 건강검진 탭 ─ */}
+      {tab === '건강검진' && (
+        <>
+          <div style={{ padding: '0 20px 14px' }}>
+            {displayDate && <p style={{ margin: '0 0 10px', fontSize: 13, color: T.inkSoft }}>{displayDate} 검진 기준</p>}
+            {loading ? (
+              <div style={{ padding: '13px 15px', borderRadius: 14, background: T.bg, border: '1px solid ' + T.line, fontSize: 13.5, color: T.inkSoft, fontWeight: 600 }}>데이터를 불러오는 중...</div>
+            ) : warnCount > 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 15px', borderRadius: 14, background: T.warnSoft, border: `1px solid ${T.warn}33` }}>
+                <span style={{ fontSize: 17 }}>⚠️</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#9A6A12' }}>주의가 필요한 항목이 {warnCount}개 있어요</span>
+              </div>
+            ) : checkupItems.length > 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 15px', borderRadius: 14, background: T.greenSoft }}>
+                <Icon name="check" size={17} color={T.green} stroke={2.6} />
+                <span style={{ fontSize: 14, fontWeight: 700, color: T.ok }}>모든 수치가 정상 범위예요!</span>
+              </div>
+            ) : null}
+          </div>
+
+          {!loading && checkupItems.length === 0 && (
+            <div style={{ padding: '0 20px 28px' }}>
+              <Card style={{ textAlign: 'center', padding: '36px 20px' }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: T.ink, marginBottom: 8 }}>검진 데이터가 없어요</div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 AI 리포트를 받을 수 있어요</p>
+              </Card>
+            </div>
+          )}
+
+          {checkupItems.length > 0 && (
+            <>
+              <div style={{ padding: '0 20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '0 2px 10px' }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>수치 요약</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>
+                </div>
+                <Card pad={0} style={{ overflow: 'hidden' }}>
+                  {freeItems.map((m, i) => <SummaryRow key={m.id} m={m} last={i === freeItems.length - 1} />)}
+                </Card>
+              </div>
+              <div style={{ padding: '12px 20px 0' }}>
+                <AiSummaryCard items={checkupItems} />
+              </div>
+              {lockedItems.length > 0 && (
+                <>
+                  <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div>
+                      <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 9 }}>프리미엄에서 확인할 수 있어요</div>
+                      <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                        {[{ icon: 'spark', label: '수치별 원인 분석' }, { icon: 'run', label: '맞춤 운동 추천' }, { icon: 'food', label: '식습관 가이드' }, { icon: 'cal', label: '재검 계획' }, { icon: 'pdf', label: 'PDF 저장' }].map((it, i) => (
+                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: '#fff', border: '1px solid ' + T.line, fontSize: 12.5, fontWeight: 700, color: T.ink }}>
+                            <Icon name={it.icon} size={13} color={T.blue} stroke={2.1} /> {it.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ padding: '14px 20px 0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{ flex: 1, height: 1, background: T.line }} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 13px', borderRadius: 999, background: '#F0F2F5', margin: '0 10px' }}>
+                        <span style={{ fontSize: 12 }}>🔒</span>
+                        <span style={{ fontSize: 12.5, fontWeight: 800, color: T.blue }}>프리미엄 전용 콘텐츠</span>
+                      </div>
+                      <div style={{ flex: 1, height: 1, background: T.line }} />
+                    </div>
+                  </div>
+                  <div style={{ padding: '10px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <LockedPreview onClick={onPremium}>
+                      <div style={{ background: '#fff' }}>
+                        {lockedItems.slice(0, 2).map((m, i) => <SummaryRow key={m.id} m={m} last={i === Math.min(2, lockedItems.length) - 1} />)}
+                      </div>
+                    </LockedPreview>
+                    {lockedItems.length > 2 && (
+                      <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, color: T.inkSoft, padding: '2px 0' }}>+ {lockedItems.length - 2}개 항목 더 있어요</div>
+                    )}
+                  </div>
+                  <div style={{ padding: '14px 20px 0' }}>
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: T.inkMid }}>총 {checkupItems.length}개 항목 중 {freeItems.length}개 확인 완료</span>
+                        <span style={{ fontSize: 12, fontWeight: 800, color: T.blue }}>{freeItems.length}/{checkupItems.length}</span>
+                      </div>
+                      <div style={{ height: 7, borderRadius: 999, background: T.line, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: Math.round((freeItems.length / checkupItems.length) * 100) + '%', borderRadius: 999, background: `linear-gradient(90deg,${T.blue},${T.green})`, transition: 'width .4s ease' }} />
+                      </div>
+                    </div>
+                    <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 13, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: 14.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 6px 16px rgba(0,184,148,0.28)' }}>
+                      <Icon name="lock" size={15} color="rgba(255,255,255,0.9)" stroke={2.2} />
+                      나머지 {lockedItems.length}개 항목 상세 분석 보기
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginLeft: 2 }}>· 1,900원</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </>
+      )}
+
+      {/* ─ 혈압·혈당 탭 ─ */}
+      {tab === '혈압·혈당' && (
+        <div style={{ padding: '0 20px 32px' }}>
+          {loading
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            : <VitalsTab vitals={vitals} aiState={aiState.daily} onAnalyze={runAiAnalysis} />
+          }
         </div>
       )}
 
-      {/* ─ 데이터 있음 ─ */}
-      {items.length > 0 && (
-        <>
-          {/* 1. 수치 요약 — 첫 2개 무료 공개 */}
-          <div style={{ padding: '0 20px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '0 2px 10px' }}>
-              <span style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>수치 요약</span>
-              <span style={{ fontSize: 11, fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>
-            </div>
-            <Card pad={0} style={{ overflow: 'hidden' }}>
-              {freeItems.map((m, i) => (
-                <SummaryRow key={m.id} m={m} last={i === freeItems.length - 1} />
-              ))}
-            </Card>
-          </div>
-
-          {/* 2. AI 한줄 총평 */}
-          <div style={{ padding: '12px 20px 0' }}>
-            <AiSummaryCard items={items} />
-          </div>
-
-          {/* 3. 티저 태그 + 진행바 (버튼 없이) */}
-          {lockedItems.length > 0 && (
-            <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div>
-                <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 9 }}>프리미엄에서 확인할 수 있어요</div>
-                <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
-                  {[
-                    { icon: 'spark', label: '수치별 원인 분석' },
-                    { icon: 'run',   label: '맞춤 운동 추천' },
-                    { icon: 'food',  label: '식습관 가이드' },
-                    { icon: 'cal',   label: '재검 계획' },
-                    { icon: 'pdf',   label: 'PDF 저장' },
-                  ].map((it, i) => (
-                    <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: '#fff', border: '1px solid ' + T.line, fontSize: 12.5, fontWeight: 700, color: T.ink }}>
-                      <Icon name={it.icon} size={13} color={T.blue} stroke={2.1} />
-                      {it.label}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 4. 구분선 */}
-          {lockedItems.length > 0 && (
-            <div style={{ padding: '14px 20px 0' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, height: 1, background: T.line }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 13px', borderRadius: 999, background: '#F0F2F5', margin: '0 10px' }}>
-                  <span style={{ fontSize: 12 }}>🔒</span>
-                  <span style={{ fontSize: 12.5, fontWeight: 800, color: T.blue }}>프리미엄 전용 콘텐츠</span>
-                </div>
-                <div style={{ flex: 1, height: 1, background: T.line }} />
-              </div>
-            </div>
-          )}
-
-          {/* 5. 블러 카드 2개 + 나머지 힌트 */}
-          {lockedItems.length > 0 && (
-            <div style={{ padding: '10px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <LockedPreview onClick={onPremium}>
-                <div style={{ background: '#fff' }}>
-                  {lockedItems.slice(0, 2).map((m, i) => (
-                    <SummaryRow key={m.id} m={m} last={i === Math.min(2, lockedItems.length) - 1} />
-                  ))}
-                </div>
-              </LockedPreview>
-              {lockedItems.length > 2 && (
-                <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, color: T.inkSoft, padding: '2px 0' }}>
-                  + {lockedItems.length - 2}개 항목 더 있어요
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* 6. 진행바 + 결제 버튼 — 맨 마지막 */}
-          {lockedItems.length > 0 && (
-            <div style={{ padding: '14px 20px 0' }}>
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: T.inkMid }}>총 {items.length}개 항목 중 {freeItems.length}개 확인 완료</span>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: T.blue }}>{freeItems.length}/{items.length}</span>
-                </div>
-                <div style={{ height: 7, borderRadius: 999, background: T.line, overflow: 'hidden' }}>
-                  <div style={{ height: '100%', width: Math.round((freeItems.length / items.length) * 100) + '%', borderRadius: 999, background: `linear-gradient(90deg,${T.blue},${T.green})`, transition: 'width .4s ease' }} />
-                </div>
-              </div>
-              <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 13, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: 14.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 6px 16px rgba(0,184,148,0.28)' }}>
-                <Icon name="lock" size={15} color="rgba(255,255,255,0.9)" stroke={2.2} />
-                나머지 {lockedItems.length}개 항목 상세 분석 보기
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginLeft: 2 }}>· 1,900원</span>
-              </button>
-            </div>
-          )}
-
-          {/* 8. 면책 고지 */}
-          <div style={{ margin: '20px 20px 28px', padding: 14, borderRadius: 14, background: '#EEF1F6', display: 'flex', gap: 10 }}>
-            <Icon name="info" size={18} color={T.inkSoft} stroke={2} />
-            <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: T.inkSoft }}>본 서비스는 의료 진단이 아닙니다. 검진 결과 해석을 돕기 위한 참고용 정보이며, 정확한 진단과 치료는 반드시 의료 전문가와 상담하세요.</p>
-          </div>
-        </>
+      {/* ─ 약국봉투 탭 ─ */}
+      {tab === '약국봉투' && (
+        <div style={{ padding: '0 20px 32px' }}>
+          {loading
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            : <MedicalTab
+                records={pharmacyRecords} type="pharmacy"
+                aiState={aiState.pharmacy} onAnalyze={runAiAnalysis}
+                emptyEmoji="💊" emptyTitle="약국봉투 기록이 없어요"
+                emptyDesc={'약국봉투를 기록하면\nAI가 성분과 주의사항을 분석해 드려요'}
+                analyzeLabel="AI 분석받기"
+                analyzeSub="처방약 성분·주의사항·복용 관리법을 AI가 분석해 드려요"
+              />
+          }
+        </div>
       )}
+
+      {/* ─ 병원진료 탭 ─ */}
+      {tab === '병원진료' && (
+        <div style={{ padding: '0 20px 32px' }}>
+          {loading
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            : <MedicalTab
+                records={hospitalRecords} type="hospital"
+                aiState={aiState.hospital} onAnalyze={runAiAnalysis}
+                emptyEmoji="🏥" emptyTitle="병원진료 기록이 없어요"
+                emptyDesc={'병원 진료 내역을 기록하면\nAI가 진단 분석과 관리 방법을 알려드려요'}
+                analyzeLabel="AI 분석받기"
+                analyzeSub="진료 기록을 바탕으로 진단 분석과 관리법을 안내해 드려요"
+              />
+          }
+        </div>
+      )}
+
+      {/* ─ 면책 고지 ─ */}
+      <div style={{ margin: '4px 20px 28px', padding: 14, borderRadius: 14, background: '#EEF1F6', display: 'flex', gap: 10 }}>
+        <Icon name="info" size={18} color={T.inkSoft} stroke={2} />
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: T.inkSoft }}>본 서비스는 의료 진단이 아닙니다. 검진 결과 해석을 돕기 위한 참고용 정보이며, 정확한 진단과 치료는 반드시 의료 전문가와 상담하세요.</p>
+      </div>
     </div>
   );
 }

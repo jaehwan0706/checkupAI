@@ -142,13 +142,16 @@ export default function App() {
     if (!token) return;
     const claims = parseJwt(token);
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify({ userId: Number(claims.sub), email: claims.email || '', name: claims.name || '카카오 사용자' }));
+    // name은 JWT 대신 /api/user/me 응답값 사용 (JWT atob 인코딩 우회)
+    localStorage.setItem('user', JSON.stringify({ userId: Number(claims.sub), email: claims.email || '', name: '' }));
     window.history.replaceState({}, '', '/');
 
-    // 성별/생년월일 미입력 유저는 추가정보 화면으로
     import('./api').then(({ default: api }) => {
       api.get('/api/user/me').then(res => {
         const u = res.data.data || {};
+        // API 응답의 name으로 덮어쓰기
+        const stored = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
+        localStorage.setItem('user', JSON.stringify({ ...stored, name: u.name || '카카오 사용자' }));
         if (!u.gender || !u.birthDate) {
           setScreen('extra-info');
         } else {

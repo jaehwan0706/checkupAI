@@ -25,8 +25,8 @@ const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'trends', 'my', 'histor
 
 /* 결제 리디렉션 여부 감지 (렌더 전) */
 function detectPaymentRedirect() {
-  const params = new URLSearchParams(window.location.search);
-  return !!(params.get('paymentKey') || (params.get('code') && params.get('orderId')));
+  const path = window.location.pathname;
+  return path === '/payment-success' || path === '/payment-fail';
 }
 
 /* 결제 처리 중 로딩 화면 */
@@ -158,13 +158,13 @@ export default function App() {
   const [toastState, setToastState] = useState(null);
   const toastTimer = useRef(null);
 
-  /* 결제 리디렉션 처리 */
+  /* 결제 리디렉션 처리 (/payment-success, /payment-fail) */
   useEffect(() => {
+    const path = window.location.pathname;
     const params = new URLSearchParams(window.location.search);
 
-    // Toss 결제 성공 리디렉션
-    const paymentKey = params.get('paymentKey');
-    if (paymentKey) {
+    if (path === '/payment-success') {
+      const paymentKey = params.get('paymentKey');
       const orderId = params.get('orderId') || '';
       const amount = parseInt(params.get('amount') || '0');
       window.history.replaceState({}, '', '/');
@@ -184,10 +184,9 @@ export default function App() {
       return;
     }
 
-    // Toss 결제 실패/취소 리디렉션
-    const tossCode = params.get('code');
-    if (tossCode && params.get('orderId')) {
+    if (path === '/payment-fail') {
       window.history.replaceState({}, '', '/');
+      const tossCode = params.get('code') || '';
       const isCancelled = tossCode === 'PAY_PROCESS_CANCELED' || tossCode === 'USER_CANCEL';
       const msg = isCancelled ? '결제가 취소됐어요' : decodeURIComponent(params.get('message') || '결제에 실패했어요');
       toast(msg, isCancelled ? 'info' : 'bolt');

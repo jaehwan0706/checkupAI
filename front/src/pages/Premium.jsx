@@ -47,41 +47,37 @@ export default function Premium({ onClose, toast, onNav }) {
   const startPayment = async (type) => {
     if (paying) return;
     setPaying(type);
+    console.log('[Toss] 결제 시작, type:', type);
     try {
       const TossPayments = await loadTossScript();
+      console.log('[Toss] loadTossScript 완료, TossPayments:', typeof TossPayments, TossPayments);
       const toss = TossPayments(TOSS_CLIENT_KEY);
+      console.log('[Toss] toss 객체:', toss, '메서드 목록:', Object.keys(toss || {}));
       const user = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
       const customerName = user.name || '검진AI 사용자';
       const origin = window.location.origin;
+      console.log('[Toss] customerName:', customerName, 'origin:', origin);
 
       if (type === 'single') {
         const checkupId = localStorage.getItem('lastCheckupId');
+        console.log('[Toss] single - checkupId:', checkupId);
         if (!checkupId) {
           toast?.('먼저 검진 결과를 입력해주세요', 'info');
           setPaying(null);
           return;
         }
         const orderId = `ORDER-SINGLE-${checkupId}-${Date.now()}`;
-        await toss.requestPayment('카드', {
-          amount: 1900,
-          orderId,
-          orderName: '건강검진 AI 리포트',
-          customerName,
-          successUrl: origin,
-          failUrl: origin,
-        });
+        const paymentParams = { amount: 1900, orderId, orderName: '건강검진 AI 리포트', customerName, successUrl: origin, failUrl: origin };
+        console.log('[Toss] requestPayment 호출 직전 (single):', paymentParams);
+        await toss.requestPayment('카드', paymentParams);
       } else {
         const orderId = `ORDER-ANNUAL-${Date.now()}`;
-        await toss.requestPayment('카드', {
-          amount: 9900,
-          orderId,
-          orderName: '건강검진AI 연간 패스',
-          customerName,
-          successUrl: origin,
-          failUrl: origin,
-        });
+        const paymentParams = { amount: 9900, orderId, orderName: '건강검진AI 연간 패스', customerName, successUrl: origin, failUrl: origin };
+        console.log('[Toss] requestPayment 호출 직전 (annual):', paymentParams);
+        await toss.requestPayment('카드', paymentParams);
       }
     } catch (err) {
+      console.log('[Toss] catch 진입 - err:', err, 'code:', err?.code, 'message:', err?.message);
       const isCancelled = err?.code === 'USER_CANCEL' || err?.message === 'cancel' || err?.message?.includes('취소');
       if (!isCancelled) toast?.('결제를 시작할 수 없어요', 'bolt');
       setPaying(null);

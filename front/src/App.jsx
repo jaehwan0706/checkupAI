@@ -26,7 +26,13 @@ const ONB_KEY = 'kac_onboarded_v1';
 function parseJwt(token) {
   try {
     const payload = token.split('.')[1];
-    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+    // atob()는 Latin-1 바이트를 반환하므로 한글(UTF-8 멀티바이트)이 깨짐
+    // 각 바이트를 %XX로 변환 후 decodeURIComponent로 UTF-8 복원
+    const jsonPayload = decodeURIComponent(
+      atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    );
+    return JSON.parse(jsonPayload);
   } catch { return {}; }
 }
 

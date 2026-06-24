@@ -312,7 +312,7 @@ function HospitalCard({ r, onOpen }) {
 
 /* ── AI 분석 배너 ── */
 function AiAnalysisBanner({ cat, onAnalyze }) {
-  const type = cat === '혈압·혈당' ? 'daily' : 'medical';
+  const type = cat === '혈압·혈당' ? 'daily' : cat === '약국봉투' ? 'pharmacy' : 'hospital';
   const sub = cat === '혈압·혈당'
     ? '혈압·혈당 기록을 AI가 종합 분석해 드려요'
     : cat === '약국봉투'
@@ -344,7 +344,10 @@ function AiAnalysisBanner({ cat, onAnalyze }) {
 
 /* ── AI 분석 결과 모달 내용 ── */
 function AiResultContent({ modal, onClose }) {
-  const typeLabel = modal?.type === 'daily' ? '혈압·혈당 AI 분석' : '진료·처방 AI 분석';
+  const typeLabel = modal?.type === 'daily' ? '혈압·혈당 AI 분석'
+    : modal?.type === 'pharmacy' ? '약국봉투 AI 분석'
+    : modal?.type === 'hospital' ? '병원진료 AI 분석'
+    : '진료·처방 AI 분석';
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
@@ -437,7 +440,13 @@ export default function History({ onNav, toast }) {
   const [aiModal, setAiModal] = useState(null);
 
   const openAiAnalysis = async (type) => {
-    const endpoint = type === 'daily' ? '/api/ai/analyze/daily' : '/api/ai/analyze/medical';
+    const endpoint = type === 'daily'
+      ? '/api/ai/analyze/daily'
+      : type === 'pharmacy'
+      ? '/api/ai/analyze/medical?type=PHARMACY'
+      : type === 'hospital'
+      ? '/api/ai/analyze/medical?type=HOSPITAL'
+      : '/api/ai/analyze/medical';
     setAiModal({ type, loading: true });
     try {
       const res = await api.post(endpoint);

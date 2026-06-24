@@ -8,6 +8,7 @@ import com.checkupai.domain.daily.DailyRecord;
 import com.checkupai.domain.daily.DailyRecordRepository;
 import com.checkupai.domain.medical.MedicalRecord;
 import com.checkupai.domain.medical.MedicalRecordRepository;
+import com.checkupai.domain.medical.MedicalRecordType;
 import com.checkupai.domain.vitals.Vitals;
 import com.checkupai.domain.vitals.VitalsRepository;
 import com.checkupai.domain.report.AiReport;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -90,10 +92,15 @@ public class AiReportService {
     }
 
     @Transactional(readOnly = true)
-    public @NonNull CategoryAiResponse analyzeMedical(@NonNull Long userId) {
+    public @NonNull CategoryAiResponse analyzeMedical(@NonNull Long userId, String type) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        List<MedicalRecord> medicals = medicalRecordRepository.findAllByUserId(userId);
+        List<MedicalRecord> all = medicalRecordRepository.findAllByUserId(userId);
+        List<MedicalRecord> medicals = (type != null && !type.isBlank())
+                ? all.stream()
+                     .filter(m -> m.getType() == MedicalRecordType.valueOf(type))
+                     .collect(Collectors.toList())
+                : all;
         if (medicals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
         return claudeApiService.analyzeMedical(user, medicals);
     }

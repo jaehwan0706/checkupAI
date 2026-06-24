@@ -592,8 +592,8 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
         <Segmented items={['맞춤 가이드', '검진 트렌드']} value={mode} onChange={setMode} />
       </div>
 
-      {/* AI 분석받기 — 검진 트렌드 탭, 혈압·혈당 기록이 있을 때만 표시 */}
-      {mode === '검진 트렌드' && vitalsHistory.length > 0 && (
+      {/* AI 분석받기 — 혈압·혈당 기록이 있을 때 표시 */}
+      {vitalsHistory.length > 0 && (
         <div style={{ padding: '12px 20px 0' }}>
           <button
             onClick={openAiAnalysis}

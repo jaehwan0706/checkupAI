@@ -44,8 +44,9 @@ public class AiController {
     @PostMapping("/analyze/medical")
     @ResponseStatus(HttpStatus.CREATED)
     public @NonNull ApiResponse<CategoryAiResponse> analyzeMedical(
-            @AuthenticationPrincipal @NonNull Long userId) {
-        return ApiResponse.success(aiReportService.analyzeMedical(userId), "진료·처방 AI 분석이 완료되었습니다.");
+            @AuthenticationPrincipal @NonNull Long userId,
+            @RequestParam(required = false) String type) {
+        return ApiResponse.success(aiReportService.analyzeMedical(userId, type), "진료·처방 AI 분석이 완료되었습니다.");
     }
 
     @Getter

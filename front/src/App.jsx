@@ -245,7 +245,7 @@ export default function App() {
       case 'premium':    return <Premium onClose={() => go(premiumReturn)} toast={toast} onNav={goWrapped} />;
       case 'premiumReport': return <PremiumReport onNav={goWrapped} toast={toast} />;
       case 'my':         return <Mypage onNav={goWrapped} onLogout={() => setLogout(true)} toast={toast} consent={consent} />;
-      case 'history':    return <History onNav={goWrapped} />;
+      case 'history':    return <History onNav={goWrapped} toast={toast} />;
       case 'goals':      return <HealthGoal onNav={goWrapped} toast={toast} />;
       case 'notifications': return <NotificationSettings onNav={goWrapped} />;
       case 'consent':    return <ConsentManagement onNav={goWrapped} consent={consent} onWithdraw={withdrawConsent} />;

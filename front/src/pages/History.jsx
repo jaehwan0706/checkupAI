@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { T, Icon, Badge, Card, BottomSheet } from '../components/UI';
+import { T, Icon, Badge, Card, BottomSheet, Spinner } from '../components/UI';
 import api from '../api';
 
 const CATEGORIES = ['전체', '건강검진', '약국봉투', '병원진료', '혈압·혈당'];
@@ -310,6 +310,102 @@ function HospitalCard({ r, onOpen }) {
   );
 }
 
+/* ── AI 분석 배너 ── */
+function AiAnalysisBanner({ cat, onAnalyze }) {
+  const type = cat === '혈압·혈당' ? 'daily' : 'medical';
+  const sub = cat === '혈압·혈당'
+    ? '혈압·혈당 기록을 AI가 종합 분석해 드려요'
+    : cat === '약국봉투'
+    ? '약국봉투 기록의 약 성분과 주의사항을 분석해 드려요'
+    : '병원진료 기록을 바탕으로 관리 방법을 안내해 드려요';
+  return (
+    <div style={{ padding: '0 20px 10px' }}>
+      <button
+        onClick={() => onAnalyze(type)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: 12,
+          padding: '14px 16px', borderRadius: 16, textAlign: 'left',
+          background: 'linear-gradient(135deg, #00B894, #00A382)',
+          boxShadow: '0 6px 18px rgba(0,184,148,0.28)',
+        }}
+      >
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon name="spark" size={20} color="#fff" stroke={2} />
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>AI 분석받기</div>
+          <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.85)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</div>
+        </div>
+        <Icon name="chevR" size={18} color="rgba(255,255,255,0.7)" />
+      </button>
+    </div>
+  );
+}
+
+/* ── AI 분석 결과 모달 내용 ── */
+function AiResultContent({ modal, onClose }) {
+  const typeLabel = modal?.type === 'daily' ? '혈압·혈당 AI 분석' : '진료·처방 AI 분석';
+  return (
+    <>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 13, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon name="spark" size={22} color={T.blue} stroke={2} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>AI 분석 결과</div>
+          <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2 }}>{typeLabel}</div>
+        </div>
+        <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 999, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon name="cross" size={17} color={T.inkSoft} stroke={2.2} />
+        </button>
+      </div>
+
+      {modal?.loading ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0', gap: 16 }}>
+          <Spinner size={38} color={T.blue} stroke={3} />
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+            <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
+          </div>
+        </div>
+      ) : modal?.error ? (
+        <div style={{ textAlign: 'center', padding: '40px 0' }}>
+          <div style={{ fontSize: 36, marginBottom: 12 }}>😢</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: T.ink, marginBottom: 8 }}>분석 중 오류가 발생했어요</div>
+          <div style={{ fontSize: 13, color: T.inkSoft }}>{modal.error}</div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* 종합 요약 */}
+          <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+            <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>종합 요약</div>
+            <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal?.data?.summary}</div>
+          </div>
+
+          {/* 상세 분석 */}
+          {(modal?.data?.details || []).map((d, i) => (
+            <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                <div style={{ width: 6, height: 6, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
+                <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>{d.title}</div>
+              </div>
+              <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
+            </div>
+          ))}
+
+          {/* 관리 가이드 */}
+          {modal?.data?.advice && (
+            <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
+              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
+              <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
+            </div>
+          )}
+        </div>
+      )}
+    </>
+  );
+}
+
 function EmptyState({ cat, onNav }) {
   return (
     <div style={{ textAlign: 'center', padding: '48px 0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
@@ -331,13 +427,27 @@ function EmptyState({ cat, onNav }) {
 }
 
 /* ── Main ── */
-export default function History({ onNav }) {
+export default function History({ onNav, toast }) {
   const [cat, setCat]         = useState('전체');
   const [checkups, setCheckups] = useState([]);
   const [vitals, setVitals]   = useState([]);
   const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal]     = useState(null);
+  const [aiModal, setAiModal] = useState(null);
+
+  const openAiAnalysis = async (type) => {
+    const endpoint = type === 'daily' ? '/api/ai/analyze/daily' : '/api/ai/analyze/medical';
+    setAiModal({ type, loading: true });
+    try {
+      const res = await api.post(endpoint);
+      const data = res.data.data;
+      setAiModal({ type, loading: false, data });
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'AI 분석 중 오류가 발생했습니다';
+      setAiModal({ type, loading: false, error: msg });
+    }
+  };
 
   useEffect(() => {
     Promise.all([
@@ -406,6 +516,11 @@ export default function History({ onNav }) {
         })}
       </div>
 
+      {/* AI 분석 배너 */}
+      {!loading && ['혈압·혈당', '약국봉투', '병원진료'].includes(cat) && records.length > 0 && (
+        <AiAnalysisBanner cat={cat} onAnalyze={openAiAnalysis} />
+      )}
+
       {/* 건수 */}
       {!loading && records.length > 0 && (
         <div style={{ padding: '0 20px 8px', fontSize: 12.5, color: T.inkSoft, fontWeight: 600 }}>총 {records.length}건</div>
@@ -443,6 +558,11 @@ export default function History({ onNav }) {
         {modal?._type === 'checkup'  && <CheckupDetail  r={modal} isLatest={modal.id === latestCheckupId} onNav={onNav} onClose={closeModal} />}
         {modal?._type === 'pharmacy' && <PharmacyDetail r={modal} onClose={closeModal} />}
         {modal?._type === 'hospital' && <HospitalDetail r={modal} onClose={closeModal} />}
+      </BottomSheet>
+
+      {/* AI 분석 결과 모달 */}
+      <BottomSheet open={!!aiModal} onClose={() => !aiModal?.loading && setAiModal(null)}>
+        {!!aiModal && <AiResultContent modal={aiModal} onClose={() => setAiModal(null)} />}
       </BottomSheet>
     </div>
   );

@@ -34,6 +34,20 @@ public class AiController {
         return ApiResponse.success(aiReportService.getReport(userId, checkupId));
     }
 
+    @PostMapping("/analyze/daily")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @NonNull ApiResponse<CategoryAiResponse> analyzeDaily(
+            @AuthenticationPrincipal @NonNull Long userId) {
+        return ApiResponse.success(aiReportService.analyzeVitals(userId), "혈압·혈당 AI 분석이 완료되었습니다.");
+    }
+
+    @PostMapping("/analyze/medical")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @NonNull ApiResponse<CategoryAiResponse> analyzeMedical(
+            @AuthenticationPrincipal @NonNull Long userId) {
+        return ApiResponse.success(aiReportService.analyzeMedical(userId), "진료·처방 AI 분석이 완료되었습니다.");
+    }
+
     @Getter
     static class AnalyzeRequest {
         @NotNull(message = "검진 ID를 입력해주세요.")

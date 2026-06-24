@@ -36,6 +36,7 @@ public enum ErrorCode {
     // AI
     AI_REPORT_NOT_FOUND("AI 리포트를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     AI_API_ERROR("AI 분석 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    NO_RECORDS("분석할 기록이 없습니다.", HttpStatus.BAD_REQUEST),
 
     // Payment
     PAYMENT_AMOUNT_MISMATCH("결제 금액이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),

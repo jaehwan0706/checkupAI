@@ -4,6 +4,12 @@ import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
 import com.checkupai.domain.checkup.HealthCheckup;
 import com.checkupai.domain.checkup.HealthCheckupRepository;
+import com.checkupai.domain.daily.DailyRecord;
+import com.checkupai.domain.daily.DailyRecordRepository;
+import com.checkupai.domain.medical.MedicalRecord;
+import com.checkupai.domain.medical.MedicalRecordRepository;
+import com.checkupai.domain.vitals.Vitals;
+import com.checkupai.domain.vitals.VitalsRepository;
 import com.checkupai.domain.report.AiReport;
 import com.checkupai.domain.report.AiReportRepository;
 import com.checkupai.domain.user.User;
@@ -16,6 +22,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,6 +33,9 @@ public class AiReportService {
     private final HealthCheckupRepository checkupRepository;
     private final AiReportRepository aiReportRepository;
     private final UserRepository userRepository;
+    private final DailyRecordRepository dailyRecordRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final VitalsRepository vitalsRepository;
     private final ClaudeApiService claudeApiService;
     private final ObjectMapper objectMapper;
 
@@ -36,10 +48,18 @@ public class AiReportService {
         return aiReportRepository.findByCheckupIdAndUserId(checkupId, userId)
                 .map(this::toResponse)
                 .orElseGet(() -> {
-                    String reportContent = claudeApiService.analyze(checkup);
-
                     User user = userRepository.findById(userId)
                             .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+                    List<DailyRecord> dailyRecords = dailyRecordRepository
+                            .findByUserIdAndRecordDateBetweenOrderByRecordDateDesc(
+                                    userId, LocalDate.now().minusDays(6), LocalDate.now());
+
+                    List<MedicalRecord> allMedical = medicalRecordRepository.findAllByUserId(userId);
+                    List<MedicalRecord> medicalRecords = allMedical.size() > 5
+                            ? allMedical.subList(0, 5) : allMedical;
+
+                    String reportContent = claudeApiService.analyze(checkup, user, dailyRecords, medicalRecords);
 
                     AiReport saved = aiReportRepository.save(
                             AiReport.builder()
@@ -58,6 +78,24 @@ public class AiReportService {
         AiReport report = aiReportRepository.findByCheckupIdAndUserId(checkupId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.AI_REPORT_NOT_FOUND));
         return toResponse(report);
+    }
+
+    @Transactional(readOnly = true)
+    public @NonNull CategoryAiResponse analyzeVitals(@NonNull Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Vitals> vitals = vitalsRepository.findAllByUserId(userId);
+        if (vitals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
+        return claudeApiService.analyzeVitals(user, vitals);
+    }
+
+    @Transactional(readOnly = true)
+    public @NonNull CategoryAiResponse analyzeMedical(@NonNull Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<MedicalRecord> medicals = medicalRecordRepository.findAllByUserId(userId);
+        if (medicals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
+        return claudeApiService.analyzeMedical(user, medicals);
     }
 
     private @NonNull AiReportResponse toResponse(@NonNull AiReport report) {

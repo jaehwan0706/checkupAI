@@ -151,7 +151,7 @@ export default function App() {
         const u = res.data.data || {};
         // API 응답의 name으로 덮어쓰기
         const stored = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
-        localStorage.setItem('user', JSON.stringify({ ...stored, name: u.name || '카카오 사용자' }));
+        localStorage.setItem('user', JSON.stringify({ ...stored, name: u.name || '카카오 사용자', kakaoEmail: u.kakaoEmail || null }));
         if (!u.gender || !u.birthDate) {
           setScreen('extra-info');
         } else {

@@ -25,7 +25,9 @@ export default function Mypage({ onNav, onLogout, toast, consent }) {
           <div style={{ width: 54, height: 54, borderRadius: 999, background: 'linear-gradient(135deg,#00B894,#4CAF82)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 21, fontWeight: 800, flexShrink: 0 }}>{initial}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>{user.name || '사용자'}</div>
-            <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email || ''}</div>
+            <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {'kakaoEmail' in user ? (user.kakaoEmail || '이메일 미제공') : (user.email || '')}
+            </div>
           </div>
           <button onClick={() => onNav('profile')} style={{ width: 36, height: 36, borderRadius: 10, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <Icon name="edit" size={18} color={T.inkMid} stroke={1.9} />

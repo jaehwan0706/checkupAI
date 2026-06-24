@@ -22,7 +22,7 @@ export default function ProfileEdit({ onNav, toast }) {
 
   useEffect(() => {
     api.get('/api/user/me').then(res => {
-      const u = res.data;
+      const u = res.data.data || {};
       setF(s => ({
         name:   u.name   || s.name,
         email:  u.email  || s.email,
@@ -34,9 +34,9 @@ export default function ProfileEdit({ onNav, toast }) {
 
   const save = async () => {
     try {
-      const birthDate = f.birth.replace(/\./g, '-'); // "YYYY.MM.DD" → "YYYY-MM-DD"
+      const birthDate = f.birth ? f.birth.replace(/\./g, '-') : null;
       const payload = { name: f.name, email: f.email, birthDate, gender: f.gender };
-      await api.put('/api/user/profile', payload);
+      await api.put('/api/user/me', payload);
       const updated = { ...saved, ...payload };
       localStorage.setItem('user', JSON.stringify(updated));
       toast && toast('프로필이 저장되었어요', 'check');

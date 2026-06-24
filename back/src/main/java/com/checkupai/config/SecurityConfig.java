@@ -78,7 +78,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
             "http://localhost:3001",
             "https://checkup-ai.vercel.app",
-            "https://checkup-4pn3aub1v-jh-bok-s-projects.vercel.app"
+            "https://checkup-4pn3aub1v-jh-bok-s-projects.vercel.app",
+            "https://checkupai.kro.kr"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

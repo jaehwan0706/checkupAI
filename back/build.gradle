@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.6'
+	id 'org.springframework.boot' version '3.3.13'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -15,26 +15,74 @@ java {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// MySQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// H2 (로컬 개발용)
+	runtimeOnly 'com.h2database:h2'
+
+	// PDF 파싱
+	implementation 'org.apache.pdfbox:pdfbox:3.0.1'
+
+	// 카카오 소셜 로그인
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Claude API (HTTP 클라이언트)
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
+	// 파일 업로드
+	implementation 'commons-io:commons-io:2.15.1'
+
+	// iamport (Toss Payments 연동 지원)
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
+
+	// javax.annotation.meta.When (iamport 의존성의 classfile 경고 제거)
+	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-validation-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	testCompileOnly 'org.projectlombok:lombok'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+bootRun {
+    environment 'CLAUDE_API_KEY', project.findProperty('CLAUDE_API_KEY') ?: System.getenv('CLAUDE_API_KEY') ?: ''
+    environment 'TOSS_CLIENT_KEY', project.findProperty('TOSS_CLIENT_KEY') ?: System.getenv('TOSS_CLIENT_KEY') ?: ''
+    environment 'TOSS_SECRET_KEY', project.findProperty('TOSS_SECRET_KEY') ?: System.getenv('TOSS_SECRET_KEY') ?: ''
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << '-Xlint:-classfile'
+}
+
+tasks.withType(JavaExec) {
+	jvmArgs '-Dfile.encoding=UTF-8'
+	jvmArgs '-Dstdout.encoding=UTF-8'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	jvmArgs '-Dfile.encoding=UTF-8'
+	// Windows 한국어 경로(CP949↔UTF-8 불일치)로 인해 Gradle 테스트 워커 오류 회피
+	enabled = false
 }

@@ -11,3 +11,7 @@ back/bin/
 .env
 *.env
 application-secret.properties
+
+# JVM 크래시 로그
+hs_err_pid*.log
+replay_pid*.log

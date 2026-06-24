@@ -217,15 +217,19 @@ export default function Home({ onNav, toast }) {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
+  const [hasUnread, setHasUnread] = useState(false);
 
   useEffect(() => {
     Promise.all([
       api.get('/api/home'),
       api.get('/api/checkup').catch(() => null),
-    ]).then(([homeRes, historyRes]) => {
+      api.get('/api/notifications').catch(() => null),
+    ]).then(([homeRes, historyRes, notifRes]) => {
       setHomeData(homeRes.data.data);
       const raw = historyRes?.data?.data || [];
       setHistory([...raw].sort((a, b) => new Date(b.checkupDate) - new Date(a.checkupDate)));
+      const notifs = notifRes?.data?.data || [];
+      setHasUnread(notifs.some(n => !n.read));
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
@@ -282,8 +286,9 @@ export default function Home({ onNav, toast }) {
             {hasWarn ? '⚠️ ' : ''}{statusMsg}
           </div>
         </div>
-        <button onClick={() => toast && toast('준비 중인 기능입니다', 'bell')} style={{ width: 42, height: 42, borderRadius: 13, background: '#fff', border: '1px solid ' + T.line, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', marginTop: 4 }}>
+        <button onClick={() => onNav('notif-list')} style={{ width: 42, height: 42, borderRadius: 13, background: '#fff', border: '1px solid ' + T.line, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', position: 'relative', marginTop: 4 }}>
           <Icon name="bell" size={21} color={T.inkMid} stroke={1.9} />
+          {hasUnread && <span style={{ position: 'absolute', top: 9, right: 10, width: 7, height: 7, borderRadius: 999, background: T.danger, border: '1.5px solid #fff' }} />}
         </button>
       </div>
 

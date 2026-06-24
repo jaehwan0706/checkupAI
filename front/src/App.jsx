@@ -17,10 +17,11 @@ import NotificationSettings from './pages/NotificationSettings';
 import ConsentManagement from './pages/ConsentManagement';
 import ProfileEdit from './pages/ProfileEdit';
 import ExtraInfo from './pages/ExtraInfo';
+import NotificationList from './pages/NotificationList';
 import TermsDocument from './pages/TermsDocument';
 import PremiumReport from './pages/PremiumReport';
 
-const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'trends', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile', 'premium', 'premiumReport'];
+const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'trends', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile', 'premium', 'premiumReport', 'notif-list'];
 const ONB_KEY = 'kac_onboarded_v1';
 
 function parseJwt(token) {
@@ -251,7 +252,8 @@ export default function App() {
       case 'privacy':    return <TermsDocument kind="privacy" onNav={goWrapped} />;
       case 'terms':      return <TermsDocument kind="terms" onNav={goWrapped} />;
       case 'profile':    return <ProfileEdit onNav={goWrapped} toast={toast} />;
-      case 'extra-info': return <ExtraInfo onDone={() => go('home')} toast={toast} />;
+      case 'extra-info':  return <ExtraInfo onDone={() => go('home')} toast={toast} />;
+      case 'notif-list':  return <NotificationList onNav={go} onUnreadChange={() => {}} />;
       default:           return <Home onNav={goWrapped} />;
     }
   };

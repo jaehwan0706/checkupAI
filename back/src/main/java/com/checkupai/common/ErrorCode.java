@@ -24,6 +24,9 @@ public enum ErrorCode {
     // Daily
     DAILY_NOT_FOUND("해당 날짜의 일상 기록을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // Notification
+    NOTIFICATION_NOT_FOUND("알림을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // PDF
     PDF_EMPTY("파일이 비어있습니다.", HttpStatus.BAD_REQUEST),
     PDF_INVALID_TYPE("PDF 파일만 업로드 가능합니다.", HttpStatus.BAD_REQUEST),

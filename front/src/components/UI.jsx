@@ -291,14 +291,14 @@ export function Toast({ toast: t }) {
 /* ── BottomNav ── */
 export function BottomNav({ active, onNav, onMore }) {
   const tabs = [
-    { id: 'home',   label: '홈',     icon: 'home' },
-    { id: 'input',  label: '입력',   icon: 'plus' },
-    { id: 'report', label: '리포트', icon: 'report' },
-    { id: 'daily',  label: '건강',   icon: 'pulse' },
-    { id: 'more',   label: '더보기', icon: 'more' },
+    { id: 'home',    label: '홈',    icon: 'home' },
+    { id: 'input',   label: '입력',  icon: 'plus' },
+    { id: 'report',  label: '리포트',icon: 'report' },
+    { id: 'daily',   label: '건강',  icon: 'pulse' },
+    { id: 'history', label: '기록',  icon: 'doc' },
   ];
-  const moreScreens = ['premium', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile'];
-  const activeTab = moreScreens.includes(active) ? 'more' : (active === 'trends' ? 'daily' : active);
+  const historyScreens = ['history', 'premium', 'my', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile'];
+  const activeTab = historyScreens.includes(active) ? 'history' : (active === 'trends' ? 'daily' : active);
   return (
     <div style={{
       flexShrink: 0, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
@@ -307,7 +307,7 @@ export function BottomNav({ active, onNav, onMore }) {
       {tabs.map(t => {
         const on = activeTab === t.id;
         return (
-          <button key={t.id} onClick={() => t.id === 'more' ? (onMore && onMore()) : (onNav && onNav(t.id))} style={{
+          <button key={t.id} onClick={() => onNav && onNav(t.id)} style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1, padding: '4px 0', color: on ? T.blue : T.inkSoft,
           }}>
             <Icon name={t.icon} size={24} color={on ? T.blue : '#A6B1C2'} stroke={on ? 2.2 : 1.9} />

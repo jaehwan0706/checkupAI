@@ -263,7 +263,7 @@ export default function Home({ onNav }) {
     };
   });
   const warnCount = metrics.filter(m => m.status !== '정상').length;
-  const name = user.name || '사용자';
+  const name = (user.name || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim() || '사용자';
   const hasWarn = warnCount > 0 && score !== null;
   const statusMsg = (loading || score === null)
     ? '오늘도 건강한 하루 보내세요'

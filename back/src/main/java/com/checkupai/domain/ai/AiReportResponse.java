@@ -14,30 +14,23 @@ import java.util.List;
 public class AiReportResponse {
 
     private Long reportId;
+    private Integer healthScore;
     private String summary;
-    private List<DetailItem> details;
-    private Lifestyle lifestyle;
+    private List<RiskItem> riskItems;
+    private List<String> immediateActions;
+    private List<String> monthlyGoals;
+    private String nextCheckupRecommendation;
     private Boolean isPaid;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DetailItem {
-        private String item;
+    public static class RiskItem {
+        private String name;
         private String value;
         private String status;
-        private String explanation;
-        private String advice;
-    }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Lifestyle {
-        private String food;
-        private String exercise;
-        private String sleep;
+        private String reason;
+        private String action;
     }
 }

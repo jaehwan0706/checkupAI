@@ -10,7 +10,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class AiAnalysisResult {
+    private Integer healthScore;
     private String summary;
-    private List<AiReportResponse.DetailItem> details;
-    private AiReportResponse.Lifestyle lifestyle;
+    private List<AiReportResponse.RiskItem> riskItems;
+    private List<String> immediateActions;
+    private List<String> monthlyGoals;
+    private String nextCheckupRecommendation;
 }

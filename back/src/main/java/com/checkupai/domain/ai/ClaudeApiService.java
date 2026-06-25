@@ -150,21 +150,20 @@ public class ClaudeApiService {
                 %s
                 위 데이터를 종합 분석하여 아래 JSON 형식으로만 응답해주세요 (다른 텍스트 없이 JSON만):
                 {
-                  "summary": "전체 건강 상태 요약 (성별·나이·생활패턴 반영, 2-3문장)",
-                  "details": [
+                  "healthScore": 75,
+                  "summary": "전체 건강 상태 총평 (성별·나이·생활패턴 반영, 2-3문장)",
+                  "riskItems": [
                     {
-                      "item": "항목명",
+                      "name": "항목명",
                       "value": "수치",
-                      "status": "NORMAL 또는 WARNING 또는 DANGER",
-                      "explanation": "이 수치가 무엇인지 쉬운 설명 (2-3문장)",
-                      "advice": "개선 방법 또는 유지 방법 (1-2문장)"
+                      "status": "위험 또는 주의 또는 정상",
+                      "reason": "왜 이 수치가 위험/주의/정상인지 (1-2문장)",
+                      "action": "지금 당장 해야 할 행동 (1문장)"
                     }
                   ],
-                  "lifestyle": {
-                    "food": "식습관 개선 가이드 (3-4문장)",
-                    "exercise": "운동 가이드 (생활 기록 반영, 2-3문장)",
-                    "sleep": "수면 가이드 (생활 기록 반영, 1-2문장)"
-                  }
+                  "immediateActions": ["지금 실천할 것 1", "지금 실천할 것 2", "지금 실천할 것 3"],
+                  "monthlyGoals": ["이번 달 목표 1", "이번 달 목표 2", "이번 달 목표 3"],
+                  "nextCheckupRecommendation": "다음 검진 권고사항 (언제, 어떤 검사를 받아야 하는지)"
                 }
                 """,
                 genderStr, ageStr,
@@ -206,12 +205,15 @@ public class ClaudeApiService {
     }
 
     /* ── 카테고리 분석: 약국/병원 ── */
-    public CategoryAiResponse analyzeMedical(User user, List<MedicalRecord> medicals) {
+    public CategoryAiResponse analyzeMedical(User user, List<MedicalRecord> medicals, String type) {
         if (apiKey == null || apiKey.isBlank()) {
-            return mockMedicalResponse();
+            return "PHARMACY".equals(type) ? mockPharmacyResponse() : mockHospitalResponse();
         }
         try {
-            return parseCategoryResponse(callClaude(buildMedicalPrompt(user, medicals)));
+            String prompt = "PHARMACY".equals(type)
+                    ? buildPharmacyPrompt(user, medicals)
+                    : buildHospitalPrompt(user, medicals);
+            return parseCategoryResponse(callClaude(prompt));
         } catch (CustomException e) {
             throw e;
         } catch (Exception e) {
@@ -294,26 +296,12 @@ public class ClaudeApiService {
                 %s
                 위 데이터를 분석하여 아래 JSON 형식으로만 응답해주세요 (다른 텍스트 없이 JSON만):
                 {
-                  "summary": "전반적 트렌드 요약 및 위험도 평가 (2-3문장)",
-                  "details": [
-                    {
-                      "title": "혈압 분석",
-                      "content": "혈압 변화 추세, 위험도 평가, 주의사항 (3-4문장)"
-                    },
-                    {
-                      "title": "혈당 분석",
-                      "content": "혈당 변화 추세, 위험도 평가, 주의사항 (3-4문장)"
-                    }
-                  ],
-                  "lifestyleGuides": [
-                    "구체적 행동 지침 1 (예: 식후 30분 걷기)",
-                    "구체적 행동 지침 2",
-                    "구체적 행동 지침 3",
-                    "구체적 행동 지침 4",
-                    "구체적 행동 지침 5"
-                  ],
-                  "advice": "종합적인 혈압·혈당 관리 생활습관 가이드 (2-3문장)",
-                  "nextCheckup": "다음 검진 권고사항 (언제, 어떤 검사를 받아야 하는지 1-2문장)"
+                  "summary": "혈압·혈당 트렌드 종합 요약 (2-3문장)",
+                  "trend": "상승 또는 하강 또는 안정",
+                  "riskLevel": "위험 또는 주의 또는 정상",
+                  "reason": "이 트렌드의 주요 원인 (1-2문장)",
+                  "immediateActions": ["지금 실천할 것 1", "지금 실천할 것 2", "지금 실천할 것 3"],
+                  "monthlyGoals": ["이번 달 목표 1", "이번 달 목표 2", "이번 달 목표 3"]
                 }
                 """,
                 genderStr, ageStr,
@@ -322,7 +310,7 @@ public class ClaudeApiService {
         );
     }
 
-    private String buildMedicalPrompt(User user, List<MedicalRecord> medicals) {
+    private String buildPharmacyPrompt(User user, List<MedicalRecord> medicals) {
         String genderStr = user.getGender() != null ?
                 (user.getGender() == Gender.MALE ? "남성" : "여성") : "정보 없음";
         String ageStr = user.getBirthDate() != null ?
@@ -330,9 +318,8 @@ public class ClaudeApiService {
 
         StringBuilder sb = new StringBuilder();
         for (MedicalRecord m : medicals) {
-            String typeKr = m.getType() == MedicalRecordType.PHARMACY ? "약국" : "병원";
             String desc = m.getDescription() != null ? " - " + m.getDescription() : "";
-            sb.append(String.format("  - [%s] %s: %s%s%n", typeKr, m.getRecordedDate(), m.getTitle(), desc));
+            sb.append(String.format("  - %s: %s%s%n", m.getRecordedDate(), m.getTitle(), desc));
         }
 
         return String.format("""
@@ -340,24 +327,54 @@ public class ClaudeApiService {
                 - 성별: %s
                 - 나이: %s
 
-                [약국/병원 기록 - 총 %d건]
+                [약국 처방 기록 - 총 %d건]
                 %s
                 위 데이터를 분석하여 아래 JSON 형식으로만 응답해주세요 (다른 텍스트 없이 JSON만):
                 {
-                  "summary": "전체 진료·처방 현황 요약 (2-3문장)",
-                  "details": [
+                  "summary": "처방약 전체 요약 (1-2문장)",
+                  "medications": [
                     {
-                      "title": "기록 제목을 그대로 사용",
-                      "content": "약국이면 약 성분·주의사항·복용 관리법, 병원이면 진단 분석·관리 방법 (3-4문장)"
+                      "name": "약 이름",
+                      "purpose": "복용 목적 (1문장)",
+                      "caution": "주의사항 (1문장)"
                     }
                   ],
-                  "lifestyleGuides": [
-                    "구체적 행동 지침 1",
-                    "구체적 행동 지침 2",
-                    "구체적 행동 지침 3"
-                  ],
-                  "advice": "전체 기록 기반 종합 건강 관리 가이드 (2-3문장)",
-                  "nextCheckup": "다음 진료·검진 권고사항 (언제, 어디서 받아야 하는지 1-2문장)"
+                  "interactions": "약물 상호작용 또는 주의할 병용 금지사항 (1-2문장, 없으면 '특별한 상호작용 없음')",
+                  "immediateActions": ["복용 지침 1", "복용 지침 2", "복용 지침 3"]
+                }
+                """,
+                genderStr, ageStr,
+                medicals.size(),
+                sb.toString()
+        );
+    }
+
+    private String buildHospitalPrompt(User user, List<MedicalRecord> medicals) {
+        String genderStr = user.getGender() != null ?
+                (user.getGender() == Gender.MALE ? "남성" : "여성") : "정보 없음";
+        String ageStr = user.getBirthDate() != null ?
+                Period.between(user.getBirthDate(), LocalDate.now()).getYears() + "세" : "정보 없음";
+
+        StringBuilder sb = new StringBuilder();
+        for (MedicalRecord m : medicals) {
+            String desc = m.getDescription() != null ? " - " + m.getDescription() : "";
+            sb.append(String.format("  - %s: %s%s%n", m.getRecordedDate(), m.getTitle(), desc));
+        }
+
+        return String.format("""
+                [사용자 기본 정보]
+                - 성별: %s
+                - 나이: %s
+
+                [병원 진료 기록 - 총 %d건]
+                %s
+                위 데이터를 분석하여 아래 JSON 형식으로만 응답해주세요 (다른 텍스트 없이 JSON만):
+                {
+                  "summary": "진료 전체 요약 (1-2문장)",
+                  "diagnosis": "진단명 또는 주요 건강 이슈",
+                  "reason": "원인 설명 (1-2문장)",
+                  "immediateActions": ["관리 방법 1", "관리 방법 2", "관리 방법 3"],
+                  "monthlyGoals": ["이번 달 건강 목표 1", "이번 달 건강 목표 2", "이번 달 건강 목표 3"]
                 }
                 """,
                 genderStr, ageStr,
@@ -368,39 +385,54 @@ public class ClaudeApiService {
 
     private CategoryAiResponse mockVitalsResponse() {
         return CategoryAiResponse.builder()
-                .summary("[Mock] 측정 기록을 분석한 결과, 혈압이 주의 범위에 있으며 혈당은 정상 범위를 유지하고 있습니다. 지속적인 모니터링과 생활습관 개선이 필요합니다.")
-                .details(List.of(
-                        new CategoryAiResponse.DetailItem("혈압 분석",
-                                "수축기 혈압이 120-140mmHg 범위에서 변동하고 있어 주의 단계에 해당합니다. 저염식 식단(하루 나트륨 2g 이하)과 규칙적인 유산소 운동이 도움이 됩니다. 스트레스와 수면 부족이 혈압을 높일 수 있으므로 관리가 필요합니다."),
-                        new CategoryAiResponse.DetailItem("혈당 분석",
-                                "혈당 수치가 대체로 정상 범위(70-99 mg/dL)를 유지하고 있습니다. 현재 상태를 유지하기 위해 식후 가벼운 산책(10-15분)을 권장합니다. 정제된 탄수화물과 당류 섭취를 줄이는 것이 중요합니다.")
+                .summary("[Mock] 혈압이 주의 범위에 있으며 혈당은 정상 범위를 유지하고 있습니다. 지속적인 모니터링과 생활습관 개선이 필요합니다.")
+                .trend("상승")
+                .riskLevel("주의")
+                .reason("나트륨 섭취 증가 및 운동 부족으로 혈압이 서서히 상승하는 경향이 있습니다.")
+                .immediateActions(List.of(
+                        "나트륨 섭취를 하루 2g 이하로 줄이세요",
+                        "식후 30분 가벼운 산책을 실천하세요",
+                        "매일 같은 시간에 혈압을 측정하는 습관을 만드세요"
                 ))
-                .lifestyleGuides(List.of(
-                        "매일 같은 시간에 혈압과 혈당을 측정하는 습관을 만드세요",
-                        "나트륨 섭취를 하루 2g 이하로 줄이고 저염식 식단을 실천하세요",
-                        "식후 30분 가벼운 산책(10-15분)을 꾸준히 실천하세요",
-                        "정제된 탄수화물(흰쌀·빵·과자)보다 잡곡과 채소 위주 식단으로 바꾸세요",
-                        "하루 7-8시간 충분한 수면을 취하고 스트레스 관리를 하세요"
+                .monthlyGoals(List.of(
+                        "주 3회 이상 유산소 운동(30분) 실천",
+                        "가공식품·라면 등 고염분 식품 섭취 주 2회 이하로 줄이기",
+                        "수면 시간 7시간 이상 확보하기"
                 ))
-                .advice("매일 같은 시간에 혈압과 혈당을 측정하는 습관을 들이세요. 충분한 수면(7-8시간), 스트레스 관리, 금연이 두 수치 모두 개선에 효과적입니다.")
-                .nextCheckup("6개월 후 혈압·혈당 정밀 검사를 권장합니다. 수치가 지속적으로 개선되지 않는다면 내과 전문의 상담을 받아보세요.")
                 .build();
     }
 
-    private CategoryAiResponse mockMedicalResponse() {
+    private CategoryAiResponse mockPharmacyResponse() {
         return CategoryAiResponse.builder()
-                .summary("[Mock] 약국 처방 및 병원 진료 기록이 확인되었습니다. 처방약의 꾸준한 복용과 정기적인 추적 관찰이 중요합니다.")
-                .details(List.of(
-                        new CategoryAiResponse.DetailItem("처방 기록 분석",
-                                "처방된 약물은 정해진 시간에 꾸준히 복용하는 것이 중요합니다. 임의로 복용을 중단하면 증상이 악화될 수 있습니다. 부작용(두통, 어지럼증 등)이 나타나면 즉시 처방 의사와 상담하세요. 다른 약물과의 상호작용에도 주의가 필요합니다.")
+                .summary("[Mock] 처방약을 확인했습니다. 정해진 시간에 꾸준히 복용하고 주의사항을 지켜주세요.")
+                .medications(List.of(
+                        new CategoryAiResponse.MedicationItem("암로디핀 5mg", "고혈압 치료 — 칼슘 채널 차단제로 혈압을 낮춥니다.", "어지럼증이 나타날 수 있으니 기립 시 천천히 일어나세요."),
+                        new CategoryAiResponse.MedicationItem("로수바스타틴 10mg", "고지혈증 치료 — LDL 콜레스테롤을 낮춥니다.", "근육통 발생 시 즉시 의사에게 알리세요.")
                 ))
-                .lifestyleGuides(List.of(
-                        "처방약은 반드시 정해진 시간에 복용하세요",
-                        "임의로 복용을 중단하지 마세요",
-                        "부작용 발생 시 즉시 처방 의사와 상담하세요"
+                .interactions("두 약물을 함께 복용해도 큰 상호작용은 없으나, 자몽 주스는 암로디핀 흡수를 높이므로 피하세요.")
+                .immediateActions(List.of(
+                        "매일 같은 시간(식후)에 복용하세요",
+                        "임의로 중단하지 말고 처방 기간을 지켜주세요",
+                        "부작용(어지럼증, 근육통)이 심하면 즉시 처방 의사와 상담하세요"
                 ))
-                .advice("정기적인 병원 방문과 처방약 복용을 지속하세요. 생활습관 개선(저염식, 규칙적 운동, 금연)과 병행하면 치료 효과가 높아집니다.")
-                .nextCheckup("다음 예약된 진료일에 증상 변화를 의사에게 보고하세요. 증상이 악화되거나 새로운 증상이 생기면 즉시 병원을 방문하세요.")
+                .build();
+    }
+
+    private CategoryAiResponse mockHospitalResponse() {
+        return CategoryAiResponse.builder()
+                .summary("[Mock] 고혈압 전단계로 진단받았습니다. 약물 치료와 함께 생활습관 개선이 필요합니다.")
+                .diagnosis("고혈압 전단계 (수축기 130-139 mmHg)")
+                .reason("지속적인 염분 과다 섭취와 운동 부족, 스트레스로 인해 혈압이 서서히 상승했습니다.")
+                .immediateActions(List.of(
+                        "처방받은 혈압약을 매일 규칙적으로 복용하세요",
+                        "저염식 식단(하루 나트륨 2g 이하)을 실천하세요",
+                        "1주일에 한 번 혈압을 측정하고 기록하세요"
+                ))
+                .monthlyGoals(List.of(
+                        "주 3회 이상 30분 유산소 운동 실천",
+                        "체중 1kg 감량 목표 설정",
+                        "다음 달 외래 진료 예약 확인"
+                ))
                 .build();
     }
 
@@ -430,42 +462,49 @@ public class ClaudeApiService {
     private String mockResponse(HealthCheckup c) {
         return """
                 {
-                  "summary": "[Mock] 전반적으로 양호한 건강 상태입니다. 혈압과 혈당이 정상 범위에 있으며, 콜레스테롤 수치는 약간 관리가 필요합니다. 규칙적인 생활습관을 유지하면 건강을 잘 지킬 수 있습니다.",
-                  "details": [
+                  "healthScore": 72,
+                  "summary": "[Mock] 전반적으로 관리가 필요한 건강 상태입니다. 혈당과 콜레스테롤이 주의 범위에 있으며 지금부터 꾸준한 생활습관 개선이 중요합니다.",
+                  "riskItems": [
                     {
-                      "item": "혈압",
+                      "name": "혈압",
                       "value": "%s/%s mmHg",
-                      "status": "NORMAL",
-                      "explanation": "혈압은 심장이 혈액을 내보낼 때의 압력입니다. 수축기 120mmHg, 이완기 80mmHg는 이상적인 정상 수치입니다.",
-                      "advice": "현재 혈압을 잘 유지하고 있습니다. 저염식 식단과 규칙적인 운동을 지속하세요."
+                      "status": "정상",
+                      "reason": "혈압이 정상 범위를 유지하고 있습니다.",
+                      "action": "저염식 식단과 규칙적인 운동으로 현재 상태를 유지하세요."
                     },
                     {
-                      "item": "공복혈당",
+                      "name": "공복혈당",
                       "value": "%s mg/dL",
-                      "status": "WARNING",
-                      "explanation": "공복혈당은 8시간 이상 금식 후 측정한 혈중 포도당 수치입니다. 100~125 mg/dL는 공복혈당 장애 범위로 당뇨 전단계입니다.",
-                      "advice": "단순당(과자, 음료수) 섭취를 줄이고 식후 30분 가벼운 산책을 추천합니다."
+                      "status": "주의",
+                      "reason": "100~125 mg/dL는 당뇨 전단계 범위로 관리가 필요합니다.",
+                      "action": "단순당 섭취를 줄이고 식후 30분 산책을 시작하세요."
                     },
                     {
-                      "item": "총콜레스테롤",
+                      "name": "총콜레스테롤",
                       "value": "%s mg/dL",
-                      "status": "WARNING",
-                      "explanation": "콜레스테롤은 세포막을 구성하는 지방 성분입니다. 200 mg/dL 이상은 경계성 높음으로 관리가 필요합니다.",
-                      "advice": "포화지방이 많은 육류·튀김 섭취를 줄이고 등 푸른 생선과 채소를 늘리세요."
+                      "status": "주의",
+                      "reason": "200 mg/dL 이상은 경계성 높음으로 심혈관 위험이 서서히 높아집니다.",
+                      "action": "포화지방(육류·튀김)을 줄이고 등 푸른 생선을 주 2회 이상 드세요."
                     },
                     {
-                      "item": "BMI",
+                      "name": "BMI",
                       "value": "%s",
-                      "status": "NORMAL",
-                      "explanation": "BMI는 체중(kg)을 키(m)의 제곱으로 나눈 값으로 비만도를 측정합니다. 18.5~24.9는 정상 범위입니다.",
-                      "advice": "현재 정상 체중을 잘 유지하고 있습니다. 꾸준한 운동으로 유지하세요."
+                      "status": "정상",
+                      "reason": "BMI 18.5~24.9는 정상 범위입니다.",
+                      "action": "꾸준한 운동으로 현재 체중을 유지하세요."
                     }
                   ],
-                  "lifestyle": {
-                    "food": "혈당과 콜레스테롤 관리를 위해 정제된 탄수화물(흰쌀, 빵)보다는 잡곡밥을 선택하세요. 채소와 단백질 위주의 균형 잡힌 식단을 유지하고, 가공식품과 음료수의 당분 섭취를 줄이는 것이 중요합니다. 하루 세 끼를 규칙적으로 먹고 과식을 피하세요.",
-                    "exercise": "주 3~4회 30분 이상의 유산소 운동(빠르게 걷기, 자전거, 수영)을 권장합니다. 근력 운동을 병행하면 기초대사량을 높여 혈당과 콜레스테롤 관리에 도움이 됩니다.",
-                    "sleep": "규칙적인 수면 시간을 지키고 하루 7~8시간 수면을 취하세요. 수면 부족은 혈당 조절 능력을 저하시킵니다."
-                  }
+                  "immediateActions": [
+                    "매일 식후 30분 가벼운 산책을 시작하세요",
+                    "음료수·과자·흰빵 등 단순당 섭취를 줄이세요",
+                    "나트륨 섭취를 하루 2g 이하로 줄이세요"
+                  ],
+                  "monthlyGoals": [
+                    "주 3회 이상 30분 유산소 운동 실천",
+                    "잡곡밥으로 교체하고 채소 반찬 늘리기",
+                    "콜레스테롤 재검사 예약하기"
+                  ],
+                  "nextCheckupRecommendation": "6개월 후 혈당·콜레스테롤 정밀 검사를 권장합니다. 수치가 개선되지 않으면 내과 전문의 상담을 받으세요."
                 }
                 """.formatted(
                 fmt(c.getSystolicBp()), fmt(c.getDiastolicBp()),

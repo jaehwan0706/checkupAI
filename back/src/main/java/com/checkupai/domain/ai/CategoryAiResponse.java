@@ -14,17 +14,30 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryAiResponse {
     private String summary;
-    private List<DetailItem> details;
-    private List<String> lifestyleGuides;
-    private String advice;
-    private String nextCheckup;
+
+    // Vitals
+    private String trend;
+    private String riskLevel;
+    private String reason;
+
+    // Pharmacy
+    private List<MedicationItem> medications;
+    private String interactions;
+
+    // Hospital
+    private String diagnosis;
+
+    // Common
+    private List<String> immediateActions;
+    private List<String> monthlyGoals;
 
     @Getter
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DetailItem {
-        private String title;
-        private String content;
+    public static class MedicationItem {
+        private String name;
+        private String purpose;
+        private String caution;
     }
 }

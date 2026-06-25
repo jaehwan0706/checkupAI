@@ -234,47 +234,203 @@ function AiLoadingState() {
   );
 }
 
-function AiResultDisplay({ data, onRetry }) {
+/* ─ 공통 번호 목록 ─ */
+function NumberedList({ items, bg, color }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {items.map((item, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <div style={{ width: 20, height: 20, borderRadius: 999, background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+            <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
+          </div>
+          <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{item}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─ 건강검진 AI 결과 ─ */
+function CheckupAiDisplay({ data, onRetry }) {
+  const scoreColor = data?.healthScore >= 80 ? T.ok : data?.healthScore >= 60 ? T.warn : T.danger;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {data?.healthScore != null && (
+        <div style={{ padding: '18px 16px', borderRadius: 14, background: `${scoreColor}15`, textAlign: 'center', border: `1.5px solid ${scoreColor}33` }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: scoreColor, marginBottom: 6 }}>AI 건강 점수</div>
+          <div style={{ fontSize: 52, fontWeight: 900, color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{data.healthScore}</div>
+          <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 4 }}>/ 100</div>
+        </div>
+      )}
+      <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>AI 총평</div>
+        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+      </div>
+      {(data?.riskItems || []).map((item, i) => {
+        const sc = item.status === '위험' ? T.danger : item.status === '주의' ? T.warn : T.ok;
+        const ss = item.status === '위험' ? T.dangerSoft : item.status === '주의' ? T.warnSoft : T.greenSoft;
+        return (
+          <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: `1.5px solid ${sc}33` }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+              <div style={{ padding: '2px 8px', borderRadius: 999, background: ss, fontSize: 11, fontWeight: 800, color: sc }}>{item.status}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{item.name}</div>
+              <div style={{ marginLeft: 'auto', fontSize: 13, fontWeight: 700, color: sc }}>{item.value}</div>
+            </div>
+            <div style={{ fontSize: 12.5, color: T.inkMid, lineHeight: 1.65, marginBottom: item.action ? 8 : 0 }}>{item.reason}</div>
+            {item.action && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 10px', borderRadius: 10, background: ss }}>
+                <Icon name="spark" size={13} color={sc} stroke={2} />
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: sc }}>{item.action}</span>
+              </div>
+            )}
+          </div>
+        );
+      })}
+      {data?.immediateActions?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
+          <NumberedList items={data.immediateActions} color={T.warn} />
+        </div>
+      )}
+      {data?.monthlyGoals?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <NumberedList items={data.monthlyGoals} color={T.ok} />
+        </div>
+      )}
+      {data?.nextCheckupRecommendation && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>다음 검진 권고</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.nextCheckupRecommendation}</div>
+        </div>
+      )}
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+        <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
+      </button>
+    </div>
+  );
+}
+
+/* ─ 혈압·혈당 AI 결과 ─ */
+function VitalsAiDisplay({ data, onRetry }) {
+  const tColor = data?.trend === '상승' ? T.danger : data?.trend === '하강' ? T.ok : T.blue;
+  const rColor = data?.riskLevel === '위험' ? T.danger : data?.riskLevel === '주의' ? T.warn : T.ok;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>종합 요약</div>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>종합 요약</div>
         <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
       </div>
-      {(data?.details || []).map((d, i) => (
+      {(data?.trend || data?.riskLevel) && (
+        <div style={{ display: 'flex', gap: 8 }}>
+          {data.trend && (
+            <div style={{ flex: 1, padding: '12px 14px', borderRadius: 14, background: `${tColor}15`, textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>트렌드</div>
+              <div style={{ fontSize: 17, fontWeight: 800, color: tColor }}>{data.trend}</div>
+            </div>
+          )}
+          {data.riskLevel && (
+            <div style={{ flex: 1, padding: '12px 14px', borderRadius: 14, background: `${rColor}15`, textAlign: 'center' }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>위험도</div>
+              <div style={{ fontSize: 17, fontWeight: 800, color: rColor }}>{data.riskLevel}</div>
+            </div>
+          )}
+        </div>
+      )}
+      {data?.reason && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 분석</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
+        </div>
+      )}
+      {data?.immediateActions?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
+          <NumberedList items={data.immediateActions} color={T.warn} />
+        </div>
+      )}
+      {data?.monthlyGoals?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <NumberedList items={data.monthlyGoals} color={T.ok} />
+        </div>
+      )}
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+        <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
+      </button>
+    </div>
+  );
+}
+
+/* ─ 약국봉투 AI 결과 ─ */
+function PharmacyAiDisplay({ data, onRetry }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>처방약 요약</div>
+        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+      </div>
+      {(data?.medications || []).map((med, i) => (
         <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <div style={{ width: 6, height: 6, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
-            <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>{d.title}</div>
+            <div style={{ width: 28, height: 28, borderRadius: 8, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Icon name="flask" size={14} color={T.blue} stroke={2} />
+            </div>
+            <div style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{med.name}</div>
           </div>
-          <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
+          {med.purpose && <div style={{ fontSize: 12.5, color: T.inkMid, marginBottom: 5, lineHeight: 1.6 }}>📌 {med.purpose}</div>}
+          {med.caution && <div style={{ fontSize: 12.5, color: T.warn, fontWeight: 600, lineHeight: 1.6 }}>⚠️ {med.caution}</div>}
         </div>
       ))}
-      {data?.lifestyleGuides?.length > 0 && (
-        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10, letterSpacing: '0.04em' }}>생활습관 개선 가이드</div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {data.lifestyleGuides.map((guide, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <div style={{ width: 20, height: 20, borderRadius: 999, background: T.ok, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                  <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
-                </div>
-                <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{guide}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      {data?.advice && (
+      {data?.interactions && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.advice}</div>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8 }}>약물 상호작용 주의</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.interactions}</div>
         </div>
       )}
-      {data?.nextCheckup && (
-        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>다음 검진 권고사항</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.nextCheckup}</div>
+      {data?.immediateActions?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>복용 지침</div>
+          <NumberedList items={data.immediateActions} color={T.ok} />
+        </div>
+      )}
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+        <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
+      </button>
+    </div>
+  );
+}
+
+/* ─ 병원진료 AI 결과 ─ */
+function HospitalAiDisplay({ data, onRetry }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>진료 요약</div>
+        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+      </div>
+      {data?.diagnosis && (
+        <div style={{ padding: '12px 14px', borderRadius: 14, background: T.dangerSoft, border: `1px solid ${T.danger}33` }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.danger, marginBottom: 4 }}>진단</div>
+          <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>{data.diagnosis}</div>
+        </div>
+      )}
+      {data?.reason && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 설명</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
+        </div>
+      )}
+      {data?.immediateActions?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>관리 방법</div>
+          <NumberedList items={data.immediateActions} color={T.warn} />
+        </div>
+      )}
+      {data?.monthlyGoals?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <NumberedList items={data.monthlyGoals} color={T.ok} />
         </div>
       )}
       <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
@@ -328,7 +484,7 @@ function VitalsTab({ vitals, aiState, onAnalyze }) {
           <button onClick={() => onAnalyze('daily')} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
         </div>
       )}
-      {!aiState?.loading && aiState?.data && <AiResultDisplay data={aiState.data} onRetry={() => onAnalyze('daily')} />}
+      {!aiState?.loading && aiState?.data && <VitalsAiDisplay data={aiState.data} onRetry={() => onAnalyze('daily')} />}
     </div>
   );
 }
@@ -342,6 +498,7 @@ function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle,
   }
   const recent = records.slice(0, 5);
   const idle = !aiState?.loading && !aiState?.data && !aiState?.error;
+  const Display = type === 'pharmacy' ? PharmacyAiDisplay : HospitalAiDisplay;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <Card pad={16}>
@@ -371,7 +528,7 @@ function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle,
           <button onClick={() => onAnalyze(type)} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
         </div>
       )}
-      {!aiState?.loading && aiState?.data && <AiResultDisplay data={aiState.data} onRetry={() => onAnalyze(type)} />}
+      {!aiState?.loading && aiState?.data && <Display data={aiState.data} onRetry={() => onAnalyze(type)} />}
     </div>
   );
 }
@@ -385,10 +542,11 @@ export default function Report({ onPremium, toast }) {
   const [tab, setTab]     = useState('건강검진');
   const [checkupItems, setCheckupItems] = useState([]);
   const [checkupDate, setCheckupDate]   = useState('');
+  const [checkupId, setCheckupId]       = useState(null);
   const [vitals, setVitals]   = useState([]);
   const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [aiState, setAiState] = useState({ daily: null, pharmacy: null, hospital: null });
+  const [aiState, setAiState] = useState({ checkup: null, daily: null, pharmacy: null, hospital: null });
   const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
@@ -400,7 +558,7 @@ export default function Report({ onPremium, toast }) {
       api.get('/api/user/me').catch(() => null),
     ]).then(([checkupRes, vitalsRes, medicalRes, userRes]) => {
       const d = checkupRes?.data?.data;
-      if (d) { setCheckupDate(d.checkupDate || ''); setCheckupItems(toMetrics(d)); }
+      if (d) { setCheckupDate(d.checkupDate || ''); setCheckupItems(toMetrics(d)); setCheckupId(d.id || null); }
       setVitals(vitalsRes?.data?.data || []);
       setMedicals(medicalRes?.data?.data || []);
       const expiry = userRes?.data?.data?.annualPassExpiry;
@@ -412,12 +570,17 @@ export default function Report({ onPremium, toast }) {
   const hospitalRecords = medicals.filter(m => m.type === 'HOSPITAL');
 
   const runAiAnalysis = async (type) => {
-    const endpoint = type === 'daily' ? '/api/ai/analyze/daily'
-      : type === 'pharmacy' ? '/api/ai/analyze/medical?type=PHARMACY'
-      : '/api/ai/analyze/medical?type=HOSPITAL';
     setAiState(prev => ({ ...prev, [type]: { loading: true } }));
     try {
-      const res = await api.post(endpoint);
+      let res;
+      if (type === 'checkup') {
+        res = await api.post('/api/ai/analyze', { checkupId });
+      } else {
+        const endpoint = type === 'daily' ? '/api/ai/analyze/daily'
+          : type === 'pharmacy' ? '/api/ai/analyze/medical?type=PHARMACY'
+          : '/api/ai/analyze/medical?type=HOSPITAL';
+        res = await api.post(endpoint);
+      }
       setAiState(prev => ({ ...prev, [type]: { loading: false, data: res.data.data } }));
     } catch (err) {
       const msg = err?.response?.data?.message || 'AI 분석 중 오류가 발생했습니다';
@@ -497,6 +660,23 @@ export default function Report({ onPremium, toast }) {
               <div style={{ padding: '12px 20px 0' }}>
                 <AiSummaryCard items={checkupItems} />
               </div>
+              {checkupId && (
+                <div style={{ padding: '12px 20px 0' }}>
+                  {!aiState.checkup?.loading && !aiState.checkup?.data && !aiState.checkup?.error && (
+                    <AiAnalyzeBtn onPress={() => runAiAnalysis('checkup')} label="AI 심층 분석받기" sub="건강 점수 · 위험항목 분석 · 맞춤 실천 목표" />
+                  )}
+                  {aiState.checkup?.loading && <AiLoadingState />}
+                  {!aiState.checkup?.loading && aiState.checkup?.error && (
+                    <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+                      {aiState.checkup.error}
+                      <button onClick={() => runAiAnalysis('checkup')} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+                    </div>
+                  )}
+                  {!aiState.checkup?.loading && aiState.checkup?.data && (
+                    <CheckupAiDisplay data={aiState.checkup.data} onRetry={() => runAiAnalysis('checkup')} />
+                  )}
+                </div>
+              )}
               {lockedItems.length > 0 && (
                 <>
                   <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>

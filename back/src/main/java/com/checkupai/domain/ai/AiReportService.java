@@ -102,18 +102,20 @@ public class AiReportService {
                      .collect(Collectors.toList())
                 : all;
         if (medicals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
-        return claudeApiService.analyzeMedical(user, medicals);
+        return claudeApiService.analyzeMedical(user, medicals, type);
     }
 
     private @NonNull AiReportResponse toResponse(@NonNull AiReport report) {
         try {
             AiAnalysisResult result = objectMapper.readValue(report.getReportContent(), AiAnalysisResult.class);
-            boolean paid = Boolean.TRUE.equals(report.getIsPaid());
             return AiReportResponse.builder()
                     .reportId(report.getId())
+                    .healthScore(result.getHealthScore())
                     .summary(result.getSummary())
-                    .details(paid ? result.getDetails() : null)
-                    .lifestyle(paid ? result.getLifestyle() : null)
+                    .riskItems(result.getRiskItems())
+                    .immediateActions(result.getImmediateActions())
+                    .monthlyGoals(result.getMonthlyGoals())
+                    .nextCheckupRecommendation(result.getNextCheckupRecommendation())
                     .isPaid(report.getIsPaid())
                     .build();
         } catch (JsonProcessingException e) {

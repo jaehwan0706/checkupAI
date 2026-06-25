@@ -170,7 +170,7 @@ export default function App() {
       window.history.replaceState({}, '', '/');
 
       const isSingle = orderId.startsWith('ORDER-SINGLE-');
-      const endpoint = isSingle ? '/api/payment/confirm' : '/api/payment/annual';
+      const endpoint = isSingle ? '/api/payment/confirm' : '/api/payment/monthly';
       const checkupId = isSingle ? parseInt(orderId.split('-')[2]) : undefined;
       const body = isSingle
         ? { paymentKey, orderId, amount, checkupId }
@@ -178,7 +178,7 @@ export default function App() {
 
       import('./api').then(({ default: api }) => {
         api.post(endpoint, body)
-          .then(() => { if (!isSingle) localStorage.setItem('isPremium', '1'); toast(isSingle ? '결제가 완료됐어요! 🎉' : '연간 패스가 활성화되었습니다!', 'check'); go('report'); })
+          .then(() => { if (!isSingle) localStorage.setItem('isPremium', '1'); toast(isSingle ? '결제가 완료됐어요! 🎉' : '월간 패스가 활성화되었습니다!', 'check'); go('report'); })
           .catch(err => { toast(err?.response?.data?.message || '결제 확인에 실패했어요', 'bolt'); go('home'); });
       });
       return;

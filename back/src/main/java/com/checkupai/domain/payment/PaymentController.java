@@ -29,12 +29,12 @@ public class PaymentController {
         return ApiResponse.success(paymentService.confirmSingle(userId, request), "결제가 완료되었습니다.");
     }
 
-    @PostMapping("/annual")
+    @PostMapping("/monthly")
     @ResponseStatus(HttpStatus.CREATED)
-    public @NonNull ApiResponse<PaymentResponse> confirmAnnual(
+    public @NonNull ApiResponse<PaymentResponse> confirmMonthly(
             @AuthenticationPrincipal @NonNull Long userId,
             @Valid @RequestBody @NonNull AnnualPaymentRequest request) {
-        return ApiResponse.success(paymentService.confirmAnnual(userId, request), "연간 패스가 활성화되었습니다.");
+        return ApiResponse.success(paymentService.confirmMonthly(userId, request), "월간 패스가 활성화되었습니다.");
     }
 
     @GetMapping("/history")

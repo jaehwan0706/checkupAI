@@ -26,7 +26,7 @@ import java.util.List;
 public class PaymentService {
 
     private static final int SINGLE_PRICE = 1900;
-    private static final int ANNUAL_PRICE = 9900;
+    private static final int MONTHLY_PRICE = 9900;
 
     private final TossPaymentClient tossPaymentClient;
     private final PaymentRepository paymentRepository;
@@ -77,8 +77,8 @@ public class PaymentService {
                 .build();
     }
 
-    public @NonNull PaymentResponse confirmAnnual(@NonNull Long userId, @NonNull AnnualPaymentRequest req) {
-        if (!req.getAmount().equals(ANNUAL_PRICE)) {
+    public @NonNull PaymentResponse confirmMonthly(@NonNull Long userId, @NonNull AnnualPaymentRequest req) {
+        if (!req.getAmount().equals(MONTHLY_PRICE)) {
             throw new CustomException(ErrorCode.PAYMENT_AMOUNT_MISMATCH);
         }
 
@@ -91,14 +91,14 @@ public class PaymentService {
                 .user(user)
                 .paymentKey(req.getPaymentKey())
                 .orderId(req.getOrderId())
-                .paymentType(PaymentType.ANNUAL)
+                .paymentType(PaymentType.MONTHLY)
                 .amount(req.getAmount())
                 .status(PaymentStatus.COMPLETED)
                 .checkup(null)
                 .paidAt(LocalDateTime.now())
                 .build());
 
-        LocalDateTime expiry = LocalDateTime.now().plusYears(1);
+        LocalDateTime expiry = LocalDateTime.now().plusMonths(1);
         user.grantAnnualPass(expiry);
 
         return PaymentResponse.builder()
@@ -146,7 +146,7 @@ public class PaymentService {
                     .ifPresent(AiReport::lock);
         }
 
-        if (payment.getPaymentType() == PaymentType.ANNUAL) {
+        if (payment.getPaymentType() == PaymentType.MONTHLY) {
             userRepository.findById(userId).ifPresent(User::revokeAnnualPass);
         }
 

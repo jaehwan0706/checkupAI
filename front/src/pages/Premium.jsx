@@ -33,7 +33,7 @@ export function PremiumLockModal({ open, onClose, onUpgrade }) {
           <Icon name="lock" size={26} color="#fff" stroke={2.1} />
         </div>
         <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: T.ink }}>프리미엄 기능이에요</h3>
-        <p style={{ margin: '10px 0 20px', fontSize: 13.5, color: T.inkMid, lineHeight: 1.6 }}>이 기능은 연간 패스에서 이용할 수 있어요. 지금 시작하고 모든 기능을 누려보세요.</p>
+        <p style={{ margin: '10px 0 20px', fontSize: 13.5, color: T.inkMid, lineHeight: 1.6 }}>이 기능은 월간 패스에서 이용할 수 있어요. 지금 시작하고 모든 기능을 누려보세요.</p>
       </div>
       <Button variant="gold" onClick={onUpgrade} icon="crown">플랜 보기</Button>
       <button onClick={onClose} style={{ width: '100%', height: 48, marginTop: 6, fontSize: 14, fontWeight: 700, color: T.inkSoft }}>닫기</button>
@@ -42,7 +42,7 @@ export function PremiumLockModal({ open, onClose, onUpgrade }) {
 }
 
 export default function Premium({ onClose, toast, onNav }) {
-  const [paying, setPaying] = useState(null); // null | 'single' | 'annual'
+  const [paying, setPaying] = useState(null); // null | 'single' | 'monthly'
   const isPremium = localStorage.getItem('isPremium') === '1';
 
   const startPayment = async (type) => {
@@ -72,11 +72,11 @@ export default function Premium({ onClose, toast, onNav }) {
           failUrl: origin + '/payment-fail',
         });
       } else {
-        const orderId = `ORDER-ANNUAL-${Date.now()}`;
+        const orderId = `ORDER-MONTHLY-${Date.now()}`;
         await toss.requestPayment('카드', {
           amount: 9900,
           orderId,
-          orderName: '건강검진AI 연간 패스',
+          orderName: '건강검진AI 월간 패스',
           customerName,
           successUrl: origin + '/payment-success',
           failUrl: origin + '/payment-fail',
@@ -93,9 +93,9 @@ export default function Premium({ onClose, toast, onNav }) {
     <button
       onClick={() => startPayment(type)}
       disabled={paying !== null}
-      style={{ width: '100%', height: type === 'annual' ? 50 : 48, borderRadius: type === 'annual' ? 14 : 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: type === 'annual' ? 15.5 : 15, fontWeight: 800, opacity: paying ? 0.75 : 1, ...style }}
+      style={{ width: '100%', height: type === 'monthly' ? 50 : 48, borderRadius: type === 'monthly' ? 14 : 13, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: type === 'monthly' ? 15.5 : 15, fontWeight: 800, opacity: paying ? 0.75 : 1, ...style }}
     >
-      {paying === type ? <Spinner size={20} color={type === 'annual' ? '#3A2A06' : '#fff'} stroke={2.5} /> : children}
+      {paying === type ? <Spinner size={20} color={type === 'monthly' ? '#3A2A06' : '#fff'} stroke={2.5} /> : children}
     </button>
   );
 
@@ -128,10 +128,9 @@ export default function Premium({ onClose, toast, onNav }) {
         <div style={{ position: 'relative', borderRadius: 18, padding: 18, background: 'linear-gradient(160deg,#1E4D8C 0%,#163A6B 100%)', boxShadow: '0 16px 36px rgba(30,77,140,0.34)', border: '1.5px solid #F0B445' }}>
           <div style={{ position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)', background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', fontSize: 11, fontWeight: 800, padding: '4px 14px', borderRadius: 999, boxShadow: '0 6px 14px rgba(224,152,42,0.4)', whiteSpace: 'nowrap' }}>👑 가장 인기</div>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 4 }}>
-            <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>연간 패스</span>
-            <span style={{ fontSize: 13.5, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}><b style={{ fontSize: 19, color: '#fff' }}>9,900원</b> / 년</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>월간 패스</span>
+            <span style={{ fontSize: 13.5, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }}><b style={{ fontSize: 19, color: '#fff' }}>9,900원</b> / 월</span>
           </div>
-          <div style={{ fontSize: 11.5, fontWeight: 700, color: '#9DE0BE', marginTop: 4 }}>월 825원 · 건당보다 79% 저렴</div>
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.16)', paddingTop: 10, marginTop: 12, marginBottom: 14 }}>
             <PlanFeature light>무제한 AI 해석</PlanFeature>
             <PlanFeature light>연도별 트렌드 분석</PlanFeature>
@@ -145,7 +144,7 @@ export default function Premium({ onClose, toast, onNav }) {
                 <Icon name="crown" size={16} color="#3A2A06" stroke={2.1} />
                 프리미엄 이용 중
               </button>
-            : <BuyBtn type="annual" style={{ background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>연간 패스 시작하기</BuyBtn>
+            : <BuyBtn type="monthly" style={{ background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>월간 패스 시작하기</BuyBtn>
           }
         </div>
       </div>
@@ -153,7 +152,7 @@ export default function Premium({ onClose, toast, onNav }) {
       <div style={{ padding: '16px 24px 24px', textAlign: 'center', marginTop: 'auto' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginBottom: 12 }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: T.inkSoft, fontWeight: 600 }}>
-            <Icon name="check" size={13} color={T.green} stroke={2.6} /> 구독 아님 · 연간 1회 결제
+            <Icon name="check" size={13} color={T.green} stroke={2.6} /> 구독 아님 · 매월 결제
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, color: T.inkSoft, fontWeight: 600 }}>
             <Icon name="shield" size={13} color={T.green} stroke={2} /> 7일 이내 환불 가능

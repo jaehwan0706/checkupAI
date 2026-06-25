@@ -11,9 +11,7 @@ export default function Mypage({ onNav, onLogout, toast, consent }) {
     api.get('/api/user/me').then(res => {
       const expiry = res?.data?.data?.annualPassExpiry;
       if (expiry && new Date(expiry) > new Date()) {
-        const d = new Date(expiry);
-        const fmt = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-        setSubscriptionDetail(`프리미엄 이용 중 (~${fmt})`);
+        setSubscriptionDetail('프리미엄 이용 중');
       }
     }).catch(() => {});
   }, []);

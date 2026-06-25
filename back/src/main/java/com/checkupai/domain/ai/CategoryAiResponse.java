@@ -15,7 +15,9 @@ import java.util.List;
 public class CategoryAiResponse {
     private String summary;
     private List<DetailItem> details;
+    private List<String> lifestyleGuides;
     private String advice;
+    private String nextCheckup;
 
     @Getter
     @Setter

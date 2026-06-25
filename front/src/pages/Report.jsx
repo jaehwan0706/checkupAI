@@ -250,10 +250,31 @@ function AiResultDisplay({ data, onRetry }) {
           <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
         </div>
       ))}
+      {data?.lifestyleGuides?.length > 0 && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10, letterSpacing: '0.04em' }}>생활습관 개선 가이드</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {data.lifestyleGuides.map((guide, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <div style={{ width: 20, height: 20, borderRadius: 999, background: T.ok, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
+                </div>
+                <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{guide}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {data?.advice && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
           <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
           <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.advice}</div>
+        </div>
+      )}
+      {data?.nextCheckup && (
+        <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>다음 검진 권고사항</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.nextCheckup}</div>
         </div>
       )}
       <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>

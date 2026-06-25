@@ -205,7 +205,7 @@ function TipCard({ tip }) {
 
 
 
-function GuideBody({ metrics, onPremium }) {
+function GuideBody({ metrics, onPremium, isPremium }) {
   const tips    = getPersonalizedTips(metrics);
   const hasData = metrics && metrics.length > 0;
 
@@ -226,32 +226,38 @@ function GuideBody({ metrics, onPremium }) {
         </div>
       </div>
 
-      {/* 맞춤 가이드 카드 — 첫 1개 무료, 나머지 잠금 */}
+      {/* 맞춤 가이드 카드 */}
       {hasData ? (
         <div style={{ padding: '12px 20px 28px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {/* 무료 카드 */}
-          <TipCard tip={tips[0]} />
+          {isPremium ? (
+            tips.map((tip, i) => <TipCard key={i} tip={tip} />)
+          ) : (
+            <>
+              {/* 무료 카드 */}
+              <TipCard tip={tips[0]} />
 
-          {/* 잠긴 카드 2개 */}
-          <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', cursor: 'pointer' }} onClick={onPremium}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' }}>
-              {tips.slice(1).map((tip, i) => <TipCard key={i} tip={tip} />)}
-            </div>
-            <div style={{ position: 'absolute', inset: 0, background: 'rgba(247,249,252,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ width: 42, height: 42, borderRadius: 999, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 16px rgba(26,43,69,0.18)' }}>
-                <Icon name="lock" size={20} color={T.warn} stroke={2} />
+              {/* 잠긴 카드 2개 */}
+              <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', cursor: 'pointer' }} onClick={onPremium}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' }}>
+                  {tips.slice(1).map((tip, i) => <TipCard key={i} tip={tip} />)}
+                </div>
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(247,249,252,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: 42, height: 42, borderRadius: 999, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 16px rgba(26,43,69,0.18)' }}>
+                    <Icon name="lock" size={20} color={T.warn} stroke={2} />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* 프리미엄 CTA */}
-          <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 8px 20px rgba(0,184,148,0.25)' }}>
-            <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
-            </div>
-            <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 맞춤 가이드 전체 보기</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>1,900원</span>
-          </button>
+              {/* 프리미엄 CTA */}
+              <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 8px 20px rgba(0,184,148,0.25)' }}>
+                <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
+                </div>
+                <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 맞춤 가이드 전체 보기</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>1,900원</span>
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div style={{ padding: '12px 20px 28px' }}>
@@ -280,7 +286,7 @@ const METRIC_CONFIG = {
                 status: v => v > 80 ? 'DANGER' : v > 40 ? 'WARNING' : 'NORMAL' },
 };
 
-function CheckupTrends({ history, vitalsHistory, onPremium, onNav }) {
+function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) {
   const [tab, setTab] = useState('혈압');
 
   const cfg = METRIC_CONFIG[tab];
@@ -428,36 +434,51 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav }) {
         </Card>
       </div>
 
-      {/* 연도별 트렌드 분석 — 블러 잠금 */}
+      {/* 연도별 트렌드 분석 */}
       <div style={{ padding: '12px 20px 28px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', cursor: 'pointer' }} onClick={onPremium}>
-          <div style={{ filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' }}>
-            <div style={{ display: 'flex', gap: 12, padding: 14, borderRadius: 14, background: T.greenSoft, border: '1px solid #00B89433' }}>
-              <div style={{ width: 34, height: 34, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Icon name="trend" size={18} color="#00B894" stroke={2.1} />
-              </div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: T.inkMid }}>
-                  최근 3년간 {tab} 수치 변화와 AI가 분석한 건강 트렌드를 확인할 수 있어요.
-                </p>
-              </div>
+        {isPremium ? (
+          <div style={{ display: 'flex', gap: 12, padding: 14, borderRadius: 14, background: T.greenSoft, border: '1px solid #00B89433' }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Icon name="trend" size={18} color="#00B894" stroke={2.1} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
+              <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: T.inkMid }}>
+                최근 3년간 {tab} 수치 변화와 AI가 분석한 건강 트렌드를 확인할 수 있어요.
+              </p>
             </div>
           </div>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(247,249,252,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 42, height: 42, borderRadius: 999, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 16px rgba(26,43,69,0.18)' }}>
-              <Icon name="lock" size={20} color={T.warn} stroke={2} />
+        ) : (
+          <>
+            <div style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', cursor: 'pointer' }} onClick={onPremium}>
+              <div style={{ filter: 'blur(4px)', pointerEvents: 'none', userSelect: 'none' }}>
+                <div style={{ display: 'flex', gap: 12, padding: 14, borderRadius: 14, background: T.greenSoft, border: '1px solid #00B89433' }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 10, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon name="trend" size={18} color="#00B894" stroke={2.1} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
+                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: T.inkMid }}>
+                      최근 3년간 {tab} 수치 변화와 AI가 분석한 건강 트렌드를 확인할 수 있어요.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(247,249,252,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: 42, height: 42, borderRadius: 999, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 16px rgba(26,43,69,0.18)' }}>
+                  <Icon name="lock" size={20} color={T.warn} stroke={2} />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 8px 20px rgba(0,184,148,0.25)' }}>
-          <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
-          </div>
-          <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 트렌드 분석 보기</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>· 1,900원</span>
-        </button>
+            <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 8px 20px rgba(0,184,148,0.25)' }}>
+              <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
+              </div>
+              <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 트렌드 분석 보기</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>· 1,900원</span>
+            </button>
+          </>
+        )}
       </div>
     </>
   );
@@ -511,10 +532,31 @@ function AiDailyModal({ modal, onClose }) {
               <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
             </div>
           ))}
+          {modal?.data?.lifestyleGuides?.length > 0 && (
+            <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
+              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10, letterSpacing: '0.04em' }}>생활습관 개선 가이드</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {modal.data.lifestyleGuides.map((guide, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                    <div style={{ width: 20, height: 20, borderRadius: 999, background: T.ok, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
+                    </div>
+                    <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{guide}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {modal?.data?.advice && (
             <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
               <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
               <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
+            </div>
+          )}
+          {modal?.data?.nextCheckup && (
+            <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
+              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>다음 검진 권고사항</div>
+              <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.nextCheckup}</div>
             </div>
           )}
         </div>
@@ -534,6 +576,7 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
   const [history, setHistory]         = useState(null);
   const [vitalsHistory, setVitalsHistory] = useState([]);
   const [aiModal, setAiModal]         = useState(null);
+  const [isPremium, setIsPremium]     = useState(false);
 
   const openAiAnalysis = async () => {
     setAiModal({ loading: true });
@@ -555,12 +598,15 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
       api.get('/api/goals').catch(() => null),
       api.get('/api/checkup').catch(() => null),
       api.get('/api/vitals').catch(() => null),
-    ]).then(([homeRes, checkupRes, goalsRes, historyRes, vitalsRes]) => {
+      api.get('/api/user/me').catch(() => null),
+    ]).then(([homeRes, checkupRes, goalsRes, historyRes, vitalsRes, userRes]) => {
       setHomeData(homeRes?.data?.data || null);
       setCheckupDate(checkupRes?.data?.data?.checkupDate || null);
       setGoals(goalsRes?.data?.data || []);
       setHistory(historyRes?.data?.data || []);
       setVitalsHistory(vitalsRes?.data?.data || []);
+      const expiry = userRes?.data?.data?.annualPassExpiry;
+      if (expiry && new Date(expiry) > new Date()) setIsPremium(true);
     });
   }, []);
 
@@ -617,8 +663,8 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
       )}
 
       {mode === '맞춤 가이드'
-        ? <GuideBody metrics={metrics} onPremium={() => onNav?.('premium')} />
-        : <CheckupTrends history={history} vitalsHistory={vitalsHistory} onPremium={() => onNav?.('premium')} onNav={onNav} />
+        ? <GuideBody metrics={metrics} onPremium={() => onNav?.('premium')} isPremium={isPremium} />
+        : <CheckupTrends history={history} vitalsHistory={vitalsHistory} onPremium={() => onNav?.('premium')} onNav={onNav} isPremium={isPremium} />
       }
 
       {/* AI 분석 결과 모달 */}

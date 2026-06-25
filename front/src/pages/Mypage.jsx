@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { T, Icon, Card } from '../components/UI';
+import api from '../api';
 
 export default function Mypage({ onNav, onLogout, toast, consent }) {
   const user = (() => { try { return JSON.parse(localStorage.getItem('user')) || {}; } catch { return {}; } })();
   const initial = (user.name || '사용자').charAt(0);
+  const [subscriptionDetail, setSubscriptionDetail] = useState('무료');
+
+  useEffect(() => {
+    api.get('/api/user/me').then(res => {
+      const expiry = res?.data?.data?.annualPassExpiry;
+      if (expiry && new Date(expiry) > new Date()) {
+        const d = new Date(expiry);
+        const fmt = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+        setSubscriptionDetail(`프리미엄 이용 중 (~${fmt})`);
+      }
+    }).catch(() => {});
+  }, []);
 
   const menu = [
     { icon: 'star',    label: '건강 목표 설정',   detail: null,                   to: 'goals'         },
     { icon: 'bell',    label: '알림 설정',        detail: null,                   to: 'notifications' },
     { icon: 'shield',  label: '데이터 동의 관리', detail: consent ? '동의함' : '미동의', to: 'consent' },
-    { icon: 'crown',   label: '구독 관리',        detail: '무료',                 to: 'premium'       },
+    { icon: 'crown',   label: '구독 관리',        detail: subscriptionDetail,     to: 'premium'       },
     { icon: 'doc',     label: '개인정보 처리방침', detail: null,                  to: 'privacy'       },
     { icon: 'doc',     label: '이용약관',         detail: null,                   to: 'terms'         },
   ];

@@ -368,6 +368,7 @@ export default function Report({ onPremium, toast }) {
   const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [aiState, setAiState] = useState({ daily: null, pharmacy: null, hospital: null });
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem('lastCheckupId');
@@ -375,11 +376,14 @@ export default function Report({ onPremium, toast }) {
       api.get(id ? `/api/checkup/${id}` : '/api/checkup/latest').catch(() => null),
       api.get('/api/vitals/history').catch(() => null),
       api.get('/api/medical-records/history').catch(() => null),
-    ]).then(([checkupRes, vitalsRes, medicalRes]) => {
+      api.get('/api/user/me').catch(() => null),
+    ]).then(([checkupRes, vitalsRes, medicalRes, userRes]) => {
       const d = checkupRes?.data?.data;
       if (d) { setCheckupDate(d.checkupDate || ''); setCheckupItems(toMetrics(d)); }
       setVitals(vitalsRes?.data?.data || []);
       setMedicals(medicalRes?.data?.data || []);
+      const expiry = userRes?.data?.data?.annualPassExpiry;
+      if (expiry && new Date(expiry) > new Date()) setIsPremium(true);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -402,15 +406,15 @@ export default function Report({ onPremium, toast }) {
 
   const warnCount   = checkupItems.filter(m => m.status === '주의' || m.status === '위험').length;
   const displayDate = checkupDate ? new Date(checkupDate).toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-  const freeItems   = checkupItems.slice(0, 2);
-  const lockedItems = checkupItems.slice(2);
+  const freeItems   = isPremium ? checkupItems : checkupItems.slice(0, 2);
+  const lockedItems = isPremium ? [] : checkupItems.slice(2);
 
   return (
     <div data-screen-label="AI 리포트" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
 
       {/* ─ 헤더 ─ */}
       <div style={{ padding: '56px 20px 10px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: T.greenSoft, color: T.ok, padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 800, marginBottom: 10 }}>무료 플랜</div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: isPremium ? '#FFF3D6' : T.greenSoft, color: isPremium ? '#A0620A' : T.ok, padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 800, marginBottom: 10 }}>{isPremium ? '프리미엄' : '무료 플랜'}</div>
         <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>내 건강 리포트</h1>
       </div>
 
@@ -463,7 +467,7 @@ export default function Report({ onPremium, toast }) {
               <div style={{ padding: '0 20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '0 2px 10px' }}>
                   <span style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>수치 요약</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>
+                  {!isPremium && <span style={{ fontSize: 11, fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>}
                 </div>
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   {freeItems.map((m, i) => <SummaryRow key={m.id} m={m} last={i === freeItems.length - 1} />)}

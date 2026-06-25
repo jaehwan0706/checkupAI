@@ -43,6 +43,7 @@ export function PremiumLockModal({ open, onClose, onUpgrade }) {
 
 export default function Premium({ onClose, toast, onNav }) {
   const [paying, setPaying] = useState(null); // null | 'single' | 'annual'
+  const isPremium = localStorage.getItem('isPremium') === '1';
 
   const startPayment = async (type) => {
     if (paying) return;
@@ -139,7 +140,13 @@ export default function Premium({ onClose, toast, onNav }) {
             <PlanFeature light>가족 계정 1개 추가</PlanFeature>
           </div>
           <div style={{ textAlign: 'center', marginBottom: 8, fontSize: 12, fontWeight: 600, color: 'rgba(255,255,255,0.85)' }}>이번 달 2,847명이 선택했어요 ⭐ 4.9</div>
-          <BuyBtn type="annual" style={{ background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>연간 패스 시작하기</BuyBtn>
+          {isPremium
+            ? <button disabled style={{ width: '100%', height: 50, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 15.5, fontWeight: 800, background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)', opacity: 0.85 }}>
+                <Icon name="crown" size={16} color="#3A2A06" stroke={2.1} />
+                프리미엄 이용 중
+              </button>
+            : <BuyBtn type="annual" style={{ background: 'linear-gradient(180deg,#F0B445,#E0982A)', color: '#3A2A06', boxShadow: '0 8px 18px rgba(224,152,42,0.36)' }}>연간 패스 시작하기</BuyBtn>
+          }
         </div>
       </div>
 

@@ -251,7 +251,7 @@ function NumberedList({ items, bg, color }) {
 }
 
 /* ─ 건강검진 AI 결과 ─ */
-function CheckupAiDisplay({ data, onRetry }) {
+function CheckupAiDisplay({ data }) {
   const scoreColor = data?.healthScore >= 80 ? T.ok : data?.healthScore >= 60 ? T.warn : T.danger;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -304,9 +304,6 @@ function CheckupAiDisplay({ data, onRetry }) {
           <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data.nextCheckupRecommendation}</div>
         </div>
       )}
-      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft }}>
-        <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
-      </button>
     </div>
   );
 }
@@ -679,21 +676,9 @@ export default function Report({ onPremium, toast }) {
               <div style={{ padding: '12px 20px 0' }}>
                 <AiSummaryCard items={checkupItems} />
               </div>
-              {checkupId && (
+              {aiState.checkup?.data && (
                 <div style={{ padding: '12px 20px 0' }}>
-                  {!aiState.checkup?.loading && !aiState.checkup?.data && !aiState.checkup?.error && (
-                    <AiAnalyzeBtn onPress={() => runAiAnalysis('checkup')} label="AI 심층 분석받기" sub="건강 점수 · 위험항목 분석 · 맞춤 실천 목표" />
-                  )}
-                  {aiState.checkup?.loading && <AiLoadingState />}
-                  {!aiState.checkup?.loading && aiState.checkup?.error && (
-                    <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: '0.8438rem', color: T.danger, fontWeight: 600, textAlign: 'center' }}>
-                      {aiState.checkup.error}
-                      <button onClick={() => runAiAnalysis('checkup')} style={{ display: 'block', margin: '10px auto 0', fontSize: '0.8125rem', fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
-                    </div>
-                  )}
-                  {!aiState.checkup?.loading && aiState.checkup?.data && (
-                    <CheckupAiDisplay data={aiState.checkup.data} onRetry={() => runAiAnalysis('checkup')} />
-                  )}
+                  <CheckupAiDisplay data={aiState.checkup.data} />
                 </div>
               )}
               {lockedItems.length > 0 && (

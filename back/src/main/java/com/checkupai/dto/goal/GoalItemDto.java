@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoalItemDto {
+    private Long dbId;      // DB 기본 키 — 체크인 API 호출 시 사용
     private String id;
     private String icon;
     private String title;
@@ -23,12 +24,12 @@ public class GoalItemDto {
     private Integer targetValue;
 
     public static GoalItemDto from(UserGoal g) {
-        return new GoalItemDto(g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
+        return new GoalItemDto(g.getId(), g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
                 g.getPct(), g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
     }
 
     public static GoalItemDto from(UserGoal g, int computedPct) {
-        return new GoalItemDto(g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
+        return new GoalItemDto(g.getId(), g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
                 computedPct, g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
     }
 }

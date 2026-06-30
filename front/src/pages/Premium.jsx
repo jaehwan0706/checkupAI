@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { T, Icon, Button, Modal, Spinner } from '../components/UI';
+import api from '../api';
 
 const TOSS_CLIENT_KEY = 'test_ck_LlDJaYngroyvdyXpMqRX3ezGdRpX';
 
@@ -43,7 +44,14 @@ export function PremiumLockModal({ open, onClose, onUpgrade }) {
 
 export default function Premium({ onClose, toast, onNav }) {
   const [paying, setPaying] = useState(null); // null | 'single' | 'monthly'
-  const isPremium = localStorage.getItem('isPremium') === '1';
+  const [isPremium, setIsPremium] = useState(false);
+
+  useEffect(() => {
+    api.get('/api/user/me').then(res => {
+      const expiry = res?.data?.data?.annualPassExpiry;
+      if (expiry && new Date(expiry) > new Date()) setIsPremium(true);
+    }).catch(() => {});
+  }, []);
 
   const startPayment = async (type) => {
     if (paying) return;

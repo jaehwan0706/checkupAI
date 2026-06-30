@@ -37,28 +37,6 @@ export default function NotificationSettings({ onNav }) {
       <SubHeader title="알림 설정" onBack={() => onNav('my')} />
       <div style={{ padding: '12px 20px 28px', display: 'flex', flexDirection: 'column', gap: 18 }}>
         <div>
-          <SectionTitle>건강 알림</SectionTitle>
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <Row label="검진일 리마인더"    sub="검진 예정일이 다가오면 알려드려요"    k="checkup"    />
-            <Row label="AI 리포트 분석 완료" sub="새 해석 결과가 준비되면 알림"         k="reportDone" />
-            <Row label="수치 이상 알림"     sub="주의·위험 수치가 감지되면 알림"       k="abnormal"   last />
-          </Card>
-        </div>
-        <div>
-          <SectionTitle>콘텐츠</SectionTitle>
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <Row label="맞춤 건강 팁"    sub="내 수치에 맞는 생활 팁을 받아요" k="tips"   />
-            <Row label="주간 건강 리포트" sub="매주 월요일 한 주 요약"           k="weekly" last />
-          </Card>
-        </div>
-        <div>
-          <SectionTitle>기타</SectionTitle>
-          <Card pad={0} style={{ overflow: 'hidden' }}>
-            <Row label="마케팅·혜택 알림"  sub="이벤트와 할인 소식"                  k="marketing" />
-            <Row label="야간 방해 금지"    sub="오후 10시 ~ 오전 8시 알림 끄기"      k="dnd"       last />
-          </Card>
-        </div>
-        <div>
           <SectionTitle>화면</SectionTitle>
           <Card pad={16}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -85,6 +63,28 @@ export default function NotificationSettings({ onNav }) {
                 ))}
               </div>
             </div>
+          </Card>
+        </div>
+        <div>
+          <SectionTitle>건강 알림</SectionTitle>
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <Row label="검진일 리마인더"    sub="검진 예정일이 다가오면 알려드려요"    k="checkup"    />
+            <Row label="AI 리포트 분석 완료" sub="새 해석 결과가 준비되면 알림"         k="reportDone" />
+            <Row label="수치 이상 알림"     sub="주의·위험 수치가 감지되면 알림"       k="abnormal"   last />
+          </Card>
+        </div>
+        <div>
+          <SectionTitle>콘텐츠</SectionTitle>
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <Row label="맞춤 건강 팁"    sub="내 수치에 맞는 생활 팁을 받아요" k="tips"   />
+            <Row label="주간 건강 리포트" sub="매주 월요일 한 주 요약"           k="weekly" last />
+          </Card>
+        </div>
+        <div>
+          <SectionTitle>기타</SectionTitle>
+          <Card pad={0} style={{ overflow: 'hidden' }}>
+            <Row label="마케팅·혜택 알림"  sub="이벤트와 할인 소식"                  k="marketing" />
+            <Row label="야간 방해 금지"    sub="오후 10시 ~ 오전 8시 알림 끄기"      k="dnd"       last />
           </Card>
         </div>
       </div>

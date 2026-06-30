@@ -566,11 +566,14 @@ export default function Report({ onPremium, toast }) {
         if (d.id) {
           api.get(`/api/ai/report/${d.id}`).then(r => {
             const rd = r?.data?.data;
+            console.log('[Report] AI 리포트 응답 isPaid:', rd?.isPaid, '| reportId:', rd?.reportId);
             if (rd?.isPaid) {
               setIsPaid(true);
               setAiState(prev => ({ ...prev, checkup: { loading: false, data: rd } }));
             }
-          }).catch(() => {});
+          }).catch(err => {
+            console.log('[Report] AI 리포트 없음 (정상):', err?.response?.status);
+          });
         }
       }
       setVitals(vitalsRes?.data?.data || []);

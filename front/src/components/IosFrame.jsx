@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const frameStyle = {
   display: 'flex',
@@ -42,8 +42,17 @@ const screenStyle = {
   backgroundColor: '#F5F7FA',
 };
 
+const FONT_ZOOM = { small: 0.9, medium: 1, large: 1.1 };
+
 export default function IosFrame({ children }) {
   const isMobile = window.innerWidth <= 768;
+  const [zoom, setZoom] = useState(() => FONT_ZOOM[localStorage.getItem('fontSize') || 'medium'] || 1);
+
+  useEffect(() => {
+    const handler = () => setZoom(FONT_ZOOM[localStorage.getItem('fontSize') || 'medium'] || 1);
+    window.addEventListener('fontSizeChange', handler);
+    return () => window.removeEventListener('fontSizeChange', handler);
+  }, []);
 
   if (isMobile) {
     return (
@@ -55,7 +64,7 @@ export default function IosFrame({ children }) {
 
   return (
     <div style={frameStyle}>
-      <div style={phoneStyle}>
+      <div style={{ ...phoneStyle, zoom }}>
         <div style={notchStyle} />
         <div style={screenStyle}>
           {children}

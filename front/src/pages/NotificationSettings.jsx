@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 import { T, Card, SubHeader, Toggle } from '../components/UI';
 
+const FONT_SIZES = [
+  { key: 'small',  label: '작게' },
+  { key: 'medium', label: '보통' },
+  { key: 'large',  label: '크게' },
+];
+
 export default function NotificationSettings({ onNav }) {
   const [n, setN] = useState({ checkup: true, reportDone: true, abnormal: true, tips: true, weekly: false, marketing: false, dnd: false });
   const set = k => v => setN(s => ({ ...s, [k]: v }));
+  const [fontSize, setFontSize] = useState(() => localStorage.getItem('fontSize') || 'medium');
+
+  const changeFontSize = (key) => {
+    setFontSize(key);
+    localStorage.setItem('fontSize', key);
+    window.dispatchEvent(new Event('fontSizeChange'));
+  };
 
   const SectionTitle = ({ children }) => (
     <div style={{ fontSize: 12.5, fontWeight: 800, color: T.inkSoft, padding: '0 4px 8px' }}>{children}</div>
@@ -43,6 +56,35 @@ export default function NotificationSettings({ onNav }) {
           <Card pad={0} style={{ overflow: 'hidden' }}>
             <Row label="마케팅·혜택 알림"  sub="이벤트와 할인 소식"                  k="marketing" />
             <Row label="야간 방해 금지"    sub="오후 10시 ~ 오전 8시 알림 끄기"      k="dnd"       last />
+          </Card>
+        </div>
+        <div>
+          <SectionTitle>화면</SectionTitle>
+          <Card pad={16}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: 14.5, fontWeight: 600, color: T.ink }}>글자 크기</div>
+                <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2, lineHeight: 1.4 }}>앱 전체 글자 크기를 변경해요</div>
+              </div>
+              <div style={{ display: 'flex', gap: 5 }}>
+                {FONT_SIZES.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => changeFontSize(key)}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: 8,
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      background: fontSize === key ? T.blue : '#fff',
+                      color: fontSize === key ? '#fff' : T.inkMid,
+                      border: `1.5px solid ${fontSize === key ? T.blue : T.line}`,
+                      transition: 'all .15s ease',
+                    }}
+                  >{label}</button>
+                ))}
+              </div>
+            </div>
           </Card>
         </div>
       </div>

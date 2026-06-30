@@ -1,6 +1,7 @@
 package com.checkupai.domain.ai;
 
 import com.checkupai.common.ApiResponse;
+import com.checkupai.dto.goal.ExerciseGoalRecommendation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -47,6 +48,15 @@ public class AiController {
             @AuthenticationPrincipal @NonNull Long userId,
             @RequestParam(required = false) String type) {
         return ApiResponse.success(aiReportService.analyzeMedical(userId, type), "진료·처방 AI 분석이 완료되었습니다.");
+    }
+
+    @PostMapping("/goals/exercise")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @NonNull ApiResponse<ExerciseGoalRecommendation> recommendExerciseGoal(
+            @AuthenticationPrincipal @NonNull Long userId) {
+        return ApiResponse.success(
+                aiReportService.recommendExerciseGoal(userId),
+                "운동 목표 추천이 완료되었습니다.");
     }
 
     @Getter

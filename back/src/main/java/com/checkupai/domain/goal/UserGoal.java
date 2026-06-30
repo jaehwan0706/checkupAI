@@ -36,6 +36,12 @@ public class UserGoal {
     private Integer startValue;
     private Integer targetValue;
 
+    // 운동 목표 구조화 필드 (goalType == BEHAVIORAL 일 때만 사용)
+    private String exerciseType;
+    private Integer frequencyPerWeek;
+    private Integer durationMinutes;
+    private String intensity;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -48,7 +54,8 @@ public class UserGoal {
 
     @Builder
     public UserGoal(User user, String goalKey, String icon, String title, String detail, int pct, boolean aiRecommended,
-                    GoalType goalType, Integer startValue, Integer targetValue) {
+                    GoalType goalType, Integer startValue, Integer targetValue,
+                    String exerciseType, Integer frequencyPerWeek, Integer durationMinutes, String intensity) {
         this.user = user;
         this.goalKey = goalKey;
         this.icon = icon;
@@ -59,5 +66,9 @@ public class UserGoal {
         this.goalType = goalType;
         this.startValue = startValue;
         this.targetValue = targetValue;
+        this.exerciseType = exerciseType;
+        this.frequencyPerWeek = frequencyPerWeek;
+        this.durationMinutes = durationMinutes;
+        this.intensity = intensity;
     }
 }

@@ -436,6 +436,199 @@ public class ClaudeApiService {
                 .build();
     }
 
+    /* ── 식단 텍스트 분석 ── */
+    public String analyzeMealText(String content) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return null;
+        }
+        String prompt = String.format("""
+                사용자가 다음 식단을 기록했습니다: "%s"
+
+                이 식단의 영양 정보와 건강에 미치는 영향을 분석하여 아래 JSON 형식으로만 응답해주세요:
+                {"comment": "2-3문장으로 영양 코멘트 (과잉 영양소, 부족한 영양소, 개선 제안 포함)"}
+                """, content);
+        try {
+            String raw = callClaude(prompt);
+            JsonNode node = objectMapper.readTree(raw);
+            return node.path("comment").asText(null);
+        } catch (Exception e) {
+            log.warn("식단 텍스트 분석 실패: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /* ── 식단 이미지 분석 (Vision) — [0]=foods, [1]=comment ── */
+    public String[] analyzeFoodImage(String base64Image, String mediaType) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return new String[]{null, null};
+        }
+        try {
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(120, TimeUnit.SECONDS)
+                    .build();
+
+            ObjectNode body = objectMapper.createObjectNode();
+            body.put("model", model);
+            body.put("max_tokens", 1024);
+            body.put("system", SYSTEM_PROMPT);
+
+            ArrayNode messages = objectMapper.createArrayNode();
+            ObjectNode userMessage = objectMapper.createObjectNode();
+            userMessage.put("role", "user");
+
+            ArrayNode contentArr = objectMapper.createArrayNode();
+
+            ObjectNode imageBlock = objectMapper.createObjectNode();
+            imageBlock.put("type", "image");
+            ObjectNode source = objectMapper.createObjectNode();
+            source.put("type", "base64");
+            source.put("media_type", mediaType);
+            source.put("data", base64Image);
+            imageBlock.set("source", source);
+            contentArr.add(imageBlock);
+
+            ObjectNode textBlock = objectMapper.createObjectNode();
+            textBlock.put("type", "text");
+            textBlock.put("text", """
+                    이 음식 사진을 분석하여 아래 JSON 형식으로만 응답해주세요:
+                    {"foods": "사진에 있는 음식들 나열 (쉼표 구분)", "comment": "2-3문장으로 영양 분석 코멘트"}
+                    """);
+            contentArr.add(textBlock);
+
+            userMessage.set("content", contentArr);
+            messages.add(userMessage);
+            body.set("messages", messages);
+
+            Request request = new Request.Builder()
+                    .url(apiUrl)
+                    .addHeader("x-api-key", apiKey)
+                    .addHeader("anthropic-version", "2023-06-01")
+                    .post(RequestBody.create(objectMapper.writeValueAsString(body), JSON))
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    log.warn("식단 이미지 Claude API 오류 status={}", response.code());
+                    return new String[]{null, null};
+                }
+                String raw = extractContent(response.body().string());
+                JsonNode node = objectMapper.readTree(raw);
+                return new String[]{
+                        node.path("foods").asText(null),
+                        node.path("comment").asText(null)
+                };
+            }
+        } catch (Exception e) {
+            log.warn("식단 이미지 분석 실패: {}", e.getMessage());
+            return new String[]{null, null};
+        }
+    }
+
+    /* ── 운동 목표 AI 추천 (검진 수치 기반, 구체적) ── */
+    public com.checkupai.dto.goal.ExerciseGoalRecommendation recommendExerciseGoal(
+            User user, com.checkupai.domain.checkup.HealthCheckup checkup) {
+        if (apiKey == null || apiKey.isBlank()) {
+            return mockExerciseRecommendation(checkup);
+        }
+        try {
+            String prompt = buildExerciseGoalPrompt(user, checkup);
+            String raw = callClaude(prompt);
+            JsonNode node = objectMapper.readTree(raw);
+            return new com.checkupai.dto.goal.ExerciseGoalRecommendation(
+                    node.path("title").asText("맞춤 운동 목표"),
+                    node.path("detail").asText(""),
+                    node.path("exerciseType").asText("걷기"),
+                    node.path("frequencyPerWeek").asInt(3),
+                    node.path("durationMinutes").asInt(30),
+                    node.path("intensity").asText("가벼운 강도"),
+                    node.path("reason").asText("")
+            );
+        } catch (Exception e) {
+            log.warn("운동 목표 AI 추천 실패 — Mock 반환: {}", e.getMessage());
+            return mockExerciseRecommendation(checkup);
+        }
+    }
+
+    private String buildExerciseGoalPrompt(User user, com.checkupai.domain.checkup.HealthCheckup c) {
+        String genderStr = user.getGender() != null ?
+                (user.getGender() == Gender.MALE ? "남성" : "여성") : "정보 없음";
+        String ageStr = user.getBirthDate() != null ?
+                java.time.Period.between(user.getBirthDate(), LocalDate.now()).getYears() + "세" : "정보 없음";
+
+        return String.format("""
+                [사용자 기본 정보]
+                - 성별: %s, 나이: %s
+                - BMI: %s, 체중: %skg
+
+                [최근 건강검진 수치]
+                - 혈압: %s/%s mmHg
+                - 공복혈당: %s mg/dL
+                - 총콜레스테롤: %s mg/dL, LDL: %s mg/dL
+                - AST: %s, ALT: %s
+
+                위 수치를 분석해서 사용자에게 가장 적합한 운동 목표를 추천해주세요.
+
+                수치별 가이드라인:
+                - 혈압 높음(수축기 ≥130): 걷기 위주, 주 5회, 30분, 가벼운 강도
+                - 혈당 높음(공복 ≥100): 식후 걷기(매 끼니 후 15분) 또는 주 5회 30분 걷기
+                - BMI 높음(≥25) 또는 콜레스테롤 높음(총 ≥200): 유산소 중심, 주 4~5회, 40분, 약간 숨찬 정도
+                - 복합 이슈: 가장 위험 수치 기준으로 우선 추천
+                - 정상 수치: 체력 유지 목적, 조깅/자전거/수영 선택 가능, 주 3회, 30분
+
+                아래 JSON 형식으로만 응답해주세요 (다른 텍스트 없이 JSON만):
+                {
+                  "title": "운동 목표 제목 (간결하게, 예: 혈압 관리 걷기 습관)",
+                  "detail": "주 N회, 회당 M분, 운동종류 (예: 주 5회, 회당 30분, 빠르게 걷기)",
+                  "exerciseType": "걷기 또는 조깅 또는 자전거 또는 수영 중 하나",
+                  "frequencyPerWeek": 5,
+                  "durationMinutes": 30,
+                  "intensity": "가벼운 강도 또는 약간 숨찬 정도 또는 땀이 날 정도 중 하나",
+                  "reason": "이 운동이 추천되는 이유 (수치 기반 1-2문장)"
+                }
+                """,
+                genderStr, ageStr,
+                fmt(c.getBmi()), fmt(c.getWeight()),
+                fmt(c.getSystolicBp()), fmt(c.getDiastolicBp()),
+                fmt(c.getFastingBloodSugar()),
+                fmt(c.getTotalCholesterol()), fmt(c.getLdlCholesterol()),
+                fmt(c.getAst()), fmt(c.getAlt())
+        );
+    }
+
+    private com.checkupai.dto.goal.ExerciseGoalRecommendation mockExerciseRecommendation(
+            com.checkupai.domain.checkup.HealthCheckup c) {
+        boolean highBp = c.getSystolicBp() != null && c.getSystolicBp() >= 130;
+        boolean highSugar = c.getFastingBloodSugar() != null && c.getFastingBloodSugar() >= 100;
+        boolean highBmi = c.getBmi() != null && c.getBmi() >= 25;
+
+        if (highBp) {
+            return new com.checkupai.dto.goal.ExerciseGoalRecommendation(
+                    "혈압 관리 걷기 습관",
+                    "주 5회, 회당 30분, 빠르게 걷기",
+                    "걷기", 5, 30, "약간 숨찬 정도",
+                    "혈압이 다소 높아요. 규칙적인 걷기 운동이 혈압을 낮추는 데 효과적입니다.");
+        } else if (highSugar) {
+            return new com.checkupai.dto.goal.ExerciseGoalRecommendation(
+                    "혈당 관리 식후 걷기",
+                    "주 5회, 회당 30분, 식후 걷기",
+                    "걷기", 5, 30, "가벼운 강도",
+                    "혈당이 정상 범위를 초과했어요. 식후 걷기가 혈당 조절에 가장 효과적입니다.");
+        } else if (highBmi) {
+            return new com.checkupai.dto.goal.ExerciseGoalRecommendation(
+                    "체중 감량 유산소 운동",
+                    "주 4회, 회당 40분, 자전거 또는 빠르게 걷기",
+                    "자전거", 4, 40, "땀이 날 정도",
+                    "BMI가 과체중 범위예요. 강도 높은 유산소 운동으로 칼로리를 소모하세요.");
+        } else {
+            return new com.checkupai.dto.goal.ExerciseGoalRecommendation(
+                    "체력 유지 유산소 운동",
+                    "주 3회, 회당 30분, 조깅 또는 자전거",
+                    "조깅", 3, 30, "약간 숨찬 정도",
+                    "전반적으로 양호한 건강 상태예요. 현재 체력을 유지하는 운동을 추천합니다.");
+        }
+    }
+
     private String extractContent(String responseBody) throws IOException {
         JsonNode root = objectMapper.readTree(responseBody);
         String text = root.path("content").get(0).path("text").asText();

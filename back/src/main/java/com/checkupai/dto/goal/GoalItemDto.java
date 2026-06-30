@@ -22,14 +22,21 @@ public class GoalItemDto {
     private GoalType goalType;
     private Integer startValue;
     private Integer targetValue;
+    // 운동 목표 구조화 필드
+    private String exerciseType;
+    private Integer frequencyPerWeek;
+    private Integer durationMinutes;
+    private String intensity;
 
     public static GoalItemDto from(UserGoal g) {
         return new GoalItemDto(g.getId(), g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
-                g.getPct(), g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
+                g.getPct(), g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue(),
+                g.getExerciseType(), g.getFrequencyPerWeek(), g.getDurationMinutes(), g.getIntensity());
     }
 
     public static GoalItemDto from(UserGoal g, int computedPct) {
         return new GoalItemDto(g.getId(), g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
-                computedPct, g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
+                computedPct, g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue(),
+                g.getExerciseType(), g.getFrequencyPerWeek(), g.getDurationMinutes(), g.getIntensity());
     }
 }

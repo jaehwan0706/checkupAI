@@ -2,6 +2,7 @@ package com.checkupai.domain.goal;
 
 import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
+import com.checkupai.domain.meal.MealLogRepository;
 import com.checkupai.domain.user.User;
 import com.checkupai.domain.user.UserRepository;
 import com.checkupai.domain.vitals.Vitals;
@@ -33,6 +34,7 @@ public class UserGoalService {
     private final UserRepository userRepository;
     private final VitalsRepository vitalsRepository;
     private final GoalCheckInRepository checkInRepository;
+    private final MealLogRepository mealLogRepository;
 
     @Transactional(readOnly = true)
     public @NonNull List<GoalItemDto> findAll(@NonNull Long userId) {
@@ -56,8 +58,12 @@ public class UserGoalService {
                         row -> (Long) row[1]
                 ));
 
+        // 식단형 목표용: 이번 주 (월~일) 식단 기록 횟수
+        LocalDate sunday = monday.plusDays(6);
+        long weeklyMealCount = mealLogRepository.countByUserIdAndDateRange(userId, monday, sunday);
+
         return goals.stream()
-                .map(g -> GoalItemDto.from(g, computePct(g, latestBloodSugar, weeklyCountByGoalId)))
+                .map(g -> GoalItemDto.from(g, computePct(g, latestBloodSugar, weeklyCountByGoalId, weeklyMealCount)))
                 .toList();
     }
 
@@ -84,6 +90,10 @@ public class UserGoalService {
                             .goalType(type)
                             .startValue(type == GoalType.NUMERIC ? parseStartValue(dto.getDetail()) : null)
                             .targetValue(type == GoalType.NUMERIC ? parseTargetValue(dto.getDetail()) : null)
+                            .exerciseType(dto.getExerciseType())
+                            .frequencyPerWeek(dto.getFrequencyPerWeek())
+                            .durationMinutes(dto.getDurationMinutes())
+                            .intensity(dto.getIntensity())
                             .build();
                 })
                 .toList();
@@ -110,15 +120,18 @@ public class UserGoalService {
 
     // ── 진행률 계산 ──────────────────────────────────────────────────────────
 
-    private int computePct(UserGoal g, Integer latestBloodSugar, Map<Long, Long> weeklyCount) {
+    private int computePct(UserGoal g, Integer latestBloodSugar, Map<Long, Long> weeklyCount, long weeklyMealCount) {
         if (g.getGoalType() == GoalType.NUMERIC) {
             if (latestBloodSugar == null || g.getStartValue() == null || g.getTargetValue() == null) {
-                return g.getPct(); // 혈당 기록 없거나 기준값 없으면 저장값 유지
+                return g.getPct();
             }
             int range = g.getStartValue() - g.getTargetValue();
             if (range == 0) return 100;
             int progress = g.getStartValue() - latestBloodSugar;
             return Math.max(0, Math.min(100, (int) Math.round((double) progress / range * 100)));
+        } else if (g.getGoalType() == GoalType.DIETARY) {
+            // 3끼 × 7일 = 21 기준
+            return Math.min(100, (int) Math.round((double) weeklyMealCount / 21 * 100));
         } else {
             // BEHAVIORAL (null goalType 포함 — 기존 데이터 호환)
             int weeklyTarget = parseWeeklyTarget(g.getDetail());
@@ -135,6 +148,10 @@ public class UserGoalService {
             if (key.contains("blood") || key.contains("sugar") || key.contains("glucose")
                     || key.contains("혈당") || key.contains("혈압")) {
                 return GoalType.NUMERIC;
+            }
+            if (key.contains("food") || key.contains("diet") || key.contains("meal")
+                    || key.contains("식") || key.contains("음식") || key.contains("영양")) {
+                return GoalType.DIETARY;
             }
         }
         if (detail != null && NUMERIC_RANGE_PATTERN.matcher(detail).find()) {

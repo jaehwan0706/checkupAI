@@ -4,6 +4,7 @@ import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
 import com.checkupai.domain.checkup.HealthCheckup;
 import com.checkupai.domain.checkup.HealthCheckupRepository;
+import com.checkupai.dto.goal.ExerciseGoalRecommendation;
 import com.checkupai.domain.daily.DailyRecord;
 import com.checkupai.domain.daily.DailyRecordRepository;
 import com.checkupai.domain.medical.MedicalRecord;
@@ -89,6 +90,15 @@ public class AiReportService {
         List<Vitals> vitals = vitalsRepository.findAllByUserId(userId);
         if (vitals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
         return claudeApiService.analyzeVitals(user, vitals);
+    }
+
+    @Transactional(readOnly = true)
+    public @NonNull ExerciseGoalRecommendation recommendExerciseGoal(@NonNull Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        HealthCheckup checkup = checkupRepository.findFirstByUserIdOrderByCheckupDateDesc(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHECKUP_NOT_FOUND));
+        return claudeApiService.recommendExerciseGoal(user, checkup);
     }
 
     @Transactional(readOnly = true)

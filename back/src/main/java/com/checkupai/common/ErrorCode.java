@@ -21,6 +21,9 @@ public enum ErrorCode {
     // Goals
     GOAL_NOT_FOUND("건강 목표를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    // Meal
+    MEAL_LOG_NOT_FOUND("식단 기록을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     // Daily
     DAILY_NOT_FOUND("해당 날짜의 일상 기록을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 

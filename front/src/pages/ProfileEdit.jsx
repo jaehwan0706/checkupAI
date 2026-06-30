@@ -33,6 +33,7 @@ export default function ProfileEdit({ onNav, toast }) {
       setDisplayEmail(isKakao ? (u.kakaoEmail || null) : (u.email || null));
       setEmailLoaded(true);
     }).catch(() => { setEmailLoaded(true); });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const save = async () => {

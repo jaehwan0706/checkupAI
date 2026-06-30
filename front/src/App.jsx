@@ -37,8 +37,8 @@ function PaymentProcessing() {
         <Icon name="lock" size={28} color="#fff" stroke={2} />
       </div>
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>결제를 확인하고 있어요</div>
-        <div style={{ fontSize: 13.5, color: T.inkSoft, marginTop: 7 }}>잠시만 기다려주세요...</div>
+        <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink }}>결제를 확인하고 있어요</div>
+        <div style={{ fontSize: '0.8438rem', color: T.inkSoft, marginTop: 7 }}>잠시만 기다려주세요...</div>
       </div>
       <Spinner size={32} color={T.blue} stroke={2.8} />
     </div>
@@ -80,23 +80,23 @@ function HealthConsentSheet({ open, onAgree, onClose }) {
       <div style={{ width: 48, height: 48, borderRadius: 14, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
         <Icon name="shield" size={24} color={T.blue} stroke={2} />
       </div>
-      <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink, lineHeight: 1.35 }}>건강정보 활용에<br/>동의가 필요해요</h2>
-      <p style={{ margin: '10px 0 18px', fontSize: 13, color: T.inkMid, lineHeight: 1.6 }}>건강검진 결과는 민감정보로, AI 해석을 제공하려면 아래 항목에 동의가 필요해요. 동의는 한 번만 받고, 마이페이지에서 언제든 철회할 수 있어요.</p>
+      <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink, lineHeight: 1.35 }}>건강정보 활용에<br/>동의가 필요해요</h2>
+      <p style={{ margin: '10px 0 18px', fontSize: '0.8125rem', color: T.inkMid, lineHeight: 1.6 }}>건강검진 결과는 민감정보로, AI 해석을 제공하려면 아래 항목에 동의가 필요해요. 동의는 한 번만 받고, 마이페이지에서 언제든 철회할 수 있어요.</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 18 }}>
         {rows.map(r => (
           <button key={r.k} onClick={() => toggle(r.k)} style={{ display: 'flex', gap: 11, padding: '11px 0', textAlign: 'left', borderTop: '1px solid ' + T.line }}>
             <Check on={items[r.k]} />
             <div>
-              <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>
+              <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink }}>
                 <span style={{ color: r.req ? T.blue : T.inkSoft }}>{r.req ? '[필수] ' : '[선택] '}</span>{r.title}
               </div>
-              <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{r.desc}</div>
+              <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{r.desc}</div>
             </div>
           </button>
         ))}
       </div>
       <Button variant="primary" onClick={() => reqOk && onAgree()} disabled={!reqOk}>동의하고 분석 받기</Button>
-      <button onClick={onClose} style={{ width: '100%', marginTop: 10, fontSize: 13.5, fontWeight: 600, color: T.inkSoft, padding: 8 }}>나중에 할게요</button>
+      <button onClick={onClose} style={{ width: '100%', marginTop: 10, fontSize: '0.8438rem', fontWeight: 600, color: T.inkSoft, padding: 8 }}>나중에 할게요</button>
     </BottomSheet>
   );
 }
@@ -108,8 +108,8 @@ function AnalyzeOverlay({ show }) {
     <div style={{ position: 'absolute', inset: 0, zIndex: 250, background: 'rgba(245,247,250,0.96)', backdropFilter: 'blur(3px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, animation: 'hlfade .2s ease' }}>
       <Spinner size={46} color={T.blue} stroke={3} />
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
-        <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>수치를 쉬운 말로 풀어내는 중이에요...</div>
+        <div style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+        <div style={{ fontSize: '0.8125rem', color: T.inkSoft, marginTop: 5 }}>수치를 쉬운 말로 풀어내는 중이에요...</div>
       </div>
     </div>
   );
@@ -123,7 +123,7 @@ function MoreSheet({ open, onClose, onNav }) {
   ];
   return (
     <BottomSheet open={open} onClose={onClose}>
-      <h3 style={{ margin: '0 0 14px 2px', fontSize: 18, fontWeight: 800, color: T.ink }}>더보기</h3>
+      <h3 style={{ margin: '0 0 14px 2px', fontSize: '1.125rem', fontWeight: 800, color: T.ink }}>더보기</h3>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {items.map(it => (
           <button key={it.to} onClick={() => { onClose(); onNav(it.to); }} style={{ display: 'flex', alignItems: 'center', gap: 13, padding: 14, borderRadius: 15, background: T.bg, textAlign: 'left' }}>
@@ -131,8 +131,8 @@ function MoreSheet({ open, onClose, onNav }) {
               <Icon name={it.icon} size={23} color={it.color} stroke={2.1} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{it.label}</div>
-              <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2 }}>{it.sub}</div>
+              <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{it.label}</div>
+              <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 2 }}>{it.sub}</div>
             </div>
             <Icon name="chevR" size={18} color="#C6D3E6" />
           </button>

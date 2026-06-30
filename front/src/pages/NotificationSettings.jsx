@@ -19,14 +19,14 @@ export default function NotificationSettings({ onNav }) {
   };
 
   const SectionTitle = ({ children }) => (
-    <div style={{ fontSize: 12.5, fontWeight: 800, color: T.inkSoft, padding: '0 4px 8px' }}>{children}</div>
+    <div style={{ fontSize: '0.7812rem', fontWeight: 800, color: T.inkSoft, padding: '0 4px 8px' }}>{children}</div>
   );
 
   const Row = ({ label, sub, k, last }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: last ? 'none' : '1px solid ' + T.line }}>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 14.5, fontWeight: 600, color: T.ink }}>{label}</div>
-        {sub && <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2, lineHeight: 1.4 }}>{sub}</div>}
+        <div style={{ fontSize: '0.9062rem', fontWeight: 600, color: T.ink }}>{label}</div>
+        {sub && <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 2, lineHeight: 1.4 }}>{sub}</div>}
       </div>
       <Toggle on={n[k]} onChange={set(k)} />
     </div>
@@ -41,8 +41,8 @@ export default function NotificationSettings({ onNav }) {
           <Card pad={16}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ fontSize: 14.5, fontWeight: 600, color: T.ink }}>글자 크기</div>
-                <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2, lineHeight: 1.4 }}>앱 전체 글자 크기를 변경해요</div>
+                <div style={{ fontSize: '0.9062rem', fontWeight: 600, color: T.ink }}>글자 크기</div>
+                <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 2, lineHeight: 1.4 }}>앱 전체 글자 크기를 변경해요</div>
               </div>
               <div style={{ display: 'flex', gap: 5 }}>
                 {FONT_SIZES.map(({ key, label }) => (
@@ -52,7 +52,7 @@ export default function NotificationSettings({ onNav }) {
                     style={{
                       padding: '6px 12px',
                       borderRadius: 8,
-                      fontSize: 12.5,
+                      fontSize: '0.7812rem',
                       fontWeight: 700,
                       background: fontSize === key ? T.blue : '#fff',
                       color: fontSize === key ? '#fff' : T.inkMid,

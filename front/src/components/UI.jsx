@@ -115,7 +115,7 @@ export function Button({ children, onClick, variant = 'primary', style, icon, di
   const dis = disabled ? { background: '#C6D3E6', boxShadow: 'none', cursor: 'not-allowed', color: '#fff' } : {};
   return (
     <button onClick={disabled ? undefined : onClick} style={{
-      width: '100%', height: 54, borderRadius: 15, fontSize: 16.5, fontWeight: 700, letterSpacing: '-0.01em',
+      width: '100%', height: 54, borderRadius: 15, fontSize: '1.0312rem', fontWeight: 700, letterSpacing: '-0.01em',
       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
       transition: 'transform .12s ease', ...variants[variant], ...dis, ...style,
     }}
@@ -171,7 +171,7 @@ export function SubHeader({ title, onBack, right }) {
       <button onClick={onBack} style={{ width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="chevL" size={24} color={T.inkMid} />
       </button>
-      <h1 style={{ flex: 1, margin: 0, fontSize: 19, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{title}</h1>
+      <h1 style={{ flex: 1, margin: 0, fontSize: '1.1875rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{title}</h1>
       {right}
     </div>
   );
@@ -186,7 +186,7 @@ export function Field({ label, type = 'text', placeholder, value, onChange, icon
   const borderColor = error ? T.danger : (focus ? T.blue : T.line);
   return (
     <div>
-      {label && <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>{label}</label>}
+      {label && <label style={{ display: 'block', fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>{label}</label>}
       <div style={{
         display: 'flex', alignItems: 'center', gap: 10, height: 52, padding: '0 14px', borderRadius: 14, background: '#fff',
         border: '1.5px solid ' + borderColor,
@@ -199,16 +199,16 @@ export function Field({ label, type = 'text', placeholder, value, onChange, icon
           onChange={e => onChange(e.target.value)}
           onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
           onKeyDown={e => { if (e.key === 'Enter' && onEnter) onEnter(); }}
-          style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: 15, fontWeight: 500, color: T.ink, fontFamily: 'inherit' }}
+          style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9375rem', fontWeight: 500, color: T.ink, fontFamily: 'inherit' }}
         />
-        {suffix && <span style={{ fontSize: 13, color: T.inkSoft, fontWeight: 600, flexShrink: 0 }}>{suffix}</span>}
+        {suffix && <span style={{ fontSize: '0.8125rem', color: T.inkSoft, fontWeight: 600, flexShrink: 0 }}>{suffix}</span>}
         {isPw && (
           <button onClick={() => setShow(s => !s)} style={{ flexShrink: 0, padding: 2 }}>
             <Icon name={show ? 'eye' : 'eyeoff'} size={19} color="#A6B1C2" stroke={1.9} />
           </button>
         )}
       </div>
-      {error && <div style={{ fontSize: 11.5, color: T.danger, fontWeight: 600, margin: '6px 0 0 4px' }}>{error}</div>}
+      {error && <div style={{ fontSize: '0.7188rem', color: T.danger, fontWeight: 600, margin: '6px 0 0 4px' }}>{error}</div>}
     </div>
   );
 }
@@ -251,11 +251,11 @@ export function Modal({ open, onClose, children }) {
 export function ConfirmModal({ open, title, body, confirmLabel = '확인', cancelLabel = '취소', danger, onConfirm, onClose }) {
   return (
     <Modal open={open} onClose={onClose}>
-      <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: T.ink, letterSpacing: '-0.01em', textAlign: 'center' }}>{title}</h3>
-      {body && <p style={{ margin: '10px 0 0', fontSize: 13.5, color: T.inkMid, lineHeight: 1.55, textAlign: 'center' }}>{body}</p>}
+      <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.01em', textAlign: 'center' }}>{title}</h3>
+      {body && <p style={{ margin: '10px 0 0', fontSize: '0.8438rem', color: T.inkMid, lineHeight: 1.55, textAlign: 'center' }}>{body}</p>}
       <div style={{ display: 'flex', gap: 9, marginTop: 22 }}>
-        <button onClick={onClose} style={{ flex: 1, height: 50, borderRadius: 14, background: T.bg, color: T.inkMid, fontSize: 15, fontWeight: 700 }}>{cancelLabel}</button>
-        <button onClick={onConfirm} style={{ flex: 1, height: 50, borderRadius: 14, background: danger ? T.danger : T.blue, color: '#fff', fontSize: 15, fontWeight: 700 }}>{confirmLabel}</button>
+        <button onClick={onClose} style={{ flex: 1, height: 50, borderRadius: 14, background: T.bg, color: T.inkMid, fontSize: '0.9375rem', fontWeight: 700 }}>{cancelLabel}</button>
+        <button onClick={onConfirm} style={{ flex: 1, height: 50, borderRadius: 14, background: danger ? T.danger : T.blue, color: '#fff', fontSize: '0.9375rem', fontWeight: 700 }}>{confirmLabel}</button>
       </div>
     </Modal>
   );
@@ -280,7 +280,7 @@ export function Toast({ toast: t }) {
   if (!t) return null;
   return (
     <div style={{ position: 'absolute', left: 0, right: 0, bottom: 96, display: 'flex', justifyContent: 'center', zIndex: 300, pointerEvents: 'none', padding: '0 24px' }}>
-      <div style={{ background: 'rgba(26,43,69,0.94)', color: '#fff', fontSize: 13.5, fontWeight: 600, padding: '13px 18px', borderRadius: 14, boxShadow: '0 12px 30px rgba(0,0,0,0.3)', animation: 'hltoast .3s cubic-bezier(.2,.9,.3,1.1)', display: 'flex', alignItems: 'center', gap: 9, maxWidth: '100%' }}>
+      <div style={{ background: 'rgba(26,43,69,0.94)', color: '#fff', fontSize: '0.8438rem', fontWeight: 600, padding: '13px 18px', borderRadius: 14, boxShadow: '0 12px 30px rgba(0,0,0,0.3)', animation: 'hltoast .3s cubic-bezier(.2,.9,.3,1.1)', display: 'flex', alignItems: 'center', gap: 9, maxWidth: '100%' }}>
         {t.icon && <Icon name={t.icon} size={17} color="#9DE0BE" stroke={2.3} />}
         <span>{t.msg}</span>
       </div>
@@ -311,7 +311,7 @@ export function BottomNav({ active, onNav, onMore }) {
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1, padding: '4px 0', color: on ? T.blue : T.inkSoft,
           }}>
             <Icon name={t.icon} size={24} color={on ? T.blue : '#A6B1C2'} stroke={on ? 2.2 : 1.9} />
-            <span style={{ fontSize: 10.5, fontWeight: on ? 700 : 600, letterSpacing: '-0.01em' }}>{t.label}</span>
+            <span style={{ fontSize: '0.6562rem', fontWeight: on ? 700 : 600, letterSpacing: '-0.01em' }}>{t.label}</span>
           </button>
         );
       })}

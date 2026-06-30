@@ -34,16 +34,16 @@ function calcDday(checkupDate) {
 function HealthAgeCard({ actualAge, healthAge, onNav }) {
   if (actualAge === null) return (
     <Card pad={16}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 6 }}>건강 나이</div>
-      <p style={{ margin: '0 0 12px', fontSize: 13, color: T.inkMid, lineHeight: 1.6 }}>프로필에 생년월일을 입력하면 건강 나이를 확인할 수 있어요</p>
-      <button onClick={() => onNav?.('profile')} style={{ fontSize: 13, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>프로필 입력하기 <Icon name="chevR" size={14} color={T.blue} /></button>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>건강 나이</div>
+      <p style={{ margin: '0 0 12px', fontSize: '0.8125rem', color: T.inkMid, lineHeight: 1.6 }}>프로필에 생년월일을 입력하면 건강 나이를 확인할 수 있어요</p>
+      <button onClick={() => onNav?.('profile')} style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>프로필 입력하기 <Icon name="chevR" size={14} color={T.blue} /></button>
     </Card>
   );
   if (healthAge === null) return (
     <Card pad={16}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 6 }}>건강 나이</div>
-      <p style={{ margin: '0 0 12px', fontSize: 13, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 건강 나이를 계산해 드려요</p>
-      <button onClick={() => onNav?.('input')} style={{ fontSize: 13, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>검진 수치 입력하기 <Icon name="chevR" size={14} color={T.blue} /></button>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>건강 나이</div>
+      <p style={{ margin: '0 0 12px', fontSize: '0.8125rem', color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 건강 나이를 계산해 드려요</p>
+      <button onClick={() => onNav?.('input')} style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>검진 수치 입력하기 <Icon name="chevR" size={14} color={T.blue} /></button>
     </Card>
   );
   const diff = healthAge - actualAge;
@@ -51,24 +51,24 @@ function HealthAgeCard({ actualAge, healthAge, onNav }) {
   const ageColor = isWorse ? T.danger : T.ok;
   return (
     <Card pad={16}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 14 }}>건강 나이</div>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 14 }}>건강 나이</div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
         <div style={{ flex: 1, textAlign: 'center', padding: '14px 0', borderRadius: 14, background: T.bg }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, marginBottom: 5 }}>실제 나이</div>
-          <div style={{ fontSize: 30, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em', lineHeight: 1 }}>{actualAge}<span style={{ fontSize: 14, fontWeight: 600, marginLeft: 2 }}>세</span></div>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.inkSoft, marginBottom: 5 }}>실제 나이</div>
+          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em', lineHeight: 1 }}>{actualAge}<span style={{ fontSize: '0.875rem', fontWeight: 600, marginLeft: 2 }}>세</span></div>
         </div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: T.inkSoft }}>vs</div>
+        <div style={{ fontSize: '1rem', fontWeight: 800, color: T.inkSoft }}>vs</div>
         <div style={{ flex: 1, textAlign: 'center', padding: '14px 0', borderRadius: 14, background: isWorse ? T.dangerSoft : T.okSoft }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: ageColor, marginBottom: 5 }}>건강 나이</div>
-          <div style={{ fontSize: 30, fontWeight: 800, color: ageColor, letterSpacing: '-0.02em', lineHeight: 1 }}>{healthAge}<span style={{ fontSize: 14, fontWeight: 600, marginLeft: 2 }}>세</span><span style={{ fontSize: 16, marginLeft: 3 }}>{isWorse ? '🔴' : '🟢'}</span></div>
+          <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: ageColor, marginBottom: 5 }}>건강 나이</div>
+          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: ageColor, letterSpacing: '-0.02em', lineHeight: 1 }}>{healthAge}<span style={{ fontSize: '0.875rem', fontWeight: 600, marginLeft: 2 }}>세</span><span style={{ fontSize: '1rem', marginLeft: 3 }}>{isWorse ? '🔴' : '🟢'}</span></div>
         </div>
       </div>
       <div style={{ padding: '10px 12px', borderRadius: 11, background: isWorse ? T.dangerSoft : T.okSoft, marginBottom: 12 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: ageColor }}>
+        <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: ageColor }}>
           {isWorse ? `실제 나이보다 ${diff}세 빠르게 노화 중이에요` : diff === 0 ? '실제 나이와 건강 나이가 같아요' : `실제 나이보다 ${-diff}세 더 젊어요!`}
         </span>
       </div>
-      <button onClick={() => onNav?.('report')} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, color: T.blue }}>
+      <button onClick={() => onNav?.('report')} style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8125rem', fontWeight: 700, color: T.blue }}>
         건강 나이 줄이는 방법 보기 <Icon name="chevR" size={15} color={T.blue} />
       </button>
     </Card>
@@ -81,8 +81,8 @@ function HealthAgeCard({ actualAge, healthAge, onNav }) {
 function DdayCard({ dday, checkupDate, toast }) {
   if (checkupDate === null) return (
     <Card pad={16}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 6 }}>다음 건강검진</div>
-      <p style={{ fontSize: 13, color: T.inkMid, margin: 0, lineHeight: 1.6 }}>검진 데이터를 입력하면 다음 검진 D-day를 확인할 수 있어요</p>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>다음 건강검진</div>
+      <p style={{ fontSize: '0.8125rem', color: T.inkMid, margin: 0, lineHeight: 1.6 }}>검진 데이터를 입력하면 다음 검진 D-day를 확인할 수 있어요</p>
     </Card>
   );
   const isOverdue = dday < 0, isToday = dday === 0;
@@ -93,8 +93,8 @@ function DdayCard({ dday, checkupDate, toast }) {
   return (
     <Card pad={16}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-        <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>다음 건강검진</div>
-        <button onClick={() => toast?.('알림 기능 준비 중입니다', 'bell')} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: T.blue, padding: '4px 10px', borderRadius: 999, background: T.blueSoft }}>
+        <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink }}>다음 건강검진</div>
+        <button onClick={() => toast?.('알림 기능 준비 중입니다', 'bell')} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700, color: T.blue, padding: '4px 10px', borderRadius: 999, background: T.blueSoft }}>
           <Icon name="bell" size={13} color={T.blue} stroke={2} /> 알림 설정
         </button>
       </div>
@@ -103,18 +103,18 @@ function DdayCard({ dday, checkupDate, toast }) {
           <Icon name="cal" size={26} color={ddayColor} stroke={1.9} />
         </div>
         <div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: ddayColor, letterSpacing: '-0.03em', lineHeight: 1 }}>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: ddayColor, letterSpacing: '-0.03em', lineHeight: 1 }}>
             {isOverdue ? `D+${-dday}` : isToday ? 'D-DAY' : `D-${dday}`}
           </div>
-          <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 4, fontWeight: 600 }}>
+          <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 4, fontWeight: 600 }}>
             {isOverdue ? '검진 권장일이 지났어요' : `${formatted} 권장`}
           </div>
         </div>
       </div>
       {isOverdue && (
         <div style={{ marginTop: 12, padding: '10px 13px', borderRadius: 11, background: T.warnSoft, display: 'flex', alignItems: 'center', gap: 7 }}>
-          <span style={{ fontSize: 15 }}>⚠️</span>
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: T.warn }}>건강검진을 예약하는 것을 권장해요</span>
+          <span style={{ fontSize: '0.9375rem' }}>⚠️</span>
+          <span style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.warn }}>건강검진을 예약하는 것을 권장해요</span>
         </div>
       )}
     </Card>
@@ -127,9 +127,9 @@ function DdayCard({ dday, checkupDate, toast }) {
 function WeeklyReportCard({ avgPct, onNav }) {
   if (avgPct === null) return (
     <Card pad={16}>
-      <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 6 }}>주간 건강 리포트</div>
-      <p style={{ fontSize: 13, color: T.inkMid, margin: '0 0 12px', lineHeight: 1.6 }}>목표를 설정하면 주간 리포트를 볼 수 있어요</p>
-      <button onClick={() => onNav?.('goals')} style={{ fontSize: 13, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>목표 설정하러 가기 <Icon name="chevR" size={14} color={T.blue} /></button>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>주간 건강 리포트</div>
+      <p style={{ fontSize: '0.8125rem', color: T.inkMid, margin: '0 0 12px', lineHeight: 1.6 }}>목표를 설정하면 주간 리포트를 볼 수 있어요</p>
+      <button onClick={() => onNav?.('goals')} style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>목표 설정하러 가기 <Icon name="chevR" size={14} color={T.blue} /></button>
     </Card>
   );
   const msg = avgPct <= 40 ? '이번 주 조금 더 힘내봐요 💪' : avgPct <= 70 ? '절반 넘었어요! 잘 하고 있어요 👍' : '이번 주 목표 거의 다 왔어요 🎉';
@@ -137,14 +137,14 @@ function WeeklyReportCard({ avgPct, onNav }) {
   return (
     <Card pad={16}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>주간 건강 리포트</div>
-        <span style={{ fontSize: 16, fontWeight: 800, color: barColor }}>{avgPct}%</span>
+        <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink }}>주간 건강 리포트</div>
+        <span style={{ fontSize: '1rem', fontWeight: 800, color: barColor }}>{avgPct}%</span>
       </div>
       <div style={{ height: 8, borderRadius: 999, background: T.line, overflow: 'hidden', marginBottom: 10 }}>
         <div style={{ height: '100%', width: avgPct + '%', borderRadius: 999, background: barColor, transition: 'width .4s ease' }} />
       </div>
-      <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink, marginBottom: 12 }}>{msg}</div>
-      <button onClick={() => onNav?.('goals')} style={{ fontSize: 12.5, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>목표 자세히 보기 <Icon name="chevR" size={14} color={T.blue} /></button>
+      <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink, marginBottom: 12 }}>{msg}</div>
+      <button onClick={() => onNav?.('goals')} style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>목표 자세히 보기 <Icon name="chevR" size={14} color={T.blue} /></button>
     </Card>
   );
 }
@@ -191,12 +191,12 @@ function TipCard({ tip }) {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: T.ink }}>{tip.title}</span>
+          <span style={{ fontSize: '0.875rem', fontWeight: 700, color: T.ink }}>{tip.title}</span>
           {tip.badge && (
-            <span style={{ fontSize: 10, fontWeight: 800, color: tip.color, background: soft, padding: '1px 6px', borderRadius: 999 }}>{tip.badge}</span>
+            <span style={{ fontSize: '0.625rem', fontWeight: 800, color: tip.color, background: soft, padding: '1px 6px', borderRadius: 999 }}>{tip.badge}</span>
           )}
         </div>
-        <span style={{ fontSize: 12, fontWeight: 600, color: T.inkSoft, lineHeight: 1.4 }}>{tip.desc}</span>
+        <span style={{ fontSize: '0.75rem', fontWeight: 600, color: T.inkSoft, lineHeight: 1.4 }}>{tip.desc}</span>
       </div>
     </div>
   );
@@ -218,8 +218,8 @@ function GuideBody({ metrics, onPremium, isPremium }) {
             <Icon name="spark" size={17} color="rgba(255,255,255,0.9)" stroke={2.2} />
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 800, color: 'rgba(255,255,255,0.9)', marginBottom: 2 }}>{hasData ? 'AI 맞춤 추천' : '맞춤 가이드'}</div>
-            <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: 'rgba(255,255,255,0.9)' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'rgba(255,255,255,0.9)', marginBottom: 2 }}>{hasData ? 'AI 맞춤 추천' : '맞춤 가이드'}</div>
+            <p style={{ margin: 0, fontSize: '0.7812rem', lineHeight: 1.5, color: 'rgba(255,255,255,0.9)' }}>
               {hasData ? '검진 수치를 분석해 아래 가이드를 추천해요.' : '검진 수치를 입력하면 맞춤 가이드를 받을 수 있어요.'}
             </p>
           </div>
@@ -253,8 +253,8 @@ function GuideBody({ metrics, onPremium, isPremium }) {
                 <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
                 </div>
-                <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 맞춤 가이드 전체 보기</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>1,900원</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 800, color: '#fff' }}>AI 맞춤 가이드 전체 보기</span>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>1,900원</span>
               </button>
             </>
           )}
@@ -262,9 +262,9 @@ function GuideBody({ metrics, onPremium, isPremium }) {
       ) : (
         <div style={{ padding: '12px 20px 28px' }}>
           <Card style={{ textAlign: 'center', padding: '28px 16px' }}>
-            <div style={{ fontSize: 36, marginBottom: 10 }}>📋</div>
-            <div style={{ fontSize: 14.5, fontWeight: 700, color: T.ink, marginBottom: 6 }}>검진 수치를 입력하면</div>
-            <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink, marginBottom: 4 }}>맞춤 가이드를 받을 수 있어요</div>
+            <div style={{ fontSize: '2.25rem', marginBottom: 10 }}>📋</div>
+            <div style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.ink, marginBottom: 6 }}>검진 수치를 입력하면</div>
+            <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink, marginBottom: 4 }}>맞춤 가이드를 받을 수 있어요</div>
           </Card>
         </div>
       )}
@@ -335,15 +335,15 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
           <Icon name="trend" size={28} color={T.blue} stroke={1.9} />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: T.ink, marginBottom: 6 }}>기록이 2개 이상이면</div>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T.inkMid }}>트렌드를 볼 수 있어요</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>기록이 2개 이상이면</div>
+          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: T.inkMid }}>트렌드를 볼 수 있어요</div>
         </div>
         <div style={{ padding: '10px 16px', borderRadius: 12, background: T.bg, border: '1px solid ' + T.line }}>
-          <span style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft }}>
+          <span style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkSoft }}>
             검진 기록: {annualEntries.length}개 · 일일 기록: {dailyPoints.length}개
           </span>
         </div>
-        <button onClick={() => onNav?.('input')} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13.5, fontWeight: 700, color: '#00B894', padding: '10px 18px', borderRadius: 12, background: T.greenSoft }}>
+        <button onClick={() => onNav?.('input')} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.8438rem', fontWeight: 700, color: '#00B894', padding: '10px 18px', borderRadius: 12, background: T.greenSoft }}>
           검진 결과 입력하기 <Icon name="chevR" size={15} color="#00B894" stroke={2.2} />
         </button>
       </div>
@@ -366,7 +366,7 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
         <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
           {Object.keys(METRIC_CONFIG).map(k => (
             <button key={k} onClick={() => setTab(k)} style={{
-              padding: '6px 13px', borderRadius: 999, fontSize: 12.5, fontWeight: 700,
+              padding: '6px 13px', borderRadius: 999, fontSize: '0.7812rem', fontWeight: 700,
               background: tab === k ? T.blue : '#fff',
               color: tab === k ? '#fff' : T.inkSoft,
               border: '1.5px solid ' + (tab === k ? T.blue : T.line),
@@ -380,18 +380,18 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
         <Card pad={16}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 10 }}>
             <div>
-              <div style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600, marginBottom: 2 }}>최근 {tab}</div>
+              <div style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600, marginBottom: 2 }}>최근 {tab}</div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
-                <span style={{ fontSize: 26, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{lastVal}</span>
-                <span style={{ fontSize: 12.5, color: T.inkSoft, fontWeight: 600 }}>{cfg.unit}</span>
+                <span style={{ fontSize: '1.625rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{lastVal}</span>
+                <span style={{ fontSize: '0.7812rem', color: T.inkSoft, fontWeight: 600 }}>{cfg.unit}</span>
               </div>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 9px', borderRadius: 999, background: s.soft, fontSize: 11.5, fontWeight: 800, color: s.color }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '3px 9px', borderRadius: 999, background: s.soft, fontSize: '0.7188rem', fontWeight: 800, color: s.color }}>
                 {STATUS_KO[curStatus]}
               </div>
               {delta != null && (
-                <div style={{ marginTop: 6, fontSize: 12, fontWeight: 700, color: delta > 0 ? T.danger : delta < 0 ? T.ok : T.inkSoft }}>
+                <div style={{ marginTop: 6, fontSize: '0.75rem', fontWeight: 700, color: delta > 0 ? T.danger : delta < 0 ? T.ok : T.inkSoft }}>
                   {delta > 0 ? '▲' : delta < 0 ? '▼' : '–'} 전체 기간 {delta > 0 ? '+' : ''}{delta} {cfg.unit}
                 </div>
               )}
@@ -402,11 +402,11 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
             <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 20, height: 3, borderRadius: 999, background: lineColor }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft }}>연간 검진</span>
+                <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.inkSoft }}>연간 검진</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <div style={{ width: 20, height: 2, borderRadius: 999, background: '#4CAF82', borderTop: '2px dashed #4CAF82' }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft }}>일일 측정</span>
+                <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.inkSoft }}>일일 측정</span>
               </div>
             </div>
           )}
@@ -414,11 +414,11 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
           <ResponsiveContainer width="100%" height={190}>
             <LineChart data={data} margin={{ top: 12, right: 8, left: -22, bottom: 0 }}>
               <CartesianGrid stroke="#E7ECF3" vertical={false} />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#8A97AC', fontSize: 11, fontWeight: 600 }} />
-              <YAxis domain={[yMin, yMax]} axisLine={false} tickLine={false} tick={{ fill: '#B4BECC', fontSize: 10 }} width={42} />
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#8A97AC', fontSize: '0.6875rem', fontWeight: 600 }} />
+              <YAxis domain={[yMin, yMax]} axisLine={false} tickLine={false} tick={{ fill: '#B4BECC', fontSize: '0.625rem' }} width={42} />
               <ReferenceLine y={cfg.normal} stroke="#9DB4D6" strokeDasharray="5 4"
-                label={{ value: cfg.label, position: 'insideTopRight', fill: '#9DB4D6', fontSize: 10, fontWeight: 700 }} />
-              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E7ECF3', fontSize: 12, boxShadow: '0 8px 20px rgba(26,43,69,0.12)' }}
+                label={{ value: cfg.label, position: 'insideTopRight', fill: '#9DB4D6', fontSize: '0.625rem', fontWeight: 700 }} />
+              <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #E7ECF3', fontSize: '0.75rem', boxShadow: '0 8px 20px rgba(26,43,69,0.12)' }}
                 formatter={(v, name) => [`${v} ${cfg.unit}`, name === 'annual' ? '연간 검진' : '일일 측정']} />
               <Line type="monotone" dataKey="annual" name="annual" stroke={lineColor} strokeWidth={3}
                 dot={{ r: 4.5, fill: '#fff', stroke: lineColor, strokeWidth: 2.5 }} activeDot={{ r: 6, fill: lineColor }}
@@ -442,8 +442,8 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
               <Icon name="trend" size={18} color="#00B894" stroke={2.1} />
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
-              <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: T.inkMid }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
+              <p style={{ margin: 0, fontSize: '0.8125rem', lineHeight: 1.6, color: T.inkMid }}>
                 최근 3년간 {tab} 수치 변화와 AI가 분석한 건강 트렌드를 확인할 수 있어요.
               </p>
             </div>
@@ -457,8 +457,8 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
                     <Icon name="trend" size={18} color="#00B894" stroke={2.1} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
-                    <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: T.inkMid }}>
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#00B894', marginBottom: 3 }}>연도별 트렌드 분석</div>
+                    <p style={{ margin: 0, fontSize: '0.8125rem', lineHeight: 1.6, color: T.inkMid }}>
                       최근 3년간 {tab} 수치 변화와 AI가 분석한 건강 트렌드를 확인할 수 있어요.
                     </p>
                   </div>
@@ -474,8 +474,8 @@ function CheckupTrends({ history, vitalsHistory, onPremium, onNav, isPremium }) 
               <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(180deg,#F0B445,#E0982A)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Icon name="crown" size={14} color="#3A2A06" stroke={2.2} />
               </div>
-              <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>AI 트렌드 분석 보기</span>
-              <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>· 1,900원</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: 800, color: '#fff' }}>AI 트렌드 분석 보기</span>
+              <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}>· 1,900원</span>
             </button>
           </>
         )}
@@ -495,8 +495,8 @@ function AiDailyModal({ modal, onClose }) {
           <Icon name="spark" size={22} color={T.blue} stroke={2} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>AI 분석 결과</div>
-          <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2 }}>혈압·혈당 AI 분석</div>
+          <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink }}>AI 분석 결과</div>
+          <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 2 }}>혈압·혈당 AI 분석</div>
         </div>
         <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 999, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Icon name="cross" size={17} color={T.inkSoft} stroke={2.2} />
@@ -507,41 +507,41 @@ function AiDailyModal({ modal, onClose }) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0', gap: 16 }}>
           <Spinner size={38} color={T.blue} stroke={3} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
-            <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
+            <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+            <div style={{ fontSize: '0.8125rem', color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
           </div>
         </div>
       ) : modal?.error ? (
         <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <div style={{ fontSize: 36, marginBottom: 12 }}>😢</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: T.ink, marginBottom: 8 }}>분석 중 오류가 발생했어요</div>
-          <div style={{ fontSize: 13, color: T.inkSoft }}>{modal.error}</div>
+          <div style={{ fontSize: '2.25rem', marginBottom: 12 }}>😢</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink, marginBottom: 8 }}>분석 중 오류가 발생했어요</div>
+          <div style={{ fontSize: '0.8125rem', color: T.inkSoft }}>{modal.error}</div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-            <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>종합 요약</div>
-            <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal?.data?.summary}</div>
+            <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>종합 요약</div>
+            <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{modal?.data?.summary}</div>
           </div>
           {(modal?.data?.details || []).map((d, i) => (
             <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <div style={{ width: 6, height: 6, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
-                <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>{d.title}</div>
+                <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink }}>{d.title}</div>
               </div>
-              <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
+              <div style={{ fontSize: '0.8125rem', lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
             </div>
           ))}
           {modal?.data?.lifestyleGuides?.length > 0 && (
             <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10, letterSpacing: '0.04em' }}>생활습관 개선 가이드</div>
+              <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.ok, marginBottom: 10, letterSpacing: '0.04em' }}>생활습관 개선 가이드</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {modal.data.lifestyleGuides.map((guide, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
                     <div style={{ width: 20, height: 20, borderRadius: 999, background: T.ok, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
+                      <span style={{ fontSize: '0.6875rem', fontWeight: 800, color: '#fff' }}>{i + 1}</span>
                     </div>
-                    <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{guide}</span>
+                    <span style={{ fontSize: '0.8125rem', lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{guide}</span>
                   </div>
                 ))}
               </div>
@@ -549,14 +549,14 @@ function AiDailyModal({ modal, onClose }) {
           )}
           {modal?.data?.advice && (
             <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
-              <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
+              <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
+              <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
             </div>
           )}
           {modal?.data?.nextCheckup && (
             <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>다음 검진 권고사항</div>
-              <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.nextCheckup}</div>
+              <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8, letterSpacing: '0.04em' }}>다음 검진 권고사항</div>
+              <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{modal.data.nextCheckup}</div>
             </div>
           )}
         </div>
@@ -620,8 +620,8 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
   return (
     <div data-screen-label="건강" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
       <div style={{ padding: '56px 20px 8px' }}>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{user.name ? `${user.name}님의 건강 관리` : '건강 관리'}</h1>
-        <p style={{ margin: '8px 0 0', fontSize: 13.5, color: T.inkSoft }}>
+        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{user.name ? `${user.name}님의 건강 관리` : '건강 관리'}</h1>
+        <p style={{ margin: '8px 0 0', fontSize: '0.8438rem', color: T.inkSoft }}>
           {mode === '맞춤 가이드' ? '내 검진 수치에 맞는 생활습관을 추천해요' : '연도별 검진 수치 변화를 확인하세요'}
         </p>
       </div>
@@ -654,8 +654,8 @@ export default function Daily({ toast, onNav, initialMode = '맞춤 가이드' }
               <Icon name="spark" size={20} color="#fff" stroke={2} />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>AI 분석받기</div>
-              <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>혈압·혈당 기록을 AI가 종합 분석해 드려요</div>
+              <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#fff' }}>AI 분석받기</div>
+              <div style={{ fontSize: '0.7812rem', color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>혈압·혈당 기록을 AI가 종합 분석해 드려요</div>
             </div>
             <Icon name="chevR" size={18} color="rgba(255,255,255,0.7)" />
           </button>

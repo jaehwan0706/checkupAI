@@ -43,7 +43,7 @@ export default function Onboarding({ onDone }) {
     >
       {/* 건너뛰기 */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '54px 22px 0' }}>
-        <button onClick={onDone} style={{ fontSize: 14, fontWeight: 600, color: T.inkSoft, padding: 8 }}>건너뛰기</button>
+        <button onClick={onDone} style={{ fontSize: '0.875rem', fontWeight: 600, color: T.inkSoft, padding: 8 }}>건너뛰기</button>
       </div>
 
       {/* 슬라이드 콘텐츠 */}
@@ -55,16 +55,16 @@ export default function Onboarding({ onDone }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           marginBottom: 40, animation: 'hlpop .4s ease',
         }}>
-          <span style={{ fontSize: 84, lineHeight: 1 }}>{s.emoji}</span>
+          <span style={{ fontSize: '5.25rem', lineHeight: 1 }}>{s.emoji}</span>
         </div>
         <h2 key={'t' + idx} style={{
-          margin: 0, fontSize: 24, fontWeight: 800, lineHeight: 1.45,
+          margin: 0, fontSize: '1.5rem', fontWeight: 800, lineHeight: 1.45,
           letterSpacing: '-0.02em', color: T.ink, whiteSpace: 'pre-line',
           animation: 'hlfadeup .35s ease',
         }}>
           {s.title}
         </h2>
-        <p style={{ margin: '16px 0 0', fontSize: 14.5, lineHeight: 1.65, color: T.inkMid, maxWidth: 280 }}>
+        <p style={{ margin: '16px 0 0', fontSize: '0.9062rem', lineHeight: 1.65, color: T.inkMid, maxWidth: 280 }}>
           {s.body}
         </p>
       </div>

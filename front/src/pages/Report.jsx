@@ -20,18 +20,18 @@ function SummaryRow({ m, last }) {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          <span style={{ fontSize: 14.5, fontWeight: 700, color: T.ink, whiteSpace: 'nowrap' }}>{m.name}</span>
+          <span style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.ink, whiteSpace: 'nowrap' }}>{m.name}</span>
           {isAlert && m.diagHint && (
-            <span style={{ fontSize: 10.5, color: s.color, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', opacity: 0.9 }}>— {m.diagHint}</span>
+            <span style={{ fontSize: '0.6562rem', color: s.color, fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', opacity: 0.9 }}>— {m.diagHint}</span>
           )}
         </div>
         {m.hint && (
-          <div style={{ fontSize: 11.5, fontWeight: 600, marginTop: 2, color: isAlert ? s.color : T.inkSoft, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.hint}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 600, marginTop: 2, color: isAlert ? s.color : T.inkSoft, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.hint}</div>
         )}
       </div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 3, marginRight: 10, flexShrink: 0 }}>
-        <span style={{ fontSize: 17, fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{m.value}</span>
-        <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{m.unit}</span>
+        <span style={{ fontSize: '1.0625rem', fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{m.value}</span>
+        <span style={{ fontSize: '0.6875rem', color: T.inkSoft, fontWeight: 600 }}>{m.unit}</span>
       </div>
       <Badge status={m.status} small />
     </div>
@@ -97,8 +97,8 @@ function AiSummaryCard({ items }) {
         <Icon name={s.icon} size={17} color={s.color} stroke={2.3} />
       </div>
       <div>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: s.color, marginBottom: 5, letterSpacing: '0.02em' }}>AI 한줄 총평</div>
-        <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.65, fontWeight: 600, color: s.color === T.ok ? '#2E7D55' : s.color }}>{s.text}</p>
+        <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: s.color, marginBottom: 5, letterSpacing: '0.02em' }}>AI 한줄 총평</div>
+        <p style={{ margin: 0, fontSize: '0.8438rem', lineHeight: 1.65, fontWeight: 600, color: s.color === T.ok ? '#2E7D55' : s.color }}>{s.text}</p>
       </div>
     </div>
   );
@@ -195,9 +195,9 @@ const fmtShort = d => {
 function CategoryEmpty({ emoji, title, sub }) {
   return (
     <div style={{ textAlign: 'center', padding: '60px 0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-      <div style={{ fontSize: 52, marginBottom: 2 }}>{emoji}</div>
-      <div style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>{title}</div>
-      <div style={{ fontSize: 13.5, color: T.inkSoft, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{sub}</div>
+      <div style={{ fontSize: '3.25rem', marginBottom: 2 }}>{emoji}</div>
+      <div style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>{title}</div>
+      <div style={{ fontSize: '0.8438rem', color: T.inkSoft, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{sub}</div>
     </div>
   );
 }
@@ -214,8 +214,8 @@ function AiAnalyzeBtn({ onPress, label, sub }) {
         <Icon name="spark" size={20} color="#fff" stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{label}</div>
-        {sub && <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>{sub}</div>}
+        <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#fff' }}>{label}</div>
+        {sub && <div style={{ fontSize: '0.7812rem', color: 'rgba(255,255,255,0.85)', marginTop: 2 }}>{sub}</div>}
       </div>
       <Icon name="chevR" size={18} color="rgba(255,255,255,0.7)" />
     </button>
@@ -227,8 +227,8 @@ function AiLoadingState() {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0', gap: 16 }}>
       <Spinner size={38} color={T.blue} stroke={3} />
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
-        <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
+        <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+        <div style={{ fontSize: '0.8125rem', color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
       </div>
     </div>
   );
@@ -241,9 +241,9 @@ function NumberedList({ items, bg, color }) {
       {items.map((item, i) => (
         <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
           <div style={{ width: 20, height: 20, borderRadius: 999, background: color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: '#fff' }}>{i + 1}</span>
+            <span style={{ fontSize: '0.6875rem', fontWeight: 800, color: '#fff' }}>{i + 1}</span>
           </div>
-          <span style={{ fontSize: 13, lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{item}</span>
+          <span style={{ fontSize: '0.8125rem', lineHeight: 1.65, color: T.ink, fontWeight: 600 }}>{item}</span>
         </div>
       ))}
     </div>
@@ -257,14 +257,14 @@ function CheckupAiDisplay({ data, onRetry }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       {data?.healthScore != null && (
         <div style={{ padding: '18px 16px', borderRadius: 14, background: `${scoreColor}15`, textAlign: 'center', border: `1.5px solid ${scoreColor}33` }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: scoreColor, marginBottom: 6 }}>AI 건강 점수</div>
-          <div style={{ fontSize: 52, fontWeight: 900, color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{data.healthScore}</div>
-          <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 4 }}>/ 100</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: scoreColor, marginBottom: 6 }}>AI 건강 점수</div>
+          <div style={{ fontSize: '3.25rem', fontWeight: 900, color: scoreColor, lineHeight: 1, letterSpacing: '-0.02em' }}>{data.healthScore}</div>
+          <div style={{ fontSize: '0.8125rem', color: T.inkSoft, marginTop: 4 }}>/ 100</div>
         </div>
       )}
       <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>AI 총평</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+        <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8 }}>AI 총평</div>
+        <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
       </div>
       {(data?.riskItems || []).map((item, i) => {
         const sc = item.status === '위험' ? T.danger : item.status === '주의' ? T.warn : T.ok;
@@ -272,15 +272,15 @@ function CheckupAiDisplay({ data, onRetry }) {
         return (
           <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: `1.5px solid ${sc}33` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <div style={{ padding: '2px 8px', borderRadius: 999, background: ss, fontSize: 11, fontWeight: 800, color: sc }}>{item.status}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{item.name}</div>
-              <div style={{ marginLeft: 'auto', fontSize: 13, fontWeight: 700, color: sc }}>{item.value}</div>
+              <div style={{ padding: '2px 8px', borderRadius: 999, background: ss, fontSize: '0.6875rem', fontWeight: 800, color: sc }}>{item.status}</div>
+              <div style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink }}>{item.name}</div>
+              <div style={{ marginLeft: 'auto', fontSize: '0.8125rem', fontWeight: 700, color: sc }}>{item.value}</div>
             </div>
-            <div style={{ fontSize: 12.5, color: T.inkMid, lineHeight: 1.65, marginBottom: item.action ? 8 : 0 }}>{item.reason}</div>
+            <div style={{ fontSize: '0.7812rem', color: T.inkMid, lineHeight: 1.65, marginBottom: item.action ? 8 : 0 }}>{item.reason}</div>
             {item.action && (
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 10px', borderRadius: 10, background: ss }}>
                 <Icon name="spark" size={13} color={sc} stroke={2} />
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: sc }}>{item.action}</span>
+                <span style={{ fontSize: '0.7812rem', fontWeight: 700, color: sc }}>{item.action}</span>
               </div>
             )}
           </div>
@@ -288,23 +288,23 @@ function CheckupAiDisplay({ data, onRetry }) {
       })}
       {data?.immediateActions?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
           <NumberedList items={data.immediateActions} color={T.warn} />
         </div>
       )}
       {data?.monthlyGoals?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
           <NumberedList items={data.monthlyGoals} color={T.ok} />
         </div>
       )}
       {data?.nextCheckupRecommendation && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>다음 검진 권고</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.nextCheckupRecommendation}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8 }}>다음 검진 권고</div>
+          <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data.nextCheckupRecommendation}</div>
         </div>
       )}
-      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft }}>
         <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
       </button>
     </div>
@@ -318,44 +318,44 @@ function VitalsAiDisplay({ data, onRetry }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>종합 요약</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+        <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8 }}>종합 요약</div>
+        <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
       </div>
       {(data?.trend || data?.riskLevel) && (
         <div style={{ display: 'flex', gap: 8 }}>
           {data.trend && (
             <div style={{ flex: 1, padding: '12px 14px', borderRadius: 14, background: `${tColor}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>트렌드</div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: tColor }}>{data.trend}</div>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>트렌드</div>
+              <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: tColor }}>{data.trend}</div>
             </div>
           )}
           {data.riskLevel && (
             <div style={{ flex: 1, padding: '12px 14px', borderRadius: 14, background: `${rColor}15`, textAlign: 'center' }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>위험도</div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: rColor }}>{data.riskLevel}</div>
+              <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>위험도</div>
+              <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: rColor }}>{data.riskLevel}</div>
             </div>
           )}
         </div>
       )}
       {data?.reason && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 분석</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 분석</div>
+          <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
         </div>
       )}
       {data?.immediateActions?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 10 }}>지금 실천할 것</div>
           <NumberedList items={data.immediateActions} color={T.warn} />
         </div>
       )}
       {data?.monthlyGoals?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
           <NumberedList items={data.monthlyGoals} color={T.ok} />
         </div>
       )}
-      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft }}>
         <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
       </button>
     </div>
@@ -367,8 +367,8 @@ function PharmacyAiDisplay({ data, onRetry }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>처방약 요약</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+        <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8 }}>처방약 요약</div>
+        <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
       </div>
       {(data?.medications || []).map((med, i) => (
         <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
@@ -376,25 +376,25 @@ function PharmacyAiDisplay({ data, onRetry }) {
             <div style={{ width: 28, height: 28, borderRadius: 8, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
               <Icon name="flask" size={14} color={T.blue} stroke={2} />
             </div>
-            <div style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{med.name}</div>
+            <div style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink }}>{med.name}</div>
           </div>
-          {med.purpose && <div style={{ fontSize: 12.5, color: T.inkMid, marginBottom: 5, lineHeight: 1.6 }}>📌 {med.purpose}</div>}
-          {med.caution && <div style={{ fontSize: 12.5, color: T.warn, fontWeight: 600, lineHeight: 1.6 }}>⚠️ {med.caution}</div>}
+          {med.purpose && <div style={{ fontSize: '0.7812rem', color: T.inkMid, marginBottom: 5, lineHeight: 1.6 }}>📌 {med.purpose}</div>}
+          {med.caution && <div style={{ fontSize: '0.7812rem', color: T.warn, fontWeight: 600, lineHeight: 1.6 }}>⚠️ {med.caution}</div>}
         </div>
       ))}
       {data?.interactions && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8 }}>약물 상호작용 주의</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data.interactions}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 8 }}>약물 상호작용 주의</div>
+          <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data.interactions}</div>
         </div>
       )}
       {data?.immediateActions?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>복용 지침</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.ok, marginBottom: 10 }}>복용 지침</div>
           <NumberedList items={data.immediateActions} color={T.ok} />
         </div>
       )}
-      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft }}>
         <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
       </button>
     </div>
@@ -406,34 +406,34 @@ function HospitalAiDisplay({ data, onRetry }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-        <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8 }}>진료 요약</div>
-        <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
+        <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8 }}>진료 요약</div>
+        <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{data?.summary}</div>
       </div>
       {data?.diagnosis && (
         <div style={{ padding: '12px 14px', borderRadius: 14, background: T.dangerSoft, border: `1px solid ${T.danger}33` }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.danger, marginBottom: 4 }}>진단</div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>{data.diagnosis}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.danger, marginBottom: 4 }}>진단</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink }}>{data.diagnosis}</div>
         </div>
       )}
       {data?.reason && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 설명</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.inkMid, marginBottom: 8 }}>원인 설명</div>
+          <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.inkMid }}>{data.reason}</div>
         </div>
       )}
       {data?.immediateActions?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 10 }}>관리 방법</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 10 }}>관리 방법</div>
           <NumberedList items={data.immediateActions} color={T.warn} />
         </div>
       )}
       {data?.monthlyGoals?.length > 0 && (
         <div style={{ padding: '14px 16px', borderRadius: 14, background: T.greenSoft }}>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.ok, marginBottom: 10 }}>이번 달 목표</div>
           <NumberedList items={data.monthlyGoals} color={T.ok} />
         </div>
       )}
-      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: 13, fontWeight: 700, color: T.inkSoft }}>
+      <button onClick={onRetry} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '11px', borderRadius: 12, border: '1px solid ' + T.line, background: '#fff', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft }}>
         <Icon name="spark" size={14} color={T.inkSoft} stroke={2} /> 다시 분석하기
       </button>
     </div>
@@ -452,20 +452,20 @@ function VitalsTab({ vitals, aiState, onAnalyze }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <Card pad={16}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 12 }}>
-          최근 기록 <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{vitals.length}건</span>
+        <div style={{ fontSize: '0.8125rem', fontWeight: 800, color: T.ink, marginBottom: 12 }}>
+          최근 기록 <span style={{ fontSize: '0.6875rem', color: T.inkSoft, fontWeight: 600 }}>{vitals.length}건</span>
         </div>
         {recent.map((v, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', padding: '8px 0', borderTop: i === 0 ? 'none' : '1px solid ' + T.line }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: T.inkSoft, width: 38, flexShrink: 0 }}>{fmtShort(v.recordedDate)}</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: T.inkSoft, width: 38, flexShrink: 0 }}>{fmtShort(v.recordedDate)}</span>
             <div style={{ display: 'flex', gap: 12, flex: 1, flexWrap: 'wrap' }}>
               {v.systolic != null && (
-                <span style={{ fontSize: 13, fontWeight: 700, color: v.systolic >= 140 ? T.danger : v.systolic >= 120 ? T.warn : T.ok }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: v.systolic >= 140 ? T.danger : v.systolic >= 120 ? T.warn : T.ok }}>
                   혈압 {v.systolic}/{v.diastolic ?? '—'} mmHg
                 </span>
               )}
               {v.bloodSugar != null && (
-                <span style={{ fontSize: 13, fontWeight: 700, color: v.bloodSugar >= 126 ? T.danger : v.bloodSugar >= 100 ? T.warn : T.ok }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: v.bloodSugar >= 126 ? T.danger : v.bloodSugar >= 100 ? T.warn : T.ok }}>
                   혈당 {v.bloodSugar} mg/dL
                 </span>
               )}
@@ -473,15 +473,15 @@ function VitalsTab({ vitals, aiState, onAnalyze }) {
           </div>
         ))}
         {vitals.length > 5 && (
-          <div style={{ paddingTop: 8, fontSize: 12, color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{vitals.length - 5}건 더 있어요</div>
+          <div style={{ paddingTop: 8, fontSize: '0.75rem', color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{vitals.length - 5}건 더 있어요</div>
         )}
       </Card>
       {idle && <AiAnalyzeBtn onPress={() => onAnalyze('daily')} label="AI 분석받기" sub="혈압·혈당 기록을 AI가 종합 분석해 드려요" />}
       {aiState?.loading && <AiLoadingState />}
       {!aiState?.loading && aiState?.error && (
-        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: '0.8438rem', color: T.danger, fontWeight: 600, textAlign: 'center' }}>
           {aiState.error}
-          <button onClick={() => onAnalyze('daily')} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+          <button onClick={() => onAnalyze('daily')} style={{ display: 'block', margin: '10px auto 0', fontSize: '0.8125rem', fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
         </div>
       )}
       {!aiState?.loading && aiState?.data && <VitalsAiDisplay data={aiState.data} onRetry={() => onAnalyze('daily')} />}
@@ -502,30 +502,30 @@ function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle,
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
       <Card pad={16}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: T.ink, marginBottom: 12 }}>
-          최근 기록 <span style={{ fontSize: 11, color: T.inkSoft, fontWeight: 600 }}>{records.length}건</span>
+        <div style={{ fontSize: '0.8125rem', fontWeight: 800, color: T.ink, marginBottom: 12 }}>
+          최근 기록 <span style={{ fontSize: '0.6875rem', color: T.inkSoft, fontWeight: 600 }}>{records.length}건</span>
         </div>
         {recent.map((r, i) => (
           <div key={i} style={{ padding: '9px 0', borderTop: i === 0 ? 'none' : '1px solid ' + T.line }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 11.5, fontWeight: 700, color: T.inkSoft, flexShrink: 0, width: 38 }}>{fmtShort(r.recordedDate)}</span>
-              <span style={{ fontSize: 13.5, fontWeight: 700, color: T.ink, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
+              <span style={{ fontSize: '0.7188rem', fontWeight: 700, color: T.inkSoft, flexShrink: 0, width: 38 }}>{fmtShort(r.recordedDate)}</span>
+              <span style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</span>
             </div>
             {r.description && (
-              <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingLeft: 46 }}>{r.description}</div>
+              <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingLeft: 46 }}>{r.description}</div>
             )}
           </div>
         ))}
         {records.length > 5 && (
-          <div style={{ paddingTop: 8, fontSize: 12, color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{records.length - 5}건 더 있어요</div>
+          <div style={{ paddingTop: 8, fontSize: '0.75rem', color: T.inkSoft, textAlign: 'center', borderTop: '1px solid ' + T.line }}>+{records.length - 5}건 더 있어요</div>
         )}
       </Card>
       {idle && <AiAnalyzeBtn onPress={() => onAnalyze(type)} label={analyzeLabel} sub={analyzeSub} />}
       {aiState?.loading && <AiLoadingState />}
       {!aiState?.loading && aiState?.error && (
-        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+        <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: '0.8438rem', color: T.danger, fontWeight: 600, textAlign: 'center' }}>
           {aiState.error}
-          <button onClick={() => onAnalyze(type)} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+          <button onClick={() => onAnalyze(type)} style={{ display: 'block', margin: '10px auto 0', fontSize: '0.8125rem', fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
         </div>
       )}
       {!aiState?.loading && aiState?.data && <Display data={aiState.data} onRetry={() => onAnalyze(type)} />}
@@ -617,8 +617,8 @@ export default function Report({ onPremium, toast }) {
 
       {/* ─ 헤더 ─ */}
       <div style={{ padding: '56px 20px 10px' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: isPremium ? '#FFF3D6' : isPaid ? T.blueSoft : T.greenSoft, color: isPremium ? '#A0620A' : isPaid ? T.blue : T.ok, padding: '4px 10px', borderRadius: 999, fontSize: 11, fontWeight: 800, marginBottom: 10 }}>{isPremium ? '프리미엄' : isPaid ? '건당 구매' : '무료 플랜'}</div>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>내 건강 리포트</h1>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: isPremium ? '#FFF3D6' : isPaid ? T.blueSoft : T.greenSoft, color: isPremium ? '#A0620A' : isPaid ? T.blue : T.ok, padding: '4px 10px', borderRadius: 999, fontSize: '0.6875rem', fontWeight: 800, marginBottom: 10 }}>{isPremium ? '프리미엄' : isPaid ? '건당 구매' : '무료 플랜'}</div>
+        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>내 건강 리포트</h1>
       </div>
 
       {/* ─ 탭 바 ─ */}
@@ -626,7 +626,7 @@ export default function Report({ onPremium, toast }) {
         {TABS.map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
             flexShrink: 0, padding: '8px 15px', borderRadius: 999,
-            fontSize: 13, fontWeight: 700,
+            fontSize: '0.8125rem', fontWeight: 700,
             background: tab === t ? T.blue : '#fff',
             color: tab === t ? '#fff' : T.inkMid,
             border: `1.5px solid ${tab === t ? T.blue : T.line}`,
@@ -639,18 +639,18 @@ export default function Report({ onPremium, toast }) {
       {tab === '건강검진' && (
         <>
           <div style={{ padding: '0 20px 14px' }}>
-            {displayDate && <p style={{ margin: '0 0 10px', fontSize: 13, color: T.inkSoft }}>{displayDate} 검진 기준</p>}
+            {displayDate && <p style={{ margin: '0 0 10px', fontSize: '0.8125rem', color: T.inkSoft }}>{displayDate} 검진 기준</p>}
             {loading ? (
-              <div style={{ padding: '13px 15px', borderRadius: 14, background: T.bg, border: '1px solid ' + T.line, fontSize: 13.5, color: T.inkSoft, fontWeight: 600 }}>데이터를 불러오는 중...</div>
+              <div style={{ padding: '13px 15px', borderRadius: 14, background: T.bg, border: '1px solid ' + T.line, fontSize: '0.8438rem', color: T.inkSoft, fontWeight: 600 }}>데이터를 불러오는 중...</div>
             ) : warnCount > 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 15px', borderRadius: 14, background: T.warnSoft, border: `1px solid ${T.warn}33` }}>
-                <span style={{ fontSize: 17 }}>⚠️</span>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#9A6A12' }}>주의가 필요한 항목이 {warnCount}개 있어요</span>
+                <span style={{ fontSize: '1.0625rem' }}>⚠️</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#9A6A12' }}>주의가 필요한 항목이 {warnCount}개 있어요</span>
               </div>
             ) : checkupItems.length > 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 15px', borderRadius: 14, background: T.greenSoft }}>
                 <Icon name="check" size={17} color={T.green} stroke={2.6} />
-                <span style={{ fontSize: 14, fontWeight: 700, color: T.ok }}>모든 수치가 정상 범위예요!</span>
+                <span style={{ fontSize: '0.875rem', fontWeight: 700, color: T.ok }}>모든 수치가 정상 범위예요!</span>
               </div>
             ) : null}
           </div>
@@ -658,9 +658,9 @@ export default function Report({ onPremium, toast }) {
           {!loading && checkupItems.length === 0 && (
             <div style={{ padding: '0 20px 28px' }}>
               <Card style={{ textAlign: 'center', padding: '36px 20px' }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
-                <div style={{ fontSize: 17, fontWeight: 800, color: T.ink, marginBottom: 8 }}>검진 데이터가 없어요</div>
-                <p style={{ fontSize: 14, fontWeight: 600, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 AI 리포트를 받을 수 있어요</p>
+                <div style={{ fontSize: '3rem', marginBottom: 12 }}>📋</div>
+                <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink, marginBottom: 8 }}>검진 데이터가 없어요</div>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 AI 리포트를 받을 수 있어요</p>
               </Card>
             </div>
           )}
@@ -669,8 +669,8 @@ export default function Report({ onPremium, toast }) {
             <>
               <div style={{ padding: '0 20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, margin: '0 2px 10px' }}>
-                  <span style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>수치 요약</span>
-                  {!hasAccess && <span style={{ fontSize: 11, fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>}
+                  <span style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink }}>수치 요약</span>
+                  {!hasAccess && <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.ok, background: T.greenSoft, padding: '2px 8px', borderRadius: 999 }}>무료 공개</span>}
                 </div>
                 <Card pad={0} style={{ overflow: 'hidden' }}>
                   {freeItems.map((m, i) => <SummaryRow key={m.id} m={m} last={i === freeItems.length - 1} />)}
@@ -686,9 +686,9 @@ export default function Report({ onPremium, toast }) {
                   )}
                   {aiState.checkup?.loading && <AiLoadingState />}
                   {!aiState.checkup?.loading && aiState.checkup?.error && (
-                    <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: 13.5, color: T.danger, fontWeight: 600, textAlign: 'center' }}>
+                    <div style={{ padding: '16px', borderRadius: 14, background: T.dangerSoft, fontSize: '0.8438rem', color: T.danger, fontWeight: 600, textAlign: 'center' }}>
                       {aiState.checkup.error}
-                      <button onClick={() => runAiAnalysis('checkup')} style={{ display: 'block', margin: '10px auto 0', fontSize: 13, fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
+                      <button onClick={() => runAiAnalysis('checkup')} style={{ display: 'block', margin: '10px auto 0', fontSize: '0.8125rem', fontWeight: 700, color: T.danger, textDecoration: 'underline' }}>다시 시도</button>
                     </div>
                   )}
                   {!aiState.checkup?.loading && aiState.checkup?.data && (
@@ -700,10 +700,10 @@ export default function Report({ onPremium, toast }) {
                 <>
                   <div style={{ padding: '14px 20px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div>
-                      <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 9 }}>프리미엄에서 확인할 수 있어요</div>
+                      <div style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkSoft, marginBottom: 9 }}>프리미엄에서 확인할 수 있어요</div>
                       <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
                         {[{ icon: 'spark', label: '수치별 원인 분석' }, { icon: 'run', label: '맞춤 운동 추천' }, { icon: 'food', label: '식습관 가이드' }, { icon: 'cal', label: '재검 계획' }, { icon: 'pdf', label: 'PDF 저장' }].map((it, i) => (
-                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: '#fff', border: '1px solid ' + T.line, fontSize: 12.5, fontWeight: 700, color: T.ink }}>
+                          <div key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 11px', borderRadius: 999, background: '#fff', border: '1px solid ' + T.line, fontSize: '0.7812rem', fontWeight: 700, color: T.ink }}>
                             <Icon name={it.icon} size={13} color={T.blue} stroke={2.1} /> {it.label}
                           </div>
                         ))}
@@ -714,8 +714,8 @@ export default function Report({ onPremium, toast }) {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div style={{ flex: 1, height: 1, background: T.line }} />
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 13px', borderRadius: 999, background: '#F0F2F5', margin: '0 10px' }}>
-                        <span style={{ fontSize: 12 }}>🔒</span>
-                        <span style={{ fontSize: 12.5, fontWeight: 800, color: T.blue }}>프리미엄 전용 콘텐츠</span>
+                        <span style={{ fontSize: '0.75rem' }}>🔒</span>
+                        <span style={{ fontSize: '0.7812rem', fontWeight: 800, color: T.blue }}>프리미엄 전용 콘텐츠</span>
                       </div>
                       <div style={{ flex: 1, height: 1, background: T.line }} />
                     </div>
@@ -727,23 +727,23 @@ export default function Report({ onPremium, toast }) {
                       </div>
                     </LockedPreview>
                     {lockedItems.length > 2 && (
-                      <div style={{ textAlign: 'center', fontSize: 13, fontWeight: 700, color: T.inkSoft, padding: '2px 0' }}>+ {lockedItems.length - 2}개 항목 더 있어요</div>
+                      <div style={{ textAlign: 'center', fontSize: '0.8125rem', fontWeight: 700, color: T.inkSoft, padding: '2px 0' }}>+ {lockedItems.length - 2}개 항목 더 있어요</div>
                     )}
                   </div>
                   <div style={{ padding: '14px 20px 0' }}>
                     <div style={{ marginBottom: 12 }}>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 7 }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: T.inkMid }}>총 {checkupItems.length}개 항목 중 {freeItems.length}개 확인 완료</span>
-                        <span style={{ fontSize: 12, fontWeight: 800, color: T.blue }}>{freeItems.length}/{checkupItems.length}</span>
+                        <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.inkMid }}>총 {checkupItems.length}개 항목 중 {freeItems.length}개 확인 완료</span>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: T.blue }}>{freeItems.length}/{checkupItems.length}</span>
                       </div>
                       <div style={{ height: 7, borderRadius: 999, background: T.line, overflow: 'hidden' }}>
                         <div style={{ height: '100%', width: Math.round((freeItems.length / checkupItems.length) * 100) + '%', borderRadius: 999, background: `linear-gradient(90deg,${T.blue},${T.green})`, transition: 'width .4s ease' }} />
                       </div>
                     </div>
-                    <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 13, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: 14.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 6px 16px rgba(0,184,148,0.28)' }}>
+                    <button onClick={onPremium} style={{ width: '100%', height: 50, borderRadius: 13, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: '0.9062rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 6px 16px rgba(0,184,148,0.28)' }}>
                       <Icon name="lock" size={15} color="rgba(255,255,255,0.9)" stroke={2.2} />
                       나머지 {lockedItems.length}개 항목 상세 분석 보기
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginLeft: 2 }}>· 1,900원</span>
+                      <span style={{ fontSize: '0.7812rem', fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginLeft: 2 }}>· 1,900원</span>
                     </button>
                   </div>
                 </>
@@ -757,7 +757,7 @@ export default function Report({ onPremium, toast }) {
       {tab === '혈압·혈당' && (
         <div style={{ padding: '0 20px 32px' }}>
           {loading
-            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: '0.8438rem', color: T.inkSoft }}>불러오는 중...</div>
             : <VitalsTab vitals={vitals} aiState={aiState.daily} onAnalyze={runAiAnalysis} />
           }
         </div>
@@ -767,7 +767,7 @@ export default function Report({ onPremium, toast }) {
       {tab === '약국봉투' && (
         <div style={{ padding: '0 20px 32px' }}>
           {loading
-            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: '0.8438rem', color: T.inkSoft }}>불러오는 중...</div>
             : <MedicalTab
                 records={pharmacyRecords} type="pharmacy"
                 aiState={aiState.pharmacy} onAnalyze={runAiAnalysis}
@@ -784,7 +784,7 @@ export default function Report({ onPremium, toast }) {
       {tab === '병원진료' && (
         <div style={{ padding: '0 20px 32px' }}>
           {loading
-            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+            ? <div style={{ textAlign: 'center', padding: '60px 0', fontSize: '0.8438rem', color: T.inkSoft }}>불러오는 중...</div>
             : <MedicalTab
                 records={hospitalRecords} type="hospital"
                 aiState={aiState.hospital} onAnalyze={runAiAnalysis}
@@ -800,7 +800,7 @@ export default function Report({ onPremium, toast }) {
       {/* ─ 면책 고지 ─ */}
       <div style={{ margin: '4px 20px 28px', padding: 14, borderRadius: 14, background: '#EEF1F6', display: 'flex', gap: 10 }}>
         <Icon name="info" size={18} color={T.inkSoft} stroke={2} />
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: T.inkSoft }}>본 서비스는 의료 진단이 아닙니다. 검진 결과 해석을 돕기 위한 참고용 정보이며, 정확한 진단과 치료는 반드시 의료 전문가와 상담하세요.</p>
+        <p style={{ margin: 0, fontSize: '0.75rem', lineHeight: 1.6, color: T.inkSoft }}>본 서비스는 의료 진단이 아닙니다. 검진 결과 해석을 돕기 위한 참고용 정보이며, 정확한 진단과 치료는 반드시 의료 전문가와 상담하세요.</p>
       </div>
     </div>
   );

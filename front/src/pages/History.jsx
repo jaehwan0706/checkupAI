@@ -80,18 +80,18 @@ function ModalRow({ label, value, unit, status, first, multiline }) {
   if (multiline) {
     return (
       <div style={{ padding: '11px 0', borderTop: border }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: T.inkSoft, marginBottom: 5 }}>{label}</div>
-        <div style={{ fontSize: 14, color: T.inkMid, lineHeight: 1.6 }}>{value}</div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 700, color: T.inkSoft, marginBottom: 5 }}>{label}</div>
+        <div style={{ fontSize: '0.875rem', color: T.inkMid, lineHeight: 1.6 }}>{value}</div>
       </div>
     );
   }
   return (
     <div style={{ display: 'flex', alignItems: 'center', padding: '11px 0', borderTop: border }}>
-      <span style={{ flex: 1, fontSize: 13.5, color: T.inkMid, fontWeight: 600 }}>{label}</span>
+      <span style={{ flex: 1, fontSize: '0.8438rem', color: T.inkMid, fontWeight: 600 }}>{label}</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-        <span style={{ fontSize: 15, fontWeight: 700, color: vColor }}>
+        <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: vColor }}>
           {value}
-          {unit && <span style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft, marginLeft: 3 }}>{unit}</span>}
+          {unit && <span style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft, marginLeft: 3 }}>{unit}</span>}
         </span>
         {status && <Badge status={status} small />}
       </div>
@@ -107,8 +107,8 @@ function ModalHeader({ icon, iconBg, iconColor, title, subtitle, onClose }) {
         <Icon name={icon} size={22} color={iconColor} stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 17, fontWeight: 800, color: T.ink, letterSpacing: '-0.01em' }}>{title}</div>
-        {subtitle && <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2 }}>{subtitle}</div>}
+        <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.01em' }}>{title}</div>
+        {subtitle && <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 2 }}>{subtitle}</div>}
       </div>
       <button
         onClick={onClose}
@@ -153,15 +153,15 @@ function CheckupDetail({ r, isLatest, onNav, onClose }) {
       {/* 건강점수 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 14, background: T.bg, marginBottom: 14 }}>
         <div style={{ width: 44, height: 44, borderRadius: 12, background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-          <span style={{ fontSize: 16, fontWeight: 800, color: scoreColor(r.healthScore || 0), lineHeight: 1 }}>{r.healthScore ?? '—'}</span>
-          <span style={{ fontSize: 9, color: T.blue, fontWeight: 600 }}>점</span>
+          <span style={{ fontSize: '1rem', fontWeight: 800, color: scoreColor(r.healthScore || 0), lineHeight: 1 }}>{r.healthScore ?? '—'}</span>
+          <span style={{ fontSize: '0.5625rem', color: T.blue, fontWeight: 600 }}>점</span>
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: T.inkSoft }}>건강 점수</div>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: T.inkSoft }}>건강 점수</div>
           <Badge status={STATUS_MAP[statusFromScore(r.healthScore)]} small />
         </div>
         {isLatest && (
-          <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 800, color: T.green, background: T.greenSoft, padding: '3px 9px', borderRadius: 999 }}>최신</span>
+          <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', fontWeight: 800, color: T.green, background: T.greenSoft, padding: '3px 9px', borderRadius: 999 }}>최신</span>
         )}
       </div>
 
@@ -186,7 +186,7 @@ function CheckupDetail({ r, isLatest, onNav, onClose }) {
       {isLatest && (
         <button
           onClick={() => { if (r.id) localStorage.setItem('lastCheckupId', String(r.id)); onClose(); onNav('report'); }}
-          style={{ width: '100%', marginTop: 20, height: 52, borderRadius: 15, background: T.blue, color: '#fff', fontSize: 15.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+          style={{ width: '100%', marginTop: 20, height: 52, borderRadius: 15, background: T.blue, color: '#fff', fontSize: '0.9688rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
         >
           <Icon name="spark" size={18} color="#fff" stroke={2} /> AI 리포트 보기
         </button>
@@ -240,15 +240,15 @@ function CheckupCard({ r, isLatest, onOpen }) {
   return (
     <Card onClick={() => onOpen(r)} pad={15} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 13 }}>
       <div style={{ width: 46, height: 46, borderRadius: 13, background: T.blueSoft, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <span style={{ fontSize: 17, fontWeight: 800, color: scoreColor(score || 0), lineHeight: 1 }}>{score ?? '—'}</span>
-        <span style={{ fontSize: 9, color: T.blue, fontWeight: 600, marginTop: 1 }}>점</span>
+        <span style={{ fontSize: '1.0625rem', fontWeight: 800, color: scoreColor(score || 0), lineHeight: 1 }}>{score ?? '—'}</span>
+        <span style={{ fontSize: '0.5625rem', color: T.blue, fontWeight: 600, marginTop: 1 }}>점</span>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.checkupDate)}</span>
-          {isLatest && <span style={{ fontSize: 10, fontWeight: 800, color: T.green, background: T.greenSoft, padding: '2px 7px', borderRadius: 999 }}>최신</span>}
+          <span style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{fmtDate(r.checkupDate)}</span>
+          {isLatest && <span style={{ fontSize: '0.625rem', fontWeight: 800, color: T.green, background: T.greenSoft, padding: '2px 7px', borderRadius: 999 }}>최신</span>}
         </div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3 }}>{r.institution || '직접 입력'}</div>
+        <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 3 }}>{r.institution || '직접 입력'}</div>
       </div>
       <Badge status={st} small />
       <Icon name="chevR" size={17} color="#C6D3E6" />
@@ -265,14 +265,14 @@ function VitalCard({ r, onOpen }) {
         <Icon name="drop" size={22} color="#F57C00" stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
+        <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
         <div style={{ display: 'flex', gap: 10, marginTop: 4, flexWrap: 'wrap' }}>
-          {hasBP && <span style={{ fontSize: 12.5, fontWeight: 600, color: bpColor(r.systolic) }}>혈압 {r.systolic}/{r.diastolic ?? '—'} mmHg</span>}
-          {hasBS && <span style={{ fontSize: 12.5, fontWeight: 600, color: bsColor(r.bloodSugar) }}>혈당 {r.bloodSugar} mg/dL</span>}
-          {!hasBP && !hasBS && <span style={{ fontSize: 12.5, color: T.inkSoft }}>혈압·혈당 기록</span>}
+          {hasBP && <span style={{ fontSize: '0.7812rem', fontWeight: 600, color: bpColor(r.systolic) }}>혈압 {r.systolic}/{r.diastolic ?? '—'} mmHg</span>}
+          {hasBS && <span style={{ fontSize: '0.7812rem', fontWeight: 600, color: bsColor(r.bloodSugar) }}>혈당 {r.bloodSugar} mg/dL</span>}
+          {!hasBP && !hasBS && <span style={{ fontSize: '0.7812rem', color: T.inkSoft }}>혈압·혈당 기록</span>}
         </div>
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color: '#E65100', background: '#FFF3E0', padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>혈압·혈당</span>
+      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#E65100', background: '#FFF3E0', padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>혈압·혈당</span>
       <Icon name="chevR" size={17} color="#C6D3E6" />
     </Card>
   );
@@ -285,10 +285,10 @@ function PharmacyCard({ r, onOpen }) {
         <Icon name="flask" size={22} color="#9C27B0" stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</div>
+        <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
+        <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</div>
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color: '#7B1FA2', background: '#F3E5F5', padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>약국봉투</span>
+      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: '#7B1FA2', background: '#F3E5F5', padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>약국봉투</span>
       <Icon name="chevR" size={17} color="#C6D3E6" />
     </Card>
   );
@@ -301,10 +301,10 @@ function HospitalCard({ r, onOpen }) {
         <Icon name="doc" size={22} color={T.blue} stroke={2} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</div>
+        <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{fmtDate(r.recordedDate)}</div>
+        <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.title}</div>
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color: T.blue, background: T.blueSoft, padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>병원진료</span>
+      <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.blue, background: T.blueSoft, padding: '3px 8px', borderRadius: 999, flexShrink: 0 }}>병원진료</span>
       <Icon name="chevR" size={17} color="#C6D3E6" />
     </Card>
   );
@@ -333,8 +333,8 @@ function AiAnalysisBanner({ cat, onAnalyze }) {
           <Icon name="spark" size={20} color="#fff" stroke={2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>AI 분석받기</div>
-          <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.85)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: '#fff' }}>AI 분석받기</div>
+          <div style={{ fontSize: '0.7812rem', color: 'rgba(255,255,255,0.85)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sub}</div>
         </div>
         <Icon name="chevR" size={18} color="rgba(255,255,255,0.7)" />
       </button>
@@ -355,8 +355,8 @@ function AiResultContent({ modal, onClose }) {
           <Icon name="spark" size={22} color={T.blue} stroke={2} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 17, fontWeight: 800, color: T.ink }}>AI 분석 결과</div>
-          <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 2 }}>{typeLabel}</div>
+          <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink }}>AI 분석 결과</div>
+          <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 2 }}>{typeLabel}</div>
         </div>
         <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 999, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
           <Icon name="cross" size={17} color={T.inkSoft} stroke={2.2} />
@@ -367,22 +367,22 @@ function AiResultContent({ modal, onClose }) {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '48px 0', gap: 16 }}>
           <Spinner size={38} color={T.blue} stroke={3} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
-            <div style={{ fontSize: 13, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
+            <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요</div>
+            <div style={{ fontSize: '0.8125rem', color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요...</div>
           </div>
         </div>
       ) : modal?.error ? (
         <div style={{ textAlign: 'center', padding: '40px 0' }}>
-          <div style={{ fontSize: 36, marginBottom: 12 }}>😢</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: T.ink, marginBottom: 8 }}>분석 중 오류가 발생했어요</div>
-          <div style={{ fontSize: 13, color: T.inkSoft }}>{modal.error}</div>
+          <div style={{ fontSize: '2.25rem', marginBottom: 12 }}>😢</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink, marginBottom: 8 }}>분석 중 오류가 발생했어요</div>
+          <div style={{ fontSize: '0.8125rem', color: T.inkSoft }}>{modal.error}</div>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {/* 종합 요약 */}
           <div style={{ padding: '14px 16px', borderRadius: 14, background: T.blueSoft }}>
-            <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>종합 요약</div>
-            <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal?.data?.summary}</div>
+            <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.04em' }}>종합 요약</div>
+            <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{modal?.data?.summary}</div>
           </div>
 
           {/* 상세 분석 */}
@@ -390,17 +390,17 @@ function AiResultContent({ modal, onClose }) {
             <div key={i} style={{ padding: '14px 16px', borderRadius: 14, background: '#fff', border: '1px solid ' + T.line }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                 <div style={{ width: 6, height: 6, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
-                <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink }}>{d.title}</div>
+                <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink }}>{d.title}</div>
               </div>
-              <div style={{ fontSize: 13, lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
+              <div style={{ fontSize: '0.8125rem', lineHeight: 1.75, color: T.inkMid }}>{d.content}</div>
             </div>
           ))}
 
           {/* 관리 가이드 */}
           {modal?.data?.advice && (
             <div style={{ padding: '14px 16px', borderRadius: 14, background: T.warnSoft }}>
-              <div style={{ fontSize: 11.5, fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
-              <div style={{ fontSize: 13.5, lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
+              <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.warn, marginBottom: 8, letterSpacing: '0.04em' }}>관리 가이드</div>
+              <div style={{ fontSize: '0.8438rem', lineHeight: 1.75, color: T.ink }}>{modal.data.advice}</div>
             </div>
           )}
         </div>
@@ -415,13 +415,13 @@ function EmptyState({ cat, onNav }) {
       <div style={{ width: 60, height: 60, borderRadius: 20, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Icon name="doc" size={28} color={T.blue} stroke={1.8} />
       </div>
-      <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>{cat} 기록이 없어요</div>
-      <div style={{ fontSize: 13, color: T.inkSoft, lineHeight: 1.6 }}>
+      <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>{cat} 기록이 없어요</div>
+      <div style={{ fontSize: '0.8125rem', color: T.inkSoft, lineHeight: 1.6 }}>
         {(cat === '건강검진' || cat === '전체') ? '검진 결과를 입력하거나 PDF를 업로드해보세요' : '입력 탭에서 기록을 추가해보세요'}
       </div>
       <button
         onClick={() => onNav('input')}
-        style={{ marginTop: 4, padding: '10px 22px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: 14, fontWeight: 700 }}
+        style={{ marginTop: 4, padding: '10px 22px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: '0.875rem', fontWeight: 700 }}
       >
         기록 추가하기
       </button>
@@ -499,7 +499,7 @@ export default function History({ onNav, toast }) {
 
       {/* 페이지 헤더 */}
       <div style={{ padding: '56px 20px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>기록</h1>
+        <h1 style={{ margin: 0, fontSize: '1.375rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>기록</h1>
         <button
           onClick={() => onNav('my')}
           style={{ width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', background: T.blueSoft, borderRadius: 12 }}
@@ -515,7 +515,7 @@ export default function History({ onNav, toast }) {
           return (
             <button key={c} onClick={() => setCat(c)} style={{
               flexShrink: 0, padding: '8px 16px', borderRadius: 999,
-              fontSize: 13.5, fontWeight: 700, letterSpacing: '-0.01em',
+              fontSize: '0.8438rem', fontWeight: 700, letterSpacing: '-0.01em',
               background: active ? T.blue : '#fff',
               color:      active ? '#fff' : T.inkMid,
               border: `1.5px solid ${active ? T.blue : T.line}`,
@@ -532,13 +532,13 @@ export default function History({ onNav, toast }) {
 
       {/* 건수 */}
       {!loading && records.length > 0 && (
-        <div style={{ padding: '0 20px 8px', fontSize: 12.5, color: T.inkSoft, fontWeight: 600 }}>총 {records.length}건</div>
+        <div style={{ padding: '0 20px 8px', fontSize: '0.7812rem', color: T.inkSoft, fontWeight: 600 }}>총 {records.length}건</div>
       )}
 
       {/* 목록 */}
       <div style={{ padding: '0 20px 100px', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0', fontSize: 13.5, color: T.inkSoft }}>불러오는 중...</div>
+          <div style={{ textAlign: 'center', padding: '40px 0', fontSize: '0.8438rem', color: T.inkSoft }}>불러오는 중...</div>
         ) : records.length === 0 ? (
           <EmptyState cat={cat} onNav={onNav} />
         ) : (

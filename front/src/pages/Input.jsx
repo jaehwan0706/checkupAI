@@ -47,8 +47,8 @@ function NumRow({ fieldKey, value, onChange }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 14.5, fontWeight: 700, color: T.ink }}>{d.label}</div>
-        {d.normal !== '—' && <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2 }}>정상 {d.normal}</div>}
+        <div style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.ink }}>{d.label}</div>
+        {d.normal !== '—' && <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 2 }}>정상 {d.normal}</div>}
       </div>
       <div style={{ width: 142, flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, height: 48, padding: '0 12px', borderRadius: 12, background: '#fff',
@@ -56,8 +56,8 @@ function NumRow({ fieldKey, value, onChange }) {
           <input value={value} inputMode="decimal" placeholder="입력" size={1}
             onFocus={() => setFocus(true)} onBlur={() => setFocus(false)}
             onChange={e => onChange(e.target.value.replace(/[^0-9.]/g, ''))}
-            style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: 16, fontWeight: 700, color: st ? sc : T.ink, fontFamily: 'inherit', textAlign: 'right' }} />
-          <span style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600, flexShrink: 0 }}>{d.unit}</span>
+            style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', fontSize: '1rem', fontWeight: 700, color: st ? sc : T.ink, fontFamily: 'inherit', textAlign: 'right' }} />
+          <span style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600, flexShrink: 0 }}>{d.unit}</span>
         </div>
         <div style={{ height: 20, marginTop: 5, display: 'flex', justifyContent: 'flex-end' }}>
           {st && <Badge status={st} small />}
@@ -72,7 +72,7 @@ function Section({ icon, title, children }) {
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 7, margin: '0 2px 10px' }}>
         <Icon name={icon} size={17} color={T.blue} stroke={2.1} />
-        <span style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{title}</span>
+        <span style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink }}>{title}</span>
       </div>
       <Card pad={15} style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>{children}</Card>
     </div>
@@ -124,11 +124,11 @@ function DirectInput({ vals, setVals, onAnalyze, toast }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       <div>
-        <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>검진일</label>
+        <label style={{ display: 'block', fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>검진일</label>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, height: 52, padding: '0 14px', borderRadius: 14, background: '#fff', border: '1.5px solid ' + T.line }}>
           <Icon name="cal" size={19} color={T.blue} stroke={2} />
           <input type="date" value={vals.date} onChange={e => set('date')(e.target.value)}
-            style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: 15, fontWeight: 600, color: T.ink, fontFamily: 'inherit' }} />
+            style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', fontSize: '0.9375rem', fontWeight: 600, color: T.ink, fontFamily: 'inherit' }} />
         </div>
       </div>
 
@@ -136,14 +136,14 @@ function DirectInput({ vals, setVals, onAnalyze, toast }) {
         <NumRow fieldKey="height" value={vals.height} onChange={set('height')} />
         <NumRow fieldKey="weight" value={vals.weight} onChange={set('weight')} />
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 12px', borderRadius: 12, background: bmi ? STATUS[bmi.status].soft : T.bg }}>
-          <span style={{ fontSize: 13.5, fontWeight: 600, color: T.inkMid }}>BMI <span style={{ fontSize: 11.5, color: T.inkSoft }}>(자동 계산)</span></span>
+          <span style={{ fontSize: '0.8438rem', fontWeight: 600, color: T.inkMid }}>BMI <span style={{ fontSize: '0.7188rem', color: T.inkSoft }}>(자동 계산)</span></span>
           {bmi ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: STATUS[bmi.status].color }}>{bmi.value}</span>
+              <span style={{ fontSize: '1rem', fontWeight: 800, color: STATUS[bmi.status].color }}>{bmi.value}</span>
               <Badge status={bmi.status} small />
-              <span style={{ fontSize: 12, fontWeight: 700, color: STATUS[bmi.status].color }}>{bmi.label}</span>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: STATUS[bmi.status].color }}>{bmi.label}</span>
             </span>
-          ) : <span style={{ fontSize: 13, color: T.inkSoft, fontWeight: 600 }}>키·체중 입력 시 표시</span>}
+          ) : <span style={{ fontSize: '0.8125rem', color: T.inkSoft, fontWeight: 600 }}>키·체중 입력 시 표시</span>}
         </div>
       </Section>
 
@@ -224,12 +224,12 @@ function PdfUpload({ onAnalyze, onEdit, onHelp }) {
   if (phase === 'loading') return (
     <Card pad={24} style={{ textAlign: 'center' }}>
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}><Spinner size={40} color={T.blue} stroke={3} /></div>
-      <div style={{ fontSize: 15.5, fontWeight: 800, color: T.ink }}>PDF를 분석하고 있어요...</div>
-      <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 5 }}>검진 수치를 추출하는 중이에요</div>
+      <div style={{ fontSize: '0.9688rem', fontWeight: 800, color: T.ink }}>PDF를 분석하고 있어요...</div>
+      <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 5 }}>검진 수치를 추출하는 중이에요</div>
       <div style={{ height: 8, borderRadius: 999, background: T.line, marginTop: 18, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: progress + '%', background: 'linear-gradient(90deg,#00B894,#00D4A8)', borderRadius: 999, transition: 'width .1s linear' }} />
       </div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: T.blue, marginTop: 8 }}>{Math.round(progress)}%</div>
+      <div style={{ fontSize: '0.75rem', fontWeight: 700, color: T.blue, marginTop: 8 }}>{Math.round(progress)}%</div>
     </Card>
   );
 
@@ -240,16 +240,16 @@ function PdfUpload({ onAnalyze, onEdit, onHelp }) {
           <div style={{ width: 30, height: 30, borderRadius: 999, background: T.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="check" size={18} color={T.green} stroke={2.8} />
           </div>
-          <span style={{ fontSize: 15.5, fontWeight: 800, color: T.ink }}>수치 추출 완료!</span>
+          <span style={{ fontSize: '0.9688rem', fontWeight: 800, color: T.ink }}>수치 추출 완료!</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {extracted.length === 0 ? (
-            <div style={{ padding: '12px 0', fontSize: 13.5, color: T.inkSoft }}>저장된 추출 결과가 없어요</div>
+            <div style={{ padding: '12px 0', fontSize: '0.8438rem', color: T.inkSoft }}>저장된 추출 결과가 없어요</div>
           ) : extracted.map((e, i) => (
             <div key={e.label} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 0', borderTop: i ? '1px solid ' + T.line : 'none' }}>
               <Icon name="check" size={17} color={T.green} stroke={2.6} />
-              <span style={{ flex: 1, fontSize: 14, fontWeight: 600, color: T.inkMid }}>{e.label}</span>
-              <span style={{ fontSize: 15, fontWeight: 800, color: T.ink }}>{e.value}</span>
+              <span style={{ flex: 1, fontSize: '0.875rem', fontWeight: 600, color: T.inkMid }}>{e.label}</span>
+              <span style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink }}>{e.value}</span>
             </div>
           ))}
         </div>
@@ -269,8 +269,8 @@ function PdfUpload({ onAnalyze, onEdit, onHelp }) {
           <Icon name="pdf" size={22} color={T.danger} stroke={2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: T.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</div>
-          <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2 }}>{fmtSize(file.size)}</div>
+          <div style={{ fontSize: '0.875rem', fontWeight: 700, color: T.ink, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</div>
+          <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 2 }}>{fmtSize(file.size)}</div>
         </div>
         <button onClick={reset} style={{ width: 30, height: 30, borderRadius: 999, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="cross" size={16} color={T.inkSoft} stroke={2.2} />
@@ -289,17 +289,17 @@ function PdfUpload({ onAnalyze, onEdit, onHelp }) {
         <div style={{ width: 60, height: 60, margin: '0 auto 14px', borderRadius: 17, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="pdf" size={30} color={T.blue} stroke={1.9} />
         </div>
-        <div style={{ fontSize: 14.5, fontWeight: 700, color: T.ink, lineHeight: 1.5 }}>건강보험공단 검진결과 PDF를<br />올려주세요</div>
-        <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 6 }}>여기로 끌어다 놓거나 아래 버튼을 눌러주세요</div>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 16, padding: '10px 20px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: 14, fontWeight: 700 }}>
+        <div style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.ink, lineHeight: 1.5 }}>건강보험공단 검진결과 PDF를<br />올려주세요</div>
+        <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 6 }}>여기로 끌어다 놓거나 아래 버튼을 눌러주세요</div>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 16, padding: '10px 20px', borderRadius: 12, background: T.blue, color: '#fff', fontSize: '0.875rem', fontWeight: 700 }}>
           <Icon name="plus" size={17} color="#fff" stroke={2.4} /> 파일 선택
         </div>
       </div>
       <div style={{ display: 'flex', gap: 10, padding: 14, borderRadius: 14, background: '#EEF1F6' }}>
         <Icon name="info" size={18} color={T.inkSoft} stroke={2} />
         <div style={{ flex: 1 }}>
-          <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.55, color: T.inkMid }}>건강보험공단 → The건강보험 앱 → 검진결과에서 PDF를 받을 수 있어요.</p>
-          <button onClick={onHelp} style={{ marginTop: 7, fontSize: 12.5, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>
+          <p style={{ margin: 0, fontSize: '0.7812rem', lineHeight: 1.55, color: T.inkMid }}>건강보험공단 → The건강보험 앱 → 검진결과에서 PDF를 받을 수 있어요.</p>
+          <button onClick={onHelp} style={{ marginTop: 7, fontSize: '0.7812rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', gap: 4 }}>
             <Icon name="question" size={14} color={T.blue} stroke={2.1} /> PDF 받는 방법 자세히 보기
           </button>
         </div>
@@ -321,13 +321,13 @@ function PdfHelpModal({ open, onClose }) {
         <div style={{ width: 40, height: 40, borderRadius: 12, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Icon name="pdf" size={21} color={T.blue} stroke={2} />
         </div>
-        <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: T.ink }}>PDF 받는 방법</h3>
+        <h3 style={{ margin: 0, fontSize: '1.0625rem', fontWeight: 800, color: T.ink }}>PDF 받는 방법</h3>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
         {steps.map((s, i) => (
           <div key={i} style={{ display: 'flex', gap: 12 }}>
-            <span style={{ width: 24, height: 24, borderRadius: 999, background: T.blue, color: '#fff', fontSize: 12.5, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
-            <span style={{ fontSize: 13.5, lineHeight: 1.5, color: T.inkMid }}>{s}</span>
+            <span style={{ width: 24, height: 24, borderRadius: 999, background: T.blue, color: '#fff', fontSize: '0.7812rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
+            <span style={{ fontSize: '0.8438rem', lineHeight: 1.5, color: T.inkMid }}>{s}</span>
           </div>
         ))}
       </div>
@@ -408,15 +408,15 @@ function Hub({ onSelect }) {
         {halfCards.map(c => (
           <Card key={c.id} onClick={() => onSelect(c.id)} pad={16}
             style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: 10, minHeight: 152 }}>
-            <div style={{ width: 50, height: 50, borderRadius: 15, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>
+            <div style={{ width: 50, height: 50, borderRadius: 15, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.625rem' }}>
               {c.emoji}
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 5 }}>{c.label}</div>
-              <div style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.45 }}>{c.desc}</div>
+              <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 5 }}>{c.label}</div>
+              <div style={{ fontSize: '0.7188rem', color: T.inkSoft, lineHeight: 1.45 }}>{c.desc}</div>
             </div>
             {c.camera && (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, height: 34, borderRadius: 10, background: c.color, fontSize: 12.5, fontWeight: 700, color: T.inkMid }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, height: 34, borderRadius: 10, background: c.color, fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid }}>
                 📷 바로 찍기
               </div>
             )}
@@ -426,12 +426,12 @@ function Hub({ onSelect }) {
       {fullCards.map(c => (
         <Card key={c.id} onClick={() => onSelect(c.id)} pad={16}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-          <div style={{ width: 52, height: 52, borderRadius: 15, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, flexShrink: 0 }}>
+          <div style={{ width: 52, height: 52, borderRadius: 15, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', flexShrink: 0 }}>
             {c.emoji}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 800, color: T.ink, marginBottom: 5 }}>{c.label}</div>
-            <div style={{ fontSize: 12, color: T.inkSoft, lineHeight: 1.45 }}>{c.desc}</div>
+            <div style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink, marginBottom: 5 }}>{c.label}</div>
+            <div style={{ fontSize: '0.75rem', color: T.inkSoft, lineHeight: 1.45 }}>{c.desc}</div>
           </div>
           <Icon name="chevR" size={20} color={T.inkSoft} stroke={2} />
         </Card>
@@ -484,8 +484,8 @@ function DocumentCapture({ docType, toast }) {
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
         <Spinner size={40} color={T.blue} stroke={3} />
       </div>
-      <div style={{ fontSize: 15.5, fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요...</div>
-      <div style={{ fontSize: 12.5, color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요</div>
+      <div style={{ fontSize: '0.9688rem', fontWeight: 800, color: T.ink }}>AI가 분석하고 있어요...</div>
+      <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 5 }}>잠시만 기다려주세요</div>
     </Card>
   );
 
@@ -496,20 +496,20 @@ function DocumentCapture({ docType, toast }) {
           <div style={{ width: 30, height: 30, borderRadius: 999, background: T.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="check" size={18} color={T.green} stroke={2.8} />
           </div>
-          <span style={{ fontSize: 15.5, fontWeight: 800, color: T.ink }}>분석 완료!</span>
+          <span style={{ fontSize: '0.9688rem', fontWeight: 800, color: T.ink }}>분석 완료!</span>
         </div>
         {cfg.result.fields.map((f, i) => (
           <div key={f.label} style={{ padding: '11px 0', borderTop: i ? '1px solid ' + T.line : 'none' }}>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>{f.label}</div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T.ink, lineHeight: 1.5 }}>{f.value}</div>
+            <div style={{ fontSize: '0.7188rem', fontWeight: 700, color: T.inkSoft, marginBottom: 4 }}>{f.label}</div>
+            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: T.ink, lineHeight: 1.5 }}>{f.value}</div>
           </div>
         ))}
       </Card>
       <div style={{ display: 'flex', gap: 12, padding: 16, borderRadius: 16, background: T.blueSoft, alignItems: 'flex-start' }}>
-        <span style={{ fontSize: 22, lineHeight: 1 }}>🤖</span>
+        <span style={{ fontSize: '1.375rem', lineHeight: 1 }}>🤖</span>
         <div>
-          <div style={{ fontSize: 11.5, fontWeight: 800, color: T.blue, marginBottom: 5 }}>AI 한마디</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.55, color: T.inkMid, fontWeight: 500 }}>{cfg.result.ai}</div>
+          <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: T.blue, marginBottom: 5 }}>AI 한마디</div>
+          <div style={{ fontSize: '0.8438rem', lineHeight: 1.55, color: T.inkMid, fontWeight: 500 }}>{cfg.result.ai}</div>
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -536,26 +536,26 @@ function DocumentCapture({ docType, toast }) {
       ) : (
         <>
           <div style={{ borderRadius: 18, border: '2px dashed #C6D3E6', background: '#fff', padding: '36px 24px', textAlign: 'center' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>{cfg.emoji}</div>
-            <div style={{ fontSize: 14.5, fontWeight: 700, color: T.ink, marginBottom: 6 }}>{cfg.label} 사진을 올려주세요</div>
-            <div style={{ fontSize: 12.5, color: T.inkSoft }}>{cfg.desc}</div>
+            <div style={{ fontSize: '3rem', marginBottom: 12 }}>{cfg.emoji}</div>
+            <div style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.ink, marginBottom: 6 }}>{cfg.label} 사진을 올려주세요</div>
+            <div style={{ fontSize: '0.7812rem', color: T.inkSoft }}>{cfg.desc}</div>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <button onClick={() => cameraRef.current?.click()} style={{ flex: 1, height: 54, borderRadius: 15, border: '1.5px solid ' + T.line, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 14.5, fontWeight: 700, color: T.ink, cursor: 'pointer' }}>
+            <button onClick={() => cameraRef.current?.click()} style={{ flex: 1, height: 54, borderRadius: 15, border: '1.5px solid ' + T.line, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: '0.9062rem', fontWeight: 700, color: T.ink, cursor: 'pointer' }}>
               📷 카메라 촬영
             </button>
-            <button onClick={() => galleryRef.current?.click()} style={{ flex: 1, height: 54, borderRadius: 15, border: '1.5px solid ' + T.line, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 14.5, fontWeight: 700, color: T.ink, cursor: 'pointer' }}>
+            <button onClick={() => galleryRef.current?.click()} style={{ flex: 1, height: 54, borderRadius: 15, border: '1.5px solid ' + T.line, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: '0.9062rem', fontWeight: 700, color: T.ink, cursor: 'pointer' }}>
               🖼️ 갤러리
             </button>
           </div>
           {cfg.sample && (
             <div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 8 }}>분석하면 이런 정보를 알 수 있어요</div>
+              <div style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkSoft, marginBottom: 8 }}>분석하면 이런 정보를 알 수 있어요</div>
               <div style={{ background: '#E8F8F5', borderRadius: 14, padding: '12px 14px', border: '1px solid #D4EFE9' }}>
-                <span style={{ fontSize: 10.5, fontWeight: 800, color: T.blue, background: '#fff', border: '1px solid ' + T.blue + '44', padding: '2px 8px', borderRadius: 999, display: 'inline-block', marginBottom: 10 }}>예시</span>
+                <span style={{ fontSize: '0.6562rem', fontWeight: 800, color: T.blue, background: '#fff', border: '1px solid ' + T.blue + '44', padding: '2px 8px', borderRadius: 999, display: 'inline-block', marginBottom: 10 }}>예시</span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                   {cfg.sample.map((item, i) => (
-                    <div key={i} style={{ fontSize: 13, fontWeight: 600, color: T.inkMid }}>{item}</div>
+                    <div key={i} style={{ fontSize: '0.8125rem', fontWeight: 600, color: T.inkMid }}>{item}</div>
                   ))}
                 </div>
               </div>
@@ -629,10 +629,10 @@ function VitalsRecord({ toast }) {
           <div style={{ width: 30, height: 30, borderRadius: 999, background: T.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="check" size={18} color={T.green} stroke={2.8} />
           </div>
-          <span style={{ fontSize: 15.5, fontWeight: 800, color: T.ink }}>최근 7일 기록</span>
+          <span style={{ fontSize: '0.9688rem', fontWeight: 800, color: T.ink }}>최근 7일 기록</span>
         </div>
         {history.length === 0 ? (
-          <div style={{ padding: '8px 0', fontSize: 13.5, color: T.inkSoft }}>아직 기록이 없어요</div>
+          <div style={{ padding: '8px 0', fontSize: '0.8438rem', color: T.inkSoft }}>아직 기록이 없어요</div>
         ) : history.map((v, i) => {
           const st = (v.systolic && v.diastolic) ? bpStatus(v.systolic, v.diastolic) : null;
           const stColor = st === '위험' ? T.danger : st === '주의' ? T.warn : T.ok;
@@ -640,21 +640,21 @@ function VitalsRecord({ toast }) {
           return (
             <div key={v.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 0', borderTop: i ? '1px solid ' + T.line : 'none' }}>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600 }}>{v.recordedDate} · {v.measuredAt}</div>
+                <div style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600 }}>{v.recordedDate} · {v.measuredAt}</div>
                 {(v.systolic || v.diastolic) && (
-                  <div style={{ fontSize: 15, fontWeight: 800, color: T.ink, marginTop: 2 }}>
-                    {v.systolic}/{v.diastolic} <span style={{ fontSize: 11.5, color: T.inkSoft, fontWeight: 600 }}>mmHg</span>
+                  <div style={{ fontSize: '0.9375rem', fontWeight: 800, color: T.ink, marginTop: 2 }}>
+                    {v.systolic}/{v.diastolic} <span style={{ fontSize: '0.7188rem', color: T.inkSoft, fontWeight: 600 }}>mmHg</span>
                   </div>
                 )}
                 {v.bloodSugar && (
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: T.inkMid, marginTop: 1 }}>
-                    혈당 {v.bloodSugar} <span style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft }}>mg/dL</span>
+                  <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.inkMid, marginTop: 1 }}>
+                    혈당 {v.bloodSugar} <span style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft }}>mg/dL</span>
                   </div>
                 )}
-                {v.memo && <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 3 }}>{v.memo}</div>}
+                {v.memo && <div style={{ fontSize: '0.7188rem', color: T.inkSoft, marginTop: 3 }}>{v.memo}</div>}
               </div>
               {st && (
-                <span style={{ fontSize: 11.5, fontWeight: 700, color: stColor, background: stSoft, padding: '3px 9px', borderRadius: 999, flexShrink: 0 }}>
+                <span style={{ fontSize: '0.7188rem', fontWeight: 700, color: stColor, background: stSoft, padding: '3px 9px', borderRadius: 999, flexShrink: 0 }}>
                   {st}
                 </span>
               )}
@@ -672,15 +672,15 @@ function VitalsRecord({ toast }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', borderRadius: 14, background: T.blueSoft, border: '1px solid ' + T.blue + '22' }}>
         <Icon name="cal" size={18} color={T.blue} stroke={2} />
-        <span style={{ fontSize: 14.5, fontWeight: 700, color: T.blue }}>{todayStr}</span>
+        <span style={{ fontSize: '0.9062rem', fontWeight: 700, color: T.blue }}>{todayStr}</span>
       </div>
 
       <div>
-        <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 2px 8px' }}>측정 시간</div>
+        <div style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, margin: '0 2px 8px' }}>측정 시간</div>
         <div style={{ display: 'flex', gap: 7 }}>
           {TIMES.map(t => (
             <button key={t} onClick={() => setTime(t)} style={{
-              flex: 1, height: 38, borderRadius: 10, fontSize: 12, fontWeight: 700,
+              flex: 1, height: 38, borderRadius: 10, fontSize: '0.75rem', fontWeight: 700,
               background: time === t ? T.blue : '#fff',
               color: time === t ? '#fff' : T.inkSoft,
               border: '1.5px solid ' + (time === t ? T.blue : T.line),
@@ -695,21 +695,21 @@ function VitalsRecord({ toast }) {
       <Section icon="heart" title="혈압 (mmHg)">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, width: '100%' }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11.5, color: T.inkSoft, fontWeight: 700, marginBottom: 5 }}>수축기 (위)</div>
+            <div style={{ fontSize: '0.7188rem', color: T.inkSoft, fontWeight: 700, marginBottom: 5 }}>수축기 (위)</div>
             <div style={{ height: 50, borderRadius: 12, background: '#fff', border: '1.5px solid ' + T.line, display: 'flex', alignItems: 'center', padding: '0 10px' }}>
               <input value={sys} inputMode="numeric" placeholder="120"
                 onChange={e => setSys(e.target.value.replace(/\D/g, ''))}
                 className="bp-input"
-                style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: 18, fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
+                style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: '1.125rem', fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
             </div>
           </div>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11.5, color: T.inkSoft, fontWeight: 700, marginBottom: 5 }}>이완기 (아래)</div>
+            <div style={{ fontSize: '0.7188rem', color: T.inkSoft, fontWeight: 700, marginBottom: 5 }}>이완기 (아래)</div>
             <div style={{ height: 50, borderRadius: 12, background: '#fff', border: '1.5px solid ' + T.line, display: 'flex', alignItems: 'center', padding: '0 10px' }}>
               <input value={dia} inputMode="numeric" placeholder="80"
                 onChange={e => setDia(e.target.value.replace(/\D/g, ''))}
                 className="bp-input"
-                style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: 18, fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
+                style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: '1.125rem', fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
             </div>
           </div>
         </div>
@@ -719,8 +719,8 @@ function VitalsRecord({ toast }) {
         <div style={{ display: 'flex', alignItems: 'center', height: 50, borderRadius: 12, background: '#fff', border: '1.5px solid ' + T.line, padding: '0 12px', width: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
           <input value={sugar} inputMode="numeric" placeholder="100"
             onChange={e => setSugar(e.target.value.replace(/\D/g, ''))}
-            style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: 18, fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
-          <span style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600, flexShrink: 0, marginLeft: 6 }}>mg/dL</span>
+            style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', fontSize: '1.125rem', fontWeight: 700, color: T.ink, background: 'transparent', textAlign: 'right', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }} />
+          <span style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600, flexShrink: 0, marginLeft: 6 }}>mg/dL</span>
         </div>
       </Section>
 
@@ -729,7 +729,7 @@ function VitalsRecord({ toast }) {
           <textarea value={memo} onChange={e => setMemo(e.target.value)}
             placeholder="예: 오늘 많이 걸었음, 카페인 섭취 후 등"
             rows={2}
-            style={{ width: '100%', border: 'none', outline: 'none', fontSize: 14, color: T.ink, background: 'transparent', resize: 'none', fontFamily: 'inherit', lineHeight: 1.5, boxSizing: 'border-box' }} />
+            style={{ width: '100%', border: 'none', outline: 'none', fontSize: '0.875rem', color: T.ink, background: 'transparent', resize: 'none', fontFamily: 'inherit', lineHeight: 1.5, boxSizing: 'border-box' }} />
         </div>
       </Section>
 
@@ -738,7 +738,7 @@ function VitalsRecord({ toast }) {
       </Button>
 
       {history.length > 0 && (
-        <button onClick={() => setPhase('history')} style={{ fontSize: 13, fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer' }}>
+        <button onClick={() => setPhase('history')} style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, padding: '6px 0', background: 'none', border: 'none', cursor: 'pointer' }}>
           최근 기록 {history.length}개 보기 <Icon name="chevR" size={14} color={T.blue} />
         </button>
       )}
@@ -770,8 +770,8 @@ export default function Input({ onAnalyze, toast }) {
   if (screen === 'hub') return (
     <div data-screen-label="검진 입력" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
       <div style={{ padding: '56px 20px 4px' }}>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>건강 기록 입력</h1>
-        <p style={{ margin: '8px 0 0', fontSize: 13.5, color: T.inkSoft }}>분석할 문서 종류를 선택하세요</p>
+        <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>건강 기록 입력</h1>
+        <p style={{ margin: '8px 0 0', fontSize: '0.8438rem', color: T.inkSoft }}>분석할 문서 종류를 선택하세요</p>
       </div>
       <div style={{ padding: '20px 20px 28px' }}>
         <Hub onSelect={selectCard} />
@@ -785,7 +785,7 @@ export default function Input({ onAnalyze, toast }) {
         <button onClick={goHub} style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8, background: 'none', border: 'none', cursor: 'pointer' }}>
           <Icon name="chevL" size={24} color={T.inkMid} />
         </button>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>혈압·혈당 기록</h1>
+        <h1 style={{ margin: 0, fontSize: '1.375rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>혈압·혈당 기록</h1>
       </div>
       <div style={{ padding: '14px 20px 28px' }}>
         <VitalsRecord toast={toast} />
@@ -799,7 +799,7 @@ export default function Input({ onAnalyze, toast }) {
         <button onClick={goHub} style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8, background: 'none', border: 'none', cursor: 'pointer' }}>
           <Icon name="chevL" size={24} color={T.inkMid} />
         </button>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>건강검진 결과</h1>
+        <h1 style={{ margin: 0, fontSize: '1.375rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>건강검진 결과</h1>
       </div>
       <div style={{ padding: '12px 20px 0' }}>
         <Segmented items={['📄 PDF 업로드', '✏️ 직접 입력']} value={tab} onChange={setTab} small />
@@ -819,7 +819,7 @@ export default function Input({ onAnalyze, toast }) {
         <button onClick={goHub} style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: -8, background: 'none', border: 'none', cursor: 'pointer' }}>
           <Icon name="chevL" size={24} color={T.inkMid} />
         </button>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{DOC_CONFIGS[docType]?.label}</h1>
+        <h1 style={{ margin: 0, fontSize: '1.375rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink }}>{DOC_CONFIGS[docType]?.label}</h1>
       </div>
       <div style={{ padding: '8px 20px 28px' }}>
         <DocumentCapture docType={docType} toast={toast} />

@@ -29,6 +29,10 @@
   --pt: 56px;
 }
 
+html {
+  font-size: 16px; /* 글자 크기 기준 (JS에서 14px/16px/20px으로 변경) */
+}
+
 html, body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background-color: #1A1A2E;

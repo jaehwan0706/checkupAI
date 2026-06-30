@@ -31,12 +31,12 @@ export default function TermsDocument({ kind = 'privacy', onNav }) {
     <div data-screen-label={d.title} className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
       <SubHeader title={d.title} onBack={() => onNav('my')} />
       <div style={{ padding: '8px 20px 28px' }}>
-        <div style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600, marginBottom: 16 }}>{d.updated}</div>
+        <div style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600, marginBottom: 16 }}>{d.updated}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           {d.sections.map(([h, b]) => (
             <div key={h}>
-              <div style={{ fontSize: 14, fontWeight: 800, color: T.ink, marginBottom: 6 }}>{h}</div>
-              <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: T.inkMid }}>{b}</p>
+              <div style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink, marginBottom: 6 }}>{h}</div>
+              <p style={{ margin: 0, fontSize: '0.8125rem', lineHeight: 1.7, color: T.inkMid }}>{b}</p>
             </div>
           ))}
         </div>

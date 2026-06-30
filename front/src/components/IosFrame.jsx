@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 const frameStyle = {
   display: 'flex',
@@ -42,16 +42,20 @@ const screenStyle = {
   backgroundColor: '#F5F7FA',
 };
 
-const FONT_ZOOM = { small: 0.9, medium: 1, large: 1.1 };
+const FONT_BASE = { small: '14px', medium: '16px', large: '20px' };
+
+const applyFontSize = () => {
+  const key = localStorage.getItem('fontSize') || 'medium';
+  document.documentElement.style.fontSize = FONT_BASE[key] || '16px';
+};
 
 export default function IosFrame({ children }) {
   const isMobile = window.innerWidth <= 768;
-  const [zoom, setZoom] = useState(() => FONT_ZOOM[localStorage.getItem('fontSize') || 'medium'] || 1);
 
   useEffect(() => {
-    const handler = () => setZoom(FONT_ZOOM[localStorage.getItem('fontSize') || 'medium'] || 1);
-    window.addEventListener('fontSizeChange', handler);
-    return () => window.removeEventListener('fontSizeChange', handler);
+    applyFontSize();
+    window.addEventListener('fontSizeChange', applyFontSize);
+    return () => window.removeEventListener('fontSizeChange', applyFontSize);
   }, []);
 
   if (isMobile) {
@@ -64,7 +68,7 @@ export default function IosFrame({ children }) {
 
   return (
     <div style={frameStyle}>
-      <div style={{ ...phoneStyle, zoom }}>
+      <div style={phoneStyle}>
         <div style={notchStyle} />
         <div style={screenStyle}>
           {children}

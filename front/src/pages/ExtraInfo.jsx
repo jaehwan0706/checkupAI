@@ -32,18 +32,18 @@ export default function ExtraInfo({ onDone, toast }) {
           <div style={{ width: 48, height: 48, borderRadius: 14, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
             <Icon name="user" size={24} color={T.blue} stroke={2} />
           </div>
-          <h1 style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em', lineHeight: 1.3 }}>추가 정보를 입력해 주세요</h1>
-          <p style={{ margin: 0, fontSize: 14, color: T.inkSoft, lineHeight: 1.6 }}>더 정확한 건강 분석을 위해 성별과 생년월일이 필요해요.</p>
+          <h1 style={{ margin: '0 0 8px', fontSize: '1.375rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em', lineHeight: 1.3 }}>추가 정보를 입력해 주세요</h1>
+          <p style={{ margin: 0, fontSize: '0.875rem', color: T.inkSoft, lineHeight: 1.6 }}>더 정확한 건강 분석을 위해 성별과 생년월일이 필요해요.</p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 12.5, fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>성별</label>
+            <label style={{ display: 'block', fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>성별</label>
             <div style={{ display: 'flex', gap: 10 }}>
               {['남', '여'].map(g => {
                 const on = gender === g;
                 return (
-                  <button key={g} onClick={() => setGender(g)} style={{ flex: 1, height: 52, borderRadius: 14, fontSize: 15, fontWeight: 700, background: on ? T.blueSoft : '#fff', color: on ? T.blue : T.inkSoft, border: '1.5px solid ' + (on ? T.blue : T.line), transition: 'all .15s ease' }}>{g}</button>
+                  <button key={g} onClick={() => setGender(g)} style={{ flex: 1, height: 52, borderRadius: 14, fontSize: '0.9375rem', fontWeight: 700, background: on ? T.blueSoft : '#fff', color: on ? T.blue : T.inkSoft, border: '1.5px solid ' + (on ? T.blue : T.line), transition: 'all .15s ease' }}>{g}</button>
                 );
               })}
             </div>

@@ -20,16 +20,16 @@ export default function ConsentManagement({ onNav, consent, onWithdraw }) {
             <Icon name={consent ? 'shield' : 'lock'} size={22} color={consent ? T.green : T.warn} stroke={2} />
           </div>
           <div>
-            <div style={{ fontSize: 14.5, fontWeight: 800, color: consent ? T.ok : '#9A6A12' }}>
+            <div style={{ fontSize: '0.9062rem', fontWeight: 800, color: consent ? T.ok : '#9A6A12' }}>
               {consent ? '건강정보 활용에 동의함' : '아직 동의하지 않았어요'}
             </div>
-            <div style={{ fontSize: 12, color: T.inkMid, marginTop: 2 }}>
+            <div style={{ fontSize: '0.75rem', color: T.inkMid, marginTop: 2 }}>
               {consent ? '동의 완료 · AI 분석 가능' : '첫 AI 분석 시 동의를 받아요'}
             </div>
           </div>
         </div>
 
-        <div style={{ fontSize: 12.5, fontWeight: 800, color: T.inkSoft, padding: '0 4px 8px' }}>동의 항목</div>
+        <div style={{ fontSize: '0.7812rem', fontWeight: 800, color: T.inkSoft, padding: '0 4px 8px' }}>동의 항목</div>
         <Card pad={0} style={{ overflow: 'hidden' }}>
           {ITEMS.map((it, i) => (
             <div key={it.title} style={{ display: 'flex', alignItems: 'flex-start', gap: 11, padding: '14px 16px', borderTop: i ? '1px solid ' + T.line : 'none' }}>
@@ -37,21 +37,21 @@ export default function ConsentManagement({ onNav, consent, onWithdraw }) {
                 <Icon name="check" size={13} color="#fff" stroke={3} />
               </span>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>
+                <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink }}>
                   <span style={{ color: it.req ? T.blue : T.inkSoft }}>{it.req ? '[필수] ' : '[선택] '}</span>{it.title}
                 </div>
-                <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{it.desc}</div>
+                <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 3, lineHeight: 1.5 }}>{it.desc}</div>
               </div>
             </div>
           ))}
         </Card>
 
-        <p style={{ fontSize: 11.5, color: T.inkSoft, lineHeight: 1.55, margin: '14px 4px 0' }}>
+        <p style={{ fontSize: '0.7188rem', color: T.inkSoft, lineHeight: 1.55, margin: '14px 4px 0' }}>
           동의를 철회하면 더 이상 AI 해석을 받을 수 없어요. 다음 분석 시 다시 동의를 받습니다.
         </p>
 
         {consent && (
-          <button onClick={() => setConfirm(true)} style={{ width: '100%', height: 50, marginTop: 16, borderRadius: 14, background: '#fff', border: '1px solid ' + T.line, color: T.danger, fontSize: 14.5, fontWeight: 700 }}>
+          <button onClick={() => setConfirm(true)} style={{ width: '100%', height: 50, marginTop: 16, borderRadius: 14, background: '#fff', border: '1px solid ' + T.line, color: T.danger, fontSize: '0.9062rem', fontWeight: 700 }}>
             동의 철회하기
           </button>
         )}

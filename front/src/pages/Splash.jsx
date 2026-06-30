@@ -20,8 +20,8 @@ export default function Splash({ onDone }) {
         </div>
       </div>
       <div style={{ textAlign: 'center', animation: 'hlfadeup .7s ease .15s both' }}>
-        <div style={{ fontSize: 30, fontWeight: 800, color: '#fff', letterSpacing: '-0.03em' }}>검진AI</div>
-        <div style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.7)', fontWeight: 600, marginTop: 6 }}>AI 건강 코치</div>
+        <div style={{ fontSize: '1.875rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.03em' }}>검진AI</div>
+        <div style={{ fontSize: '0.8438rem', color: 'rgba(255,255,255,0.7)', fontWeight: 600, marginTop: 6 }}>AI 건강 코치</div>
       </div>
       <div style={{ position: 'absolute', bottom: 56 }}>
         <Spinner size={26} color="#fff" stroke={2.6} />

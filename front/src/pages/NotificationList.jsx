@@ -49,27 +49,27 @@ export default function NotificationList({ onNav, onUnreadChange }) {
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-          <span style={{ fontSize: 13, color: T.inkSoft }}>불러오는 중...</span>
+          <span style={{ fontSize: '0.8125rem', color: T.inkSoft }}>불러오는 중...</span>
         </div>
       ) : notifications.length === 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 20px', gap: 12 }}>
           <div style={{ width: 56, height: 56, borderRadius: 999, background: T.bg, border: '1.5px solid ' + T.line, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Icon name="bell" size={26} color={T.inkSoft} stroke={1.8} />
           </div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: T.ink }}>알림이 없어요</div>
-          <div style={{ fontSize: 13, color: T.inkSoft }}>새로운 알림이 오면 여기에 표시돼요</div>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: T.ink }}>알림이 없어요</div>
+          <div style={{ fontSize: '0.8125rem', color: T.inkSoft }}>새로운 알림이 오면 여기에 표시돼요</div>
         </div>
       ) : (
         <div style={{ padding: '8px 0 32px' }}>
           {unread.length > 0 && (
             <>
-              <div style={{ padding: '8px 20px 6px', fontSize: 12, fontWeight: 800, color: T.inkSoft }}>읽지 않은 알림</div>
+              <div style={{ padding: '8px 20px 6px', fontSize: '0.75rem', fontWeight: 800, color: T.inkSoft }}>읽지 않은 알림</div>
               {unread.map(n => <NotifItem key={n.id} n={n} onRead={markRead} />)}
             </>
           )}
           {read.length > 0 && (
             <>
-              <div style={{ padding: '16px 20px 6px', fontSize: 12, fontWeight: 800, color: T.inkSoft }}>읽은 알림</div>
+              <div style={{ padding: '16px 20px 6px', fontSize: '0.75rem', fontWeight: 800, color: T.inkSoft }}>읽은 알림</div>
               {read.map(n => <NotifItem key={n.id} n={n} onRead={markRead} />)}
             </>
           )}
@@ -99,15 +99,15 @@ function NotifItem({ n, onRead }) {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: n.read ? 600 : 800, color: T.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span style={{ fontSize: '0.875rem', fontWeight: n.read ? 600 : 800, color: T.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {n.title}
           </span>
           {!n.read && (
             <span style={{ width: 8, height: 8, borderRadius: 999, background: T.blue, flexShrink: 0 }} />
           )}
         </div>
-        <div style={{ fontSize: 13, color: T.inkMid, marginTop: 3, lineHeight: 1.5 }}>{n.message}</div>
-        <div style={{ fontSize: 11.5, color: T.inkSoft, marginTop: 5 }}>{timeAgo(n.createdAt)}</div>
+        <div style={{ fontSize: '0.8125rem', color: T.inkMid, marginTop: 3, lineHeight: 1.5 }}>{n.message}</div>
+        <div style={{ fontSize: '0.7188rem', color: T.inkSoft, marginTop: 5 }}>{timeAgo(n.createdAt)}</div>
       </div>
     </button>
   );

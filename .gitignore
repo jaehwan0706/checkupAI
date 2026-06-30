@@ -2,6 +2,10 @@
 front/node_modules/
 front/build/
 
+# Mobile
+mobile/node_modules/
+mobile/.expo/
+
 # Back
 back/.gradle/
 back/build/

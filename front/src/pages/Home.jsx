@@ -11,8 +11,8 @@ function ScoreRing({ score = 72, size = 96 }) {
         <circle cx={size/2} cy={size/2} r={r} stroke="rgba(255,255,255,0.92)" strokeWidth="9" fill="none" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct)} />
       </svg>
       <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ fontSize: 28, fontWeight: 800, color: '#fff', lineHeight: 1 }}>{score}</span>
-        <span style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>/ 100점</span>
+        <span style={{ fontSize: '1.75rem', fontWeight: 800, color: '#fff', lineHeight: 1 }}>{score}</span>
+        <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>/ 100점</span>
       </div>
     </div>
   );
@@ -28,7 +28,7 @@ function MetricCard({ m, onClick }) {
         </div>
         {m.delta != null ? (
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: m.delta > 0 ? T.danger : m.delta < 0 ? T.ok : '#A6B1C2' }}>
+            <div style={{ fontSize: '0.7188rem', fontWeight: 700, color: m.delta > 0 ? T.danger : m.delta < 0 ? T.ok : '#A6B1C2' }}>
               {m.delta > 0 ? '↑' : m.delta < 0 ? '↓' : '–'}{Math.abs(m.delta) > 0 ? Math.abs(m.delta) + (m.unit ? ' ' + m.unit : '') : ''}
             </div>
           </div>
@@ -36,10 +36,10 @@ function MetricCard({ m, onClick }) {
           <span style={{ width: 9, height: 9, borderRadius: 999, background: s.dot }} />
         )}
       </div>
-      <div style={{ fontSize: 13, color: T.inkSoft, fontWeight: 600 }}>{m.label}</div>
+      <div style={{ fontSize: '0.8125rem', color: T.inkSoft, fontWeight: 600 }}>{m.label}</div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 3 }}>
-        <span style={{ fontSize: 20, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{m.value}</span>
-        <span style={{ fontSize: 12, color: T.inkSoft, fontWeight: 600 }}>{m.unit}</span>
+        <span style={{ fontSize: '1.25rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{m.value}</span>
+        <span style={{ fontSize: '0.75rem', color: T.inkSoft, fontWeight: 600 }}>{m.unit}</span>
       </div>
       <div style={{ marginTop: 10 }}><Badge status={m.status} small /></div>
     </Card>
@@ -56,22 +56,22 @@ function MetricModal({ m, onClose }) {
           <Icon name={m.icon} size={24} color={s.color} stroke={2.1} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>{m.label}</div>
-          {m.ref && <div style={{ fontSize: 12, color: T.inkSoft, marginTop: 2 }}>정상 범위 {m.ref}</div>}
+          <div style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>{m.label}</div>
+          {m.ref && <div style={{ fontSize: '0.75rem', color: T.inkSoft, marginTop: 2 }}>정상 범위 {m.ref}</div>}
         </div>
         <Badge status={m.status} />
       </div>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, padding: '14px 16px', borderRadius: 14, background: s.soft, marginBottom: 14 }}>
-        <span style={{ fontSize: 28, fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{m.value}</span>
-        <span style={{ fontSize: 13, color: T.inkMid, fontWeight: 600 }}>{m.unit}</span>
+        <span style={{ fontSize: '1.75rem', fontWeight: 800, color: s.color, letterSpacing: '-0.02em' }}>{m.value}</span>
+        <span style={{ fontSize: '0.8125rem', color: T.inkMid, fontWeight: 600 }}>{m.unit}</span>
       </div>
       <div style={{ display: 'flex', gap: 9, marginBottom: 20 }}>
         <div style={{ width: 26, height: 26, borderRadius: 8, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
           <Icon name="spark" size={15} color={T.blue} stroke={2.3} />
         </div>
         <div>
-          <div style={{ fontSize: 12.5, fontWeight: 800, color: T.blue, marginBottom: 4 }}>AI 해석</div>
-          <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.6, color: T.inkMid }}>{m.text}</p>
+          <div style={{ fontSize: '0.7812rem', fontWeight: 800, color: T.blue, marginBottom: 4 }}>AI 해석</div>
+          <p style={{ margin: 0, fontSize: '0.8438rem', lineHeight: 1.6, color: T.inkMid }}>{m.text}</p>
         </div>
       </div>
       <Button variant="primary" onClick={onClose}>확인</Button>
@@ -156,17 +156,17 @@ function DailyRecommendCard({ metrics, onNav }) {
   return (
     <div>
       <div style={{ marginBottom: 10 }}>
-        <span style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>오늘의 건강 추천</span>
+        <span style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>오늘의 건강 추천</span>
       </div>
 
       <div style={{ background: 'linear-gradient(160deg,#fff 0%,#E8F8F5 100%)', borderRadius: 16, border: '1px solid #D4EFE9', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,184,148,0.08)' }}>
         {/* 헤더 */}
         <div style={{ padding: '13px 16px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: T.inkSoft }}>오늘의 건강 팁</span>
+          <span style={{ fontSize: '0.7188rem', fontWeight: 700, color: T.inkSoft }}>오늘의 건강 팁</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: T.inkMid }}>{dateHeader}</span>
+            <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.inkMid }}>{dateHeader}</span>
             {offset !== 0 && (
-              <button onClick={() => setOffset(0)} style={{ fontSize: 11, fontWeight: 700, color: T.blue, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', textUnderlineOffset: 2 }}>
+              <button onClick={() => setOffset(0)} style={{ fontSize: '0.6875rem', fontWeight: 700, color: T.blue, background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', textUnderlineOffset: 2 }}>
                 오늘로 돌아가기
               </button>
             )}
@@ -175,21 +175,21 @@ function DailyRecommendCard({ metrics, onNav }) {
 
         {/* 팁 본문 */}
         <div style={{ padding: '14px 16px 12px' }}>
-          <p style={{ margin: 0, fontSize: 16.5, fontWeight: 800, color: T.ink, lineHeight: 1.55 }}>{rawTip}</p>
+          <p style={{ margin: 0, fontSize: '1.0312rem', fontWeight: 800, color: T.ink, lineHeight: 1.55 }}>{rawTip}</p>
         </div>
 
         {/* 푸터 */}
         <div style={{ padding: '0 16px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <button onClick={() => setOffset(o => o - 1)} style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12.5, fontWeight: 700, color: T.inkMid, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <button onClick={() => setOffset(o => o - 1)} style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
             <Icon name="chevL" size={13} color={T.inkMid} stroke={2.2} /> 이전 날
           </button>
           {primary ? (
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, fontWeight: 700, color: T.blue, background: '#E3F8F3', border: '1px solid ' + T.blue + '44', padding: '3px 10px', borderRadius: 999 }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.7188rem', fontWeight: 700, color: T.blue, background: '#E3F8F3', border: '1px solid ' + T.blue + '44', padding: '3px 10px', borderRadius: 999 }}>
               {primary.label} 관리 중
             </span>
           ) : <div />}
           {offset < 0 ? (
-            <button onClick={() => setOffset(o => o + 1)} style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12.5, fontWeight: 700, color: T.inkMid, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+            <button onClick={() => setOffset(o => o + 1)} style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
               다음 날 <Icon name="chevR" size={13} color={T.inkMid} stroke={2.2} />
             </button>
           ) : <div style={{ width: 56 }} />}
@@ -279,10 +279,10 @@ export default function Home({ onNav, toast }) {
       {/* Header */}
       <div style={{ padding: '56px 20px 16px', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em', color: T.ink, lineHeight: 1.2 }}>
+          <h1 style={{ margin: 0, fontSize: '1.625rem', fontWeight: 800, letterSpacing: '-0.02em', color: T.ink, lineHeight: 1.2 }}>
             {name}님 👋
           </h1>
-          <div style={{ fontSize: 14, fontWeight: 600, color: hasWarn ? T.warn : T.inkSoft, marginTop: 5 }}>
+          <div style={{ fontSize: '0.875rem', fontWeight: 600, color: hasWarn ? T.warn : T.inkSoft, marginTop: 5 }}>
             {hasWarn ? '⚠️ ' : ''}{statusMsg}
           </div>
         </div>
@@ -296,13 +296,13 @@ export default function Home({ onNav, toast }) {
         {/* Hero card */}
         {loading ? (
           <div style={{ borderRadius: 22, padding: 24, background: 'linear-gradient(135deg, #00B894 0%, #00A382 100%)', boxShadow: '0 14px 34px rgba(0,184,148,0.32)', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 120 }}>
-            <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>데이터를 불러오는 중...</span>
+            <span style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>데이터를 불러오는 중...</span>
           </div>
         ) : score === null ? (
           <Card style={{ textAlign: 'center', padding: '36px 20px' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>📋</div>
-            <div style={{ fontSize: 17, fontWeight: 800, color: T.ink, marginBottom: 8 }}>아직 검진 데이터가 없어요</div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: T.inkMid, marginBottom: 20, lineHeight: 1.6 }}>첫 검진 결과를 입력하고 AI 분석을 받아보세요</p>
+            <div style={{ fontSize: '3rem', marginBottom: 12 }}>📋</div>
+            <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink, marginBottom: 8 }}>아직 검진 데이터가 없어요</div>
+            <p style={{ fontSize: '0.875rem', fontWeight: 600, color: T.inkMid, marginBottom: 20, lineHeight: 1.6 }}>첫 검진 결과를 입력하고 AI 분석을 받아보세요</p>
             <Button variant="primary" onClick={() => onNav('input')} icon="arrow">검진 수치 입력하기</Button>
           </Card>
         ) : (
@@ -311,16 +311,16 @@ export default function Home({ onNav, toast }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
               <ScoreRing score={score} />
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.18)', padding: '4px 10px', borderRadius: 999, fontSize: 11.5, fontWeight: 700, color: '#fff' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.18)', padding: '4px 10px', borderRadius: 999, fontSize: '0.7188rem', fontWeight: 700, color: '#fff' }}>
                   <span style={{ width: 6, height: 6, borderRadius: 999, background: 'rgba(255,255,255,0.9)' }} />전체 건강 점수
                 </div>
-                <div style={{ marginTop: 10, fontSize: 15, fontWeight: 700, color: '#fff', lineHeight: 1.4 }}>{score}점 · {score >= 80 ? '건강해요' : score >= 60 ? '양호' : '주의 필요'}</div>
-                <div style={{ marginTop: 3, fontSize: 12.5, color: 'rgba(255,255,255,0.85)', lineHeight: 1.5 }}>
+                <div style={{ marginTop: 10, fontSize: '0.9375rem', fontWeight: 700, color: '#fff', lineHeight: 1.4 }}>{score}점 · {score >= 80 ? '건강해요' : score >= 60 ? '양호' : '주의 필요'}</div>
+                <div style={{ marginTop: 3, fontSize: '0.7812rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.5 }}>
                   {warnCount > 0 ? `${warnCount}가지 항목에서 주의가 필요해요` : '모든 항목이 정상이에요'}
                 </div>
                 {scoreDiff !== null && (
                   <div style={{ marginTop: 7, display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(255,255,255,0.18)', padding: '3px 9px', borderRadius: 999 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: scoreDiff >= 0 ? '#fff' : '#FFD8D3' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: scoreDiff >= 0 ? '#fff' : '#FFD8D3' }}>
                       {scoreDiff >= 0 ? '▲' : '▼'} 지난 검진보다 {scoreDiff >= 0 ? '+' : ''}{scoreDiff}점
                     </span>
                   </div>
@@ -329,7 +329,7 @@ export default function Home({ onNav, toast }) {
             </div>
             <button
               onClick={() => onNav('report')}
-              style={{ marginTop: 14, display: 'block', textAlign: 'left', fontSize: 12.5, fontWeight: 700, color: '#fff', textDecoration: 'underline', textUnderlineOffset: 3 }}
+              style={{ marginTop: 14, display: 'block', textAlign: 'left', fontSize: '0.7812rem', fontWeight: 700, color: '#fff', textDecoration: 'underline', textUnderlineOffset: 3 }}
             >
               {score >= 80
                 ? '이것만 하면 이번 달 85점 가능해요 →'
@@ -340,7 +340,7 @@ export default function Home({ onNav, toast }) {
             {homeData?.lastCheckupDate && (
               <div style={{ marginTop: 10, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.16)', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Icon name="cal" size={15} color="rgba(255,255,255,0.7)" stroke={2} />
-                <span style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.82)', fontWeight: 600 }}>마지막 검진일 · {formatDate(homeData.lastCheckupDate)}</span>
+                <span style={{ fontSize: '0.7812rem', color: 'rgba(255,255,255,0.82)', fontWeight: 600 }}>마지막 검진일 · {formatDate(homeData.lastCheckupDate)}</span>
               </div>
             )}
           </div>
@@ -351,8 +351,8 @@ export default function Home({ onNav, toast }) {
         {metrics.length > 0 && (
           <>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4 }}>
-              <span style={{ fontSize: 16, fontWeight: 800, color: T.ink }}>주요 수치</span>
-              <button onClick={() => onNav('report')} style={{ fontSize: 12.5, fontWeight: 600, color: T.blue, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <span style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>주요 수치</span>
+              <button onClick={() => onNav('report')} style={{ fontSize: '0.7812rem', fontWeight: 600, color: T.blue, display: 'flex', alignItems: 'center', gap: 2 }}>
                 전체보기 <Icon name="chevR" size={14} color={T.blue} />
               </button>
             </div>

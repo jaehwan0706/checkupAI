@@ -58,7 +58,7 @@ function SectionLabel({ icon, color, soft, children }) {
       <div style={{ width: 34, height: 34, borderRadius: 10, background: soft || T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <Icon name={icon} size={18} color={color || T.blue} stroke={2.1} />
       </div>
-      <span style={{ fontSize: 16, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{children}</span>
+      <span style={{ fontSize: '1rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>{children}</span>
     </div>
   );
 }
@@ -102,10 +102,10 @@ export default function PremiumReport({ onNav, toast }) {
           <Icon name="chevL" size={20} color={T.inkMid} />
         </button>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: T.warn, display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: T.warn, display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
             <Icon name="crown" size={12} color={T.warn} stroke={2} /> 프리미엄 AI 리포트
           </div>
-          <div style={{ fontSize: 18, fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>✨ AI 분석 리포트</div>
+          <div style={{ fontSize: '1.125rem', fontWeight: 800, color: T.ink, letterSpacing: '-0.02em' }}>✨ AI 분석 리포트</div>
         </div>
       </div>
 
@@ -113,7 +113,7 @@ export default function PremiumReport({ onNav, toast }) {
         <div style={{ padding: '8px 20px 0' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#fff', border: '1px solid ' + T.line, padding: '5px 12px', borderRadius: 999 }}>
             <Icon name="cal" size={13} color={T.inkSoft} stroke={2} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: T.inkSoft }}>{formatDate(checkup.checkupDate)} 검진 기준</span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: T.inkSoft }}>{formatDate(checkup.checkupDate)} 검진 기준</span>
           </div>
         </div>
       )}
@@ -124,22 +124,22 @@ export default function PremiumReport({ onNav, toast }) {
         <div>
           <SectionLabel icon="spark" color={T.blue} soft={T.blueSoft}>AI 종합 분석</SectionLabel>
           <div style={{ background: '#fff', borderRadius: 18, border: '1px solid ' + T.line, padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <p style={{ margin: 0, fontSize: 13.5, color: T.inkMid, lineHeight: 1.75 }}>{summary}</p>
+            <p style={{ margin: 0, fontSize: '0.8438rem', color: T.inkMid, lineHeight: 1.75 }}>{summary}</p>
             {details.map((d, i) => {
               const st = S[d.status] || S.NORMAL;
               return (
                 <div key={i} style={{ borderRadius: 13, background: st.soft, padding: '13px 14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 7 }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: T.ink }}>{d.item}</span>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: st.color }}>{d.value}</span>
-                    <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 800, color: st.color, background: '#fff', padding: '2px 9px', borderRadius: 999 }}>{st.label}</span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink }}>{d.item}</span>
+                    <span style={{ fontSize: '0.7812rem', fontWeight: 700, color: st.color }}>{d.value}</span>
+                    <span style={{ marginLeft: 'auto', fontSize: '0.6875rem', fontWeight: 800, color: st.color, background: '#fff', padding: '2px 9px', borderRadius: 999 }}>{st.label}</span>
                   </div>
-                  <p style={{ margin: '0 0 6px', fontSize: 12.5, color: T.inkMid, lineHeight: 1.6 }}>{d.explanation}</p>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.7812rem', color: T.inkMid, lineHeight: 1.6 }}>{d.explanation}</p>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                     <div style={{ flexShrink: 0, marginTop: 2 }}>
                       <Icon name="check" size={13} color={st.color} stroke={3} />
                     </div>
-                    <span style={{ fontSize: 12.5, color: st.color, fontWeight: 700, lineHeight: 1.6 }}>{d.advice}</span>
+                    <span style={{ fontSize: '0.7812rem', color: st.color, fontWeight: 700, lineHeight: 1.6 }}>{d.advice}</span>
                   </div>
                 </div>
               );
@@ -158,11 +158,11 @@ export default function PremiumReport({ onNav, toast }) {
                     <Icon name={ex.icon} size={20} color={ex.color} stroke={2.1} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 800, color: T.ink }}>{ex.name}</div>
-                    <div style={{ fontSize: 11.5, fontWeight: 700, color: T.inkSoft, marginTop: 1 }}>{ex.duration} · {ex.intensity}</div>
+                    <div style={{ fontSize: '0.9062rem', fontWeight: 800, color: T.ink }}>{ex.name}</div>
+                    <div style={{ fontSize: '0.7188rem', fontWeight: 700, color: T.inkSoft, marginTop: 1 }}>{ex.duration} · {ex.intensity}</div>
                   </div>
                 </div>
-                <p style={{ margin: 0, fontSize: 13, color: T.inkMid, lineHeight: 1.6 }}>{ex.reason}</p>
+                <p style={{ margin: 0, fontSize: '0.8125rem', color: T.inkMid, lineHeight: 1.6 }}>{ex.reason}</p>
               </div>
             ))}
           </div>
@@ -173,16 +173,16 @@ export default function PremiumReport({ onNav, toast }) {
           <SectionLabel icon="food" color={T.ok} soft={T.okSoft}>맞춤 식습관 추천</SectionLabel>
           <div style={{ background: '#fff', borderRadius: 18, border: '1px solid ' + T.line, padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkSoft, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
                 <Icon name="check" size={13} color={T.green} stroke={2.8} /> 더 드시면 좋아요
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {GOOD_FOODS.map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 11, background: T.greenSoft }}>
-                    <span style={{ fontSize: 22, flexShrink: 0 }}>{f.emoji}</span>
+                    <span style={{ fontSize: '1.375rem', flexShrink: 0 }}>{f.emoji}</span>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>{f.name}</div>
-                      <div style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft, marginTop: 1 }}>{f.reason}</div>
+                      <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink }}>{f.name}</div>
+                      <div style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft, marginTop: 1 }}>{f.reason}</div>
                     </div>
                     <Icon name="check" size={15} color={T.green} stroke={2.8} />
                   </div>
@@ -190,16 +190,16 @@ export default function PremiumReport({ onNav, toast }) {
               </div>
             </div>
             <div style={{ borderTop: '1px solid ' + T.line, paddingTop: 12 }}>
-              <div style={{ fontSize: 12.5, fontWeight: 700, color: T.inkSoft, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{ fontSize: '0.7812rem', fontWeight: 700, color: T.inkSoft, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
                 <Icon name="cross" size={13} color={T.danger} stroke={2.8} /> 줄이면 좋아요
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {AVOID_FOODS.map((f, i) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 11, background: T.dangerSoft }}>
-                    <span style={{ fontSize: 22, flexShrink: 0 }}>{f.emoji}</span>
+                    <span style={{ fontSize: '1.375rem', flexShrink: 0 }}>{f.emoji}</span>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: T.ink }}>{f.name}</div>
-                      <div style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft, marginTop: 1 }}>{f.reason}</div>
+                      <div style={{ fontSize: '0.8438rem', fontWeight: 700, color: T.ink }}>{f.name}</div>
+                      <div style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft, marginTop: 1 }}>{f.reason}</div>
                     </div>
                     <Icon name="cross" size={15} color={T.danger} stroke={2.8} />
                   </div>
@@ -218,26 +218,26 @@ export default function PremiumReport({ onNav, toast }) {
                 <div style={{ width: 36, height: 36, borderRadius: 10, background: T.warnSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Icon name="cal" size={19} color={T.warn} stroke={2.1} />
                 </div>
-                <span style={{ fontSize: 14.5, fontWeight: 800, color: T.ink }}>권장 재검 시기</span>
+                <span style={{ fontSize: '0.9062rem', fontWeight: 800, color: T.ink }}>권장 재검 시기</span>
               </div>
-              <div style={{ fontSize: 17, fontWeight: 800, color: T.warn, marginBottom: 6 }}>6개월 후 중간 점검 권장</div>
-              <p style={{ margin: 0, fontSize: 12.5, color: T.inkMid, lineHeight: 1.65 }}>혈당·콜레스테롤 수치가 경계에 있어, 생활습관 개선 후 중간 점검이 필요해요. 3개월 후 자가 측정으로 먼저 확인해보세요.</p>
+              <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.warn, marginBottom: 6 }}>6개월 후 중간 점검 권장</div>
+              <p style={{ margin: 0, fontSize: '0.7812rem', color: T.inkMid, lineHeight: 1.65 }}>혈당·콜레스테롤 수치가 경계에 있어, 생활습관 개선 후 중간 점검이 필요해요. 3개월 후 자가 측정으로 먼저 확인해보세요.</p>
             </div>
             <div style={{ background: '#fff', borderRadius: 14, border: '1px solid ' + T.line, padding: 16 }}>
-              <div style={{ fontSize: 13.5, fontWeight: 800, color: T.ink, marginBottom: 10 }}>중점 모니터링 항목</div>
+              <div style={{ fontSize: '0.8438rem', fontWeight: 800, color: T.ink, marginBottom: 10 }}>중점 모니터링 항목</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10, background: T.warnSoft }}>
                   <Icon name="drop" size={17} color={T.warn} stroke={2.1} />
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: T.ink }}>공복혈당</div>
-                    <div style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft }}>목표: 100 mg/dL 미만으로 낮추기</div>
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.ink }}>공복혈당</div>
+                    <div style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft }}>목표: 100 mg/dL 미만으로 낮추기</div>
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 10, background: T.warnSoft }}>
                   <Icon name="spark" size={17} color={T.warn} stroke={2.1} />
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: T.ink }}>총콜레스테롤</div>
-                    <div style={{ fontSize: 11.5, fontWeight: 600, color: T.inkSoft }}>목표: 200 mg/dL 미만으로 낮추기</div>
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: T.ink }}>총콜레스테롤</div>
+                    <div style={{ fontSize: '0.7188rem', fontWeight: 600, color: T.inkSoft }}>목표: 200 mg/dL 미만으로 낮추기</div>
                   </div>
                 </div>
               </div>
@@ -249,21 +249,21 @@ export default function PremiumReport({ onNav, toast }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 4 }}>
           <button
             onClick={() => toast && toast('PDF 저장 기능 준비 중이에요', 'pdf')}
-            style={{ width: '100%', height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, boxShadow: '0 8px 20px rgba(0,184,148,0.28)' }}
+            style={{ width: '100%', height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#00B894,#00A382)', color: '#fff', fontSize: '0.9375rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9, boxShadow: '0 8px 20px rgba(0,184,148,0.28)' }}
           >
             <Icon name="pdf" size={19} color="#fff" stroke={2} />
             PDF 저장하기
           </button>
           <button
             onClick={() => toast && toast('공유 기능 준비 중이에요', 'arrow')}
-            style={{ width: '100%', height: 52, borderRadius: 14, background: '#fff', border: '1.5px solid ' + T.line, color: T.ink, fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9 }}
+            style={{ width: '100%', height: 52, borderRadius: 14, background: '#fff', border: '1.5px solid ' + T.line, color: T.ink, fontSize: '0.9375rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9 }}
           >
             <Icon name="arrow" size={19} color={T.inkMid} stroke={2} />
             공유하기
           </button>
         </div>
 
-        <p style={{ textAlign: 'center', fontSize: 11.5, color: T.inkSoft, lineHeight: 1.7, margin: 0 }}>
+        <p style={{ textAlign: 'center', fontSize: '0.7188rem', color: T.inkSoft, lineHeight: 1.7, margin: 0 }}>
           이 리포트는 AI 분석 결과로, 의학적 진단을 대체하지 않습니다.<br />정확한 진단은 의료 전문가에게 문의하세요.
         </p>
       </div>

@@ -1,6 +1,7 @@
 package com.checkupai.controller;
 
 import com.checkupai.common.ApiResponse;
+import com.checkupai.domain.goal.GoalCheckInService;
 import com.checkupai.domain.goal.UserGoalService;
 import com.checkupai.dto.goal.GoalItemDto;
 import com.checkupai.dto.goal.GoalSaveRequest;
@@ -10,7 +11,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/goals")
@@ -18,6 +21,7 @@ import java.util.List;
 public class GoalController {
 
     private final UserGoalService goalService;
+    private final GoalCheckInService checkInService;
 
     @GetMapping
     public @NonNull ApiResponse<List<GoalItemDto>> getGoals(
@@ -46,5 +50,31 @@ public class GoalController {
             @PathVariable @NonNull Long id) {
         goalService.deleteGoal(userId, id);
         return ApiResponse.success(null, "건강 목표가 삭제되었어요");
+    }
+
+    // ── 체크인 ──────────────────────────────────────────────────────────────
+
+    @PostMapping("/{goalId}/checkin")
+    public @NonNull ApiResponse<Map<String, Object>> toggleCheckIn(
+            @AuthenticationPrincipal @NonNull Long userId,
+            @PathVariable @NonNull Long goalId) {
+        boolean checked = checkInService.toggle(userId, goalId);
+        return ApiResponse.success(
+                Map.of("checked", checked),
+                checked ? "오늘 체크인 완료" : "체크인 취소"
+        );
+    }
+
+    @GetMapping("/{goalId}/checkins")
+    public @NonNull ApiResponse<List<String>> getMonthlyCheckIns(
+            @AuthenticationPrincipal @NonNull Long userId,
+            @PathVariable @NonNull Long goalId,
+            @RequestParam(defaultValue = "") String month) {
+        YearMonth ym = month.isBlank() ? YearMonth.now() : YearMonth.parse(month);
+        List<String> dates = checkInService.getMonthlyCheckIns(userId, goalId, ym)
+                .stream()
+                .map(java.time.LocalDate::toString)
+                .toList();
+        return ApiResponse.success(dates, "체크인 조회 완료");
     }
 }

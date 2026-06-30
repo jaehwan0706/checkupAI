@@ -30,6 +30,12 @@ public class UserGoal {
     private int pct;
     private boolean aiRecommended;
 
+    @Enumerated(EnumType.STRING)
+    private GoalType goalType;
+
+    private Integer startValue;
+    private Integer targetValue;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -41,7 +47,8 @@ public class UserGoal {
     }
 
     @Builder
-    public UserGoal(User user, String goalKey, String icon, String title, String detail, int pct, boolean aiRecommended) {
+    public UserGoal(User user, String goalKey, String icon, String title, String detail, int pct, boolean aiRecommended,
+                    GoalType goalType, Integer startValue, Integer targetValue) {
         this.user = user;
         this.goalKey = goalKey;
         this.icon = icon;
@@ -49,5 +56,8 @@ public class UserGoal {
         this.detail = detail;
         this.pct = pct;
         this.aiRecommended = aiRecommended;
+        this.goalType = goalType;
+        this.startValue = startValue;
+        this.targetValue = targetValue;
     }
 }

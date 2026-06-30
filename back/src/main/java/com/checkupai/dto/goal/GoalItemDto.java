@@ -1,5 +1,6 @@
 package com.checkupai.dto.goal;
 
+import com.checkupai.domain.goal.GoalType;
 import com.checkupai.domain.goal.UserGoal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +18,17 @@ public class GoalItemDto {
     private String detail;
     private int pct;
     private boolean ai;
+    private GoalType goalType;
+    private Integer startValue;
+    private Integer targetValue;
 
     public static GoalItemDto from(UserGoal g) {
-        return new GoalItemDto(g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(), g.getPct(), g.isAiRecommended());
+        return new GoalItemDto(g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
+                g.getPct(), g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
+    }
+
+    public static GoalItemDto from(UserGoal g, int computedPct) {
+        return new GoalItemDto(g.getGoalKey(), g.getIcon(), g.getTitle(), g.getDetail(),
+                computedPct, g.isAiRecommended(), g.getGoalType(), g.getStartValue(), g.getTargetValue());
     }
 }

@@ -42,7 +42,7 @@ export function Login({ onLogin, onNav }) {
       const res = await api.post('/api/auth/login', { email, password: pw });
       const data = res.data.data;
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify({ name: data.name, email: data.email, userId: data.userId }));
+      localStorage.setItem('user', JSON.stringify({ name: data.name, email: data.email, userId: data.userId, loginType: data.loginType }));
       onLogin();
     } catch (err) {
       setErr({ pw: err.response?.data?.message || '이메일 또는 비밀번호를 확인해주세요' });

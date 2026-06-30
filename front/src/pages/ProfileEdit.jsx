@@ -16,7 +16,7 @@ export default function ProfileEdit({ onNav, toast }) {
     birth:  toDisplayBirth(saved.birthDate || saved.birth) || '',
     gender: saved.gender || '',
   });
-  const [kakaoEmail, setKakaoEmail] = useState(null);
+  const [displayEmail, setDisplayEmail] = useState(null);
   const [emailLoaded, setEmailLoaded] = useState(false);
   const set = k => v => setF(s => ({ ...s, [k]: v }));
   const initial = (f.name || '?').charAt(0);
@@ -29,7 +29,8 @@ export default function ProfileEdit({ onNav, toast }) {
         birth:  toDisplayBirth(u.birthDate) || s.birth,
         gender: u.gender || s.gender,
       }));
-      setKakaoEmail(u.kakaoEmail || null);
+      const isKakao = saved.loginType === 'KAKAO' || ('kakaoEmail' in saved && !saved.loginType);
+      setDisplayEmail(isKakao ? (u.kakaoEmail || null) : (u.email || null));
       setEmailLoaded(true);
     }).catch(() => { setEmailLoaded(true); });
   }, []);
@@ -67,8 +68,8 @@ export default function ProfileEdit({ onNav, toast }) {
             <label style={{ display: 'block', fontSize: '0.7812rem', fontWeight: 700, color: T.inkMid, margin: '0 0 7px 2px' }}>이메일</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, height: 52, padding: '0 14px', borderRadius: 14, background: T.bg, border: '1.5px solid ' + T.line }}>
               <Icon name="mail" size={19} color="#A6B1C2" stroke={2} />
-              <span style={{ flex: 1, fontSize: '0.9375rem', color: kakaoEmail ? T.ink : T.inkSoft }}>
-                {kakaoEmail || '이메일 미제공'}
+              <span style={{ flex: 1, fontSize: '0.9375rem', color: displayEmail ? T.ink : T.inkSoft }}>
+                {displayEmail || '이메일 미제공'}
               </span>
               <span style={{ fontSize: '0.7188rem', color: T.inkSoft, background: T.line, borderRadius: 6, padding: '2px 7px' }}>수정불가</span>
             </div>

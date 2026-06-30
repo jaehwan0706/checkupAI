@@ -49,7 +49,7 @@ export default function Mypage({ onNav, onLogout, toast, consent }) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink }}>{user.name || '사용자'}</div>
             <div style={{ fontSize: '0.7812rem', color: T.inkSoft, marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {'kakaoEmail' in user ? (user.kakaoEmail || '이메일 미제공') : (user.email || '')}
+              {(user.loginType === 'KAKAO' || ('kakaoEmail' in user && !user.loginType)) ? (user.kakaoEmail || '이메일 미제공') : (user.email || '이메일 미제공')}
             </div>
           </div>
           <button onClick={() => onNav('profile')} style={{ width: 36, height: 36, borderRadius: 10, background: T.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>

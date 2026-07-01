@@ -491,8 +491,9 @@ export default function HealthGoal({ onNav, toast }) {
       const res = await api.post('/api/ai/goals/exercise');
       const rec = res.data?.data;
       if (!rec) return;
-      setGoals(g => g.map(goal =>
-        goal.id === goalId
+      setGoals(g => g.map(goal => {
+        const key = goal.dbId ?? goal.id;
+        return (key === goalId && goal.goalType === 'BEHAVIORAL')
           ? { ...goal,
               title: rec.title || goal.title,
               detail: rec.detail || goal.detail,
@@ -501,8 +502,8 @@ export default function HealthGoal({ onNav, toast }) {
               durationMinutes: rec.durationMinutes,
               intensity: rec.intensity,
             }
-          : goal
-      ));
+          : goal;
+      }));
       toast && toast('운동 목표 추천이 완료됐어요', 'check');
     } catch {
       toast && toast('AI 분석에 실패했어요', 'cross');
@@ -596,7 +597,7 @@ export default function HealthGoal({ onNav, toast }) {
                 {/* AI 운동 목표 분석 버튼 (exerciseType 없는 BEHAVIORAL) */}
                 {isBehavioral && !g.exerciseType && (
                   <button
-                    onClick={() => fetchExerciseRecommendation(g.id)}
+                    onClick={() => fetchExerciseRecommendation(g.dbId ?? g.id)}
                     disabled={loadingExercise}
                     style={{ width: '100%', height: 38, borderRadius: 10, marginTop: 10, background: loadingExercise ? T.line : 'linear-gradient(135deg,#00B894,#00A382)', color: loadingExercise ? T.inkSoft : '#fff', fontSize: '0.8125rem', fontWeight: 700, border: 'none', transition: 'all .15s ease' }}
                   >

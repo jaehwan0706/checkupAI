@@ -436,7 +436,6 @@ export default function HealthGoal({ onNav, toast }) {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [calendarGoal, setCalendarGoal] = useState(null); // BEHAVIORAL 운동 체크인
   const [mealGoal, setMealGoal]       = useState(null);   // DIETARY 식단 기록
-  const [loadingExercise, setLoadingExercise] = useState(false);
 
   const loadGoals = useCallback(() => {
     api.get('/api/goals')
@@ -466,7 +465,25 @@ export default function HealthGoal({ onNav, toast }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.post('/api/goals', { goals });
+      let goalsToSave = goals;
+      const exerciseGoal = goals.find(g => g.goalType === 'BEHAVIORAL' && g.ai && !g.exerciseType);
+      if (exerciseGoal) {
+        try {
+          const res = await api.post('/api/ai/goals/exercise');
+          const rec = res.data?.data;
+          if (rec) {
+            const targetKey = exerciseGoal.dbId ?? exerciseGoal.id;
+            goalsToSave = goals.map(goal => {
+              const key = goal.dbId ?? goal.id;
+              return (key === targetKey && goal.goalType === 'BEHAVIORAL')
+                ? { ...goal, title: rec.title || goal.title, detail: rec.detail || goal.detail, exerciseType: rec.exerciseType, frequencyPerWeek: rec.frequencyPerWeek, durationMinutes: rec.durationMinutes, intensity: rec.intensity }
+                : goal;
+            });
+            setGoals(goalsToSave);
+          }
+        } catch { /* 운동 추천 실패해도 저장은 계속 진행 */ }
+      }
+      await api.post('/api/goals', { goals: goalsToSave });
       toast && toast('건강 목표가 저장되었어요', 'check');
       onNav('my');
     } catch {
@@ -482,35 +499,6 @@ export default function HealthGoal({ onNav, toast }) {
   const handleCalendarClose = () => { setCalendarGoal(null); loadGoals(); };
   // 식단 캘린더 닫기 — 진행률 갱신
   const handleMealClose = () => { setMealGoal(null); loadGoals(); };
-
-  // AI 운동 목표 추천
-  const fetchExerciseRecommendation = async (goalId) => {
-    if (loadingExercise) return;
-    setLoadingExercise(true);
-    try {
-      const res = await api.post('/api/ai/goals/exercise');
-      const rec = res.data?.data;
-      if (!rec) return;
-      setGoals(g => g.map(goal => {
-        const key = goal.dbId ?? goal.id;
-        return (key === goalId && goal.goalType === 'BEHAVIORAL')
-          ? { ...goal,
-              title: rec.title || goal.title,
-              detail: rec.detail || goal.detail,
-              exerciseType: rec.exerciseType,
-              frequencyPerWeek: rec.frequencyPerWeek,
-              durationMinutes: rec.durationMinutes,
-              intensity: rec.intensity,
-            }
-          : goal;
-      }));
-      toast && toast('운동 목표 추천이 완료됐어요', 'check');
-    } catch {
-      toast && toast('AI 분석에 실패했어요', 'cross');
-    } finally {
-      setLoadingExercise(false);
-    }
-  };
 
   return (
     <div data-screen-label="건강 목표" className="nd-no-scrollbar" style={{ flex: 1, overflow: 'auto', background: T.bg }}>
@@ -584,25 +572,14 @@ export default function HealthGoal({ onNav, toast }) {
                   </div>
                 </div>
 
-                {/* 운동 칩 (exerciseType 있는 BEHAVIORAL) */}
-                {isBehavioral && g.exerciseType && (
+                {/* 운동 칩 (exerciseType 있는 BEHAVIORAL — DIETARY 카드에는 표시 안 됨) */}
+                {isBehavioral && !isDietary && g.exerciseType && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
                     <ExerciseChip>{EXERCISE_EMOJI[g.exerciseType] || '🏃'} {g.exerciseType}</ExerciseChip>
                     {g.frequencyPerWeek && <ExerciseChip>주 {g.frequencyPerWeek}회</ExerciseChip>}
                     {g.durationMinutes  && <ExerciseChip>{g.durationMinutes}분</ExerciseChip>}
                     {g.intensity        && <ExerciseChip>{g.intensity}</ExerciseChip>}
                   </div>
-                )}
-
-                {/* AI 운동 목표 분석 버튼 (exerciseType 없는 BEHAVIORAL) */}
-                {isBehavioral && !g.exerciseType && (
-                  <button
-                    onClick={() => fetchExerciseRecommendation(g.dbId ?? g.id)}
-                    disabled={loadingExercise}
-                    style={{ width: '100%', height: 38, borderRadius: 10, marginTop: 10, background: loadingExercise ? T.line : 'linear-gradient(135deg,#00B894,#00A382)', color: loadingExercise ? T.inkSoft : '#fff', fontSize: '0.8125rem', fontWeight: 700, border: 'none', transition: 'all .15s ease' }}
-                  >
-                    {loadingExercise ? 'AI 분석 중...' : '✨ AI 맞춤 운동 목표 분석'}
-                  </button>
                 )}
 
                 <GoalBar pct={g.pct} color={accentColor} />

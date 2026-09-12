@@ -1,0 +1,5 @@
+.gradle/
+build/
+bin/
+*.log
+application-local.properties

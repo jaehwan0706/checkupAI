@@ -43,6 +43,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -75,11 +76,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
+        // allowedOriginPatterns를 쓰면 Vercel 프리뷰 배포마다 바뀌는 서브도메인도
+        // 매번 코드를 고치지 않고 와일드카드 하나로 커버할 수 있다 (allowCredentials=true와도 호환됨)
+        config.setAllowedOriginPatterns(List.of(
             "http://localhost:3000",
             "http://localhost:3001",
-            "https://checkup-ai.vercel.app",
-            "https://checkup-4pn3aub1v-jh-bok-s-projects.vercel.app",
+            "https://*.vercel.app",
             "https://checkupai.kro.kr"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));

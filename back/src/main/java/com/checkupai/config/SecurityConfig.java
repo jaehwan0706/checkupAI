@@ -76,6 +76,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
+            "http://localhost:3000",
             "http://localhost:3001",
             "https://checkup-ai.vercel.app",
             "https://checkup-4pn3aub1v-jh-bok-s-projects.vercel.app",

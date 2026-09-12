@@ -6,8 +6,13 @@ const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function Logo({ size = 56, radius = 16, iconSize = 28 }) {
   return (
-    <div style={{ width: size, height: size, borderRadius: radius, background: 'linear-gradient(135deg,#00B894,#4CAF82)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 14px 30px rgba(0,184,148,0.32)' }}>
-      <Icon name="heart" size={iconSize} color="#fff" stroke={2.2} />
+    <div style={{ width: size, height: size, borderRadius: radius, background: 'linear-gradient(135deg,#2E9BD6,#1B5FA0)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 14px 30px rgba(27,95,160,0.32)' }}>
+      <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none">
+        <path d="M12 19s-6.5-4.2-6.5-9A3.5 3.5 0 0 1 12 7.3 3.5 3.5 0 0 1 18.5 10c0 4.8-6.5 9-6.5 9Z"
+              stroke="#fff" strokeWidth="1.2" strokeLinejoin="round" strokeLinecap="round" opacity="0.9"/>
+        <path d="M3 12h3.5l2-6 4 13 2.5-7H21"
+              stroke="#fff" strokeWidth="1.2" strokeLinejoin="round" strokeLinecap="round"/>
+      </svg>
     </div>
   );
 }
@@ -114,7 +119,9 @@ export function Signup({ onSignup, onNav }) {
     if (!f.pw) e.pw = '비밀번호를 입력해주세요';
     else if (f.pw.length < 8) e.pw = '비밀번호는 8자 이상이어야 해요';
     if (f.pw2 !== f.pw) e.pw2 = '비밀번호가 일치하지 않아요';
+    const birthDigits = f.birth.replace(/\D/g, '');
     if (!f.birth.trim()) e.birth = '생년월일을 입력해주세요';
+    else if (birthDigits.length !== 8) e.birth = '생년월일 형식이 올바르지 않아요 (YYYY.MM.DD)';
     if (!f.gender) e.gender = '성별을 선택해주세요';
     if (!agree.service || !agree.privacy || !agree.health) e.agree = '필수 약관에 동의해주세요';
     setErr(e);
@@ -122,11 +129,11 @@ export function Signup({ onSignup, onNav }) {
 
     setLoading(true);
     try {
-      await api.post('/api/auth/signup', { 
-      name: f.name, 
-      email: f.email, 
-      password: f.pw, 
-      birthDate: f.birth.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+      await api.post('/api/auth/signup', {
+      name: f.name,
+      email: f.email,
+      password: f.pw,
+      birthDate: birthDigits.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
       gender: f.gender === '남' ? 'MALE' : 'FEMALE'
     });
       onSignup();

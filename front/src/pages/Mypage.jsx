@@ -27,7 +27,6 @@ export default function Mypage({ onNav, onLogout, toast, consent }) {
   };
 
   const menu = [
-    { icon: 'star',     label: '건강 목표 설정',   detail: null,                              to: 'goals'         },
     { icon: 'bell',     label: '알림 설정',        detail: null,                              to: 'notifications' },
     { icon: 'settings', label: '글자 크기',        detail: FONT_SIZE_LABELS[fontSize] || '보통', action: () => setFontSizeSheet(true) },
     { icon: 'shield',   label: '데이터 동의 관리', detail: consent ? '동의함' : '미동의',     to: 'consent'       },

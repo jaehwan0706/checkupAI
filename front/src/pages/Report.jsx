@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { T, STATUS, Icon, Badge, Card, Spinner } from '../components/UI';
+import { T, STATUS, Icon, Badge, Card, Spinner, HealthMascot } from '../components/UI';
 import api from '../api';
 
 /* ─────────────────────────────────────────
@@ -15,7 +15,7 @@ function SummaryRow({ m, last }) {
       borderBottom: last ? 'none' : '1px solid ' + T.line,
     }}>
       {isAlert && <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: s.color }} />}
-      <div style={{ width: 38, height: 38, borderRadius: 11, background: s.soft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <div style={{ width: 38, height: 38, borderRadius: 999, background: s.soft, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         <Icon name={m.icon} size={20} color={s.color} stroke={2.1} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -81,20 +81,20 @@ function generateSummary(items) {
   const warnings = items.filter(m => m.status === '주의');
   if (dangers.length > 0) {
     const d = dangers[0];
-    return { text: DANGER_MSGS[d.name] || `${d.name} 수치가 위험 범위예요. 즉시 전문의 상담이 필요해요.`, bg: T.dangerSoft, color: T.danger, icon: 'bolt' };
+    return { text: DANGER_MSGS[d.name] || `${d.name} 수치가 위험 범위예요. 즉시 전문의 상담이 필요해요.`, bg: T.dangerSoft, color: T.danger, mood: 'worried' };
   }
   if (warnings.length > 0) {
     const w = warnings[0];
-    return { text: WARN_MSGS[w.name] || `${w.name} 수치에 주의가 필요해요. 지금 관리를 시작하세요.`, bg: T.warnSoft, color: T.warn, icon: 'info' };
+    return { text: WARN_MSGS[w.name] || `${w.name} 수치에 주의가 필요해요. 지금 관리를 시작하세요.`, bg: T.warnSoft, color: T.warn, mood: 'neutral' };
   }
-  return { text: '모든 수치가 정상 범위예요. 꾸준한 생활 관리로 현재 건강 상태를 잘 유지하고 있어요.', bg: T.greenSoft, color: T.ok, icon: 'check' };
+  return { text: '모든 수치가 정상 범위예요. 꾸준한 생활 관리로 현재 건강 상태를 잘 유지하고 있어요.', bg: T.greenSoft, color: T.ok, mood: 'happy' };
 }
 function AiSummaryCard({ items }) {
   const s = generateSummary(items);
   return (
     <div style={{ padding: '14px 16px', borderRadius: 16, background: s.bg, border: `1.5px solid ${s.color}33`, display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-      <div style={{ width: 34, height: 34, borderRadius: 10, background: `${s.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-        <Icon name={s.icon} size={17} color={s.color} stroke={2.3} />
+      <div style={{ width: 36, height: 36, borderRadius: 999, background: `${s.color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <HealthMascot mood={s.mood} size={30} />
       </div>
       <div>
         <div style={{ fontSize: '0.7188rem', fontWeight: 800, color: s.color, marginBottom: 5, letterSpacing: '0.02em' }}>AI 한줄 총평</div>
@@ -119,12 +119,12 @@ const DIAG_HINTS = {
 };
 function getHint(name, value, status) {
   if (status === '위험') {
-    const m = { '혈압': '고혈압 범위예요 🚨', '공복혈당': '당뇨 기준치 초과예요 🚨', '총콜레스테롤': '높은 수치예요 🚨', 'LDL 콜레스테롤': '위험 수준이에요 🚨', 'HDL 콜레스테롤': '매우 낮아요 🚨', 'AST': '간 수치 위험이에요 🚨', '간수치 ALT': '간 수치 위험이에요 🚨', '크레아티닌': '신장 기능 위험이에요 🚨' };
-    return m[name] || '위험 범위예요 🚨';
+    const m = { '혈압': '고혈압 범위예요', '공복혈당': '당뇨 기준치 초과예요', '총콜레스테롤': '높은 수치예요', 'LDL 콜레스테롤': '위험 수준이에요', 'HDL 콜레스테롤': '매우 낮아요', 'AST': '간 수치 위험이에요', '간수치 ALT': '간 수치 위험이에요', '크레아티닌': '신장 기능 위험이에요' };
+    return m[name] || '위험 범위예요';
   }
   if (status === '주의') {
-    const m = { '혈압': '정상 범위를 초과했어요 ⚠️', '공복혈당': '당뇨 전단계 경계예요 ⚠️', '총콜레스테롤': '경계 수준이에요 ⚠️', 'LDL 콜레스테롤': '높은 경계 수준이에요 ⚠️', 'HDL 콜레스테롤': '낮은 수준이에요 ⚠️', 'AST': '정상 범위를 초과했어요 ⚠️', '간수치 ALT': '정상 범위를 초과했어요 ⚠️', '크레아티닌': '경계 수준이에요 ⚠️' };
-    return m[name] || '주의 범위예요 ⚠️';
+    const m = { '혈압': '정상 범위를 초과했어요', '공복혈당': '당뇨 전단계 경계예요', '총콜레스테롤': '경계 수준이에요', 'LDL 콜레스테롤': '높은 경계 수준이에요', 'HDL 콜레스테롤': '낮은 수준이에요', 'AST': '정상 범위를 초과했어요', '간수치 ALT': '정상 범위를 초과했어요', '크레아티닌': '경계 수준이에요' };
+    return m[name] || '주의 범위예요';
   }
   const pos = {
     '혈압':           (v) => { const s = parseInt(String(v).split('/')[0]); return s < 100 ? '평균 이하' : s < 112 ? '평균 수준' : '정상 상단'; },
@@ -192,10 +192,12 @@ const fmtShort = d => {
   return `${dt.getMonth() + 1}/${dt.getDate()}`;
 };
 
-function CategoryEmpty({ emoji, title, sub }) {
+function CategoryEmpty({ icon, color = T.blue, title, sub }) {
   return (
     <div style={{ textAlign: 'center', padding: '60px 0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-      <div style={{ fontSize: '3.25rem', marginBottom: 2 }}>{emoji}</div>
+      <div style={{ width: 64, height: 64, borderRadius: 999, background: `${color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 2 }}>
+        <Icon name={icon} size={30} color={color} stroke={1.9} />
+      </div>
       <div style={{ fontSize: '1rem', fontWeight: 800, color: T.ink }}>{title}</div>
       <div style={{ fontSize: '0.8438rem', color: T.inkSoft, lineHeight: 1.7, whiteSpace: 'pre-line' }}>{sub}</div>
     </div>
@@ -375,8 +377,8 @@ function PharmacyAiDisplay({ data, onRetry }) {
             </div>
             <div style={{ fontSize: '0.875rem', fontWeight: 800, color: T.ink }}>{med.name}</div>
           </div>
-          {med.purpose && <div style={{ fontSize: '0.7812rem', color: T.inkMid, marginBottom: 5, lineHeight: 1.6 }}>📌 {med.purpose}</div>}
-          {med.caution && <div style={{ fontSize: '0.7812rem', color: T.warn, fontWeight: 600, lineHeight: 1.6 }}>⚠️ {med.caution}</div>}
+          {med.purpose && <div style={{ fontSize: '0.7812rem', color: T.inkMid, marginBottom: 5, lineHeight: 1.6 }}>{med.purpose}</div>}
+          {med.caution && <div style={{ fontSize: '0.7812rem', color: T.warn, fontWeight: 600, lineHeight: 1.6 }}>{med.caution}</div>}
         </div>
       ))}
       {data?.interactions && (
@@ -442,7 +444,7 @@ function HospitalAiDisplay({ data, onRetry }) {
 ───────────────────────────────────────── */
 function VitalsTab({ vitals, aiState, onAnalyze }) {
   if (vitals.length === 0) {
-    return <CategoryEmpty emoji="🩺" title="혈압·혈당 기록이 없어요" sub={'혈압·혈당을 측정하고 기록하면\nAI가 트렌드를 분석해 드려요'} />;
+    return <CategoryEmpty icon="drop" color={T.blue} title="혈압·혈당 기록이 없어요" sub={'혈압·혈당을 측정하고 기록하면\nAI가 트렌드를 분석해 드려요'} />;
   }
   const recent = vitals.slice(0, 5);
   const idle = !aiState?.loading && !aiState?.data && !aiState?.error;
@@ -489,9 +491,9 @@ function VitalsTab({ vitals, aiState, onAnalyze }) {
 /* ─────────────────────────────────────────
    약국봉투 / 병원진료 탭 (공통)
 ───────────────────────────────────────── */
-function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle, emptyDesc, analyzeLabel, analyzeSub }) {
+function MedicalTab({ records, type, aiState, onAnalyze, emptyIcon, emptyTitle, emptyDesc, analyzeLabel, analyzeSub }) {
   if (records.length === 0) {
-    return <CategoryEmpty emoji={emptyEmoji} title={emptyTitle} sub={emptyDesc} />;
+    return <CategoryEmpty icon={emptyIcon} color={T.blue} title={emptyTitle} sub={emptyDesc} />;
   }
   const recent = records.slice(0, 5);
   const idle = !aiState?.loading && !aiState?.data && !aiState?.error;
@@ -535,45 +537,52 @@ function MedicalTab({ records, type, aiState, onAnalyze, emptyEmoji, emptyTitle,
 ───────────────────────────────────────── */
 const TABS = ['건강검진', '혈압·혈당', '약국봉투', '병원진료'];
 
-export default function Report({ onPremium, toast }) {
+export default function Report({ onPremium, onNav, toast }) {
   const [tab, setTab]     = useState('건강검진');
   const [checkupItems, setCheckupItems] = useState([]);
   const [checkupDate, setCheckupDate]   = useState('');
   const [checkupId, setCheckupId]       = useState(null);
   const [vitals, setVitals]   = useState([]);
+  const [history, setHistory] = useState([]); // 연도별 트렌드용 검진 이력
   const [medicals, setMedicals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [aiState, setAiState] = useState({ checkup: null, daily: null, pharmacy: null, hospital: null });
   const [isPremium, setIsPremium] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
 
+  // 검진 이력(history)에서 특정 검진 하나를 선택해 그 수치·AI 리포트 상태로 전환한다
+  const selectCheckup = (d) => {
+    if (!d) return;
+    setCheckupDate(d.checkupDate || '');
+    setCheckupItems(toMetrics(d));
+    setCheckupId(d.id || null);
+    setIsPaid(false);
+    setAiState(prev => ({ ...prev, checkup: null }));
+    if (d.id) {
+      localStorage.setItem('lastCheckupId', String(d.id));
+      api.get(`/api/ai/report/${d.id}`).then(r => {
+        const rd = r?.data?.data;
+        if (rd?.isPaid) {
+          setIsPaid(true);
+          setAiState(prev => ({ ...prev, checkup: { loading: false, data: rd } }));
+        }
+      }).catch(() => {});
+    }
+  };
+
   useEffect(() => {
-    const id = localStorage.getItem('lastCheckupId');
     Promise.all([
-      api.get(id ? `/api/checkup/${id}` : '/api/checkup/latest').catch(() => null),
       api.get('/api/vitals/history').catch(() => null),
       api.get('/api/medical-records/history').catch(() => null),
       api.get('/api/user/me').catch(() => null),
-    ]).then(([checkupRes, vitalsRes, medicalRes, userRes]) => {
-      const d = checkupRes?.data?.data;
-      if (d) {
-        setCheckupDate(d.checkupDate || '');
-        setCheckupItems(toMetrics(d));
-        setCheckupId(d.id || null);
-        if (d.id) {
-          api.get(`/api/ai/report/${d.id}`).then(r => {
-            const rd = r?.data?.data;
-            console.log('[Report] AI 리포트 응답 isPaid:', rd?.isPaid, '| reportId:', rd?.reportId);
-            if (rd?.isPaid) {
-              setIsPaid(true);
-              setAiState(prev => ({ ...prev, checkup: { loading: false, data: rd } }));
-            }
-          }).catch(err => {
-            console.log('[Report] AI 리포트 없음 (정상):', err?.response?.status);
-          });
-        }
-      }
+      api.get('/api/checkup').catch(() => null),
+    ]).then(([vitalsRes, medicalRes, userRes, historyRes]) => {
+      const hist = historyRes?.data?.data || [];
+      const savedId = localStorage.getItem('lastCheckupId');
+      const initial = (savedId && hist.find(h => String(h.id) === savedId)) || hist[0] || null;
+      selectCheckup(initial);
       setVitals(vitalsRes?.data?.data || []);
+      setHistory(hist);
       setMedicals(medicalRes?.data?.data || []);
       const expiry = userRes?.data?.data?.annualPassExpiry;
       if (expiry && new Date(expiry) > new Date()) setIsPremium(true);
@@ -635,13 +644,31 @@ export default function Report({ onPremium, toast }) {
       {/* ─ 건강검진 탭 ─ */}
       {tab === '건강검진' && (
         <>
+          {history.length > 1 && (
+            <div className="nd-no-scrollbar" style={{ overflowX: 'auto', padding: '0 20px 12px', display: 'flex', gap: 8 }}>
+              {history.map(h => {
+                const active = h.id === checkupId;
+                const label = new Date(h.checkupDate).toLocaleDateString('ko-KR', { year: '2-digit', month: 'numeric', day: 'numeric' });
+                return (
+                  <button key={h.id} onClick={() => selectCheckup(h)} style={{
+                    flexShrink: 0, padding: '7px 14px', borderRadius: 999,
+                    fontSize: '0.7812rem', fontWeight: 700,
+                    background: active ? T.blue : '#fff',
+                    color: active ? '#fff' : T.inkMid,
+                    border: `1.5px solid ${active ? T.blue : T.line}`,
+                    transition: 'all .15s ease',
+                  }}>{label}</button>
+                );
+              })}
+            </div>
+          )}
           <div style={{ padding: '0 20px 14px' }}>
             {displayDate && <p style={{ margin: '0 0 10px', fontSize: '0.8125rem', color: T.inkSoft }}>{displayDate} 검진 기준</p>}
             {loading ? (
               <div style={{ padding: '13px 15px', borderRadius: 14, background: T.bg, border: '1px solid ' + T.line, fontSize: '0.8438rem', color: T.inkSoft, fontWeight: 600 }}>데이터를 불러오는 중...</div>
             ) : warnCount > 0 ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '13px 15px', borderRadius: 14, background: T.warnSoft, border: `1px solid ${T.warn}33` }}>
-                <span style={{ fontSize: '1.0625rem' }}>⚠️</span>
+                <Icon name="info" size={17} color={T.warn} stroke={2.4} />
                 <span style={{ fontSize: '0.875rem', fontWeight: 700, color: '#9A6A12' }}>주의가 필요한 항목이 {warnCount}개 있어요</span>
               </div>
             ) : checkupItems.length > 0 ? (
@@ -655,7 +682,9 @@ export default function Report({ onPremium, toast }) {
           {!loading && checkupItems.length === 0 && (
             <div style={{ padding: '0 20px 28px' }}>
               <Card style={{ textAlign: 'center', padding: '36px 20px' }}>
-                <div style={{ fontSize: '3rem', marginBottom: 12 }}>📋</div>
+                <div style={{ width: 64, height: 64, borderRadius: 999, background: T.blueSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px' }}>
+                  <Icon name="doc" size={30} color={T.blue} stroke={1.9} />
+                </div>
                 <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: T.ink, marginBottom: 8 }}>검진 데이터가 없어요</div>
                 <p style={{ fontSize: '0.875rem', fontWeight: 600, color: T.inkMid, lineHeight: 1.6 }}>검진 수치를 입력하면 AI 리포트를 받을 수 있어요</p>
               </Card>
@@ -699,7 +728,7 @@ export default function Report({ onPremium, toast }) {
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div style={{ flex: 1, height: 1, background: T.line }} />
                       <div style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '5px 13px', borderRadius: 999, background: '#F0F2F5', margin: '0 10px' }}>
-                        <span style={{ fontSize: '0.75rem' }}>🔒</span>
+                        <Icon name="lock" size={12} color={T.blue} stroke={2.2} />
                         <span style={{ fontSize: '0.7812rem', fontWeight: 800, color: T.blue }}>프리미엄 전용 콘텐츠</span>
                       </div>
                       <div style={{ flex: 1, height: 1, background: T.line }} />
@@ -756,7 +785,7 @@ export default function Report({ onPremium, toast }) {
             : <MedicalTab
                 records={pharmacyRecords} type="pharmacy"
                 aiState={aiState.pharmacy} onAnalyze={runAiAnalysis}
-                emptyEmoji="💊" emptyTitle="약국봉투 기록이 없어요"
+                emptyIcon="flask" emptyTitle="약국봉투 기록이 없어요"
                 emptyDesc={'약국봉투를 기록하면\nAI가 성분과 주의사항을 분석해 드려요'}
                 analyzeLabel="AI 분석받기"
                 analyzeSub="처방약 성분·주의사항·복용 관리법을 AI가 분석해 드려요"
@@ -773,7 +802,7 @@ export default function Report({ onPremium, toast }) {
             : <MedicalTab
                 records={hospitalRecords} type="hospital"
                 aiState={aiState.hospital} onAnalyze={runAiAnalysis}
-                emptyEmoji="🏥" emptyTitle="병원진료 기록이 없어요"
+                emptyIcon="doc" emptyTitle="병원진료 기록이 없어요"
                 emptyDesc={'병원 진료 내역을 기록하면\nAI가 진단 분석과 관리 방법을 알려드려요'}
                 analyzeLabel="AI 분석받기"
                 analyzeSub="진료 기록을 바탕으로 진단 분석과 관리법을 안내해 드려요"

@@ -21,7 +21,7 @@ import NotificationList from './pages/NotificationList';
 import TermsDocument from './pages/TermsDocument';
 import PremiumReport from './pages/PremiumReport';
 
-const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'trends', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile', 'premium', 'premiumReport', 'notif-list'];
+const NAV_SCREENS = ['home', 'input', 'report', 'daily', 'my', 'history', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile', 'premium', 'premiumReport', 'notif-list'];
 
 /* 결제 리디렉션 여부 감지 (렌더 전) */
 function detectPaymentRedirect() {
@@ -157,6 +157,8 @@ export default function App() {
   const pendingAction = useRef(null);
   const [toastState, setToastState] = useState(null);
   const toastTimer = useRef(null);
+  const [pendingCheckin, setPendingCheckin] = useState(false);
+  const [screenIntent, setScreenIntent] = useState(null);
 
   /* 결제 리디렉션 처리 (/payment-success, /payment-fail) */
   useEffect(() => {
@@ -195,6 +197,17 @@ export default function App() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /* 건강 탭 오늘 체크인 여부 - 바텀네비 배지용 (홈/건강 탭 진입 시마다 갱신) */
+  useEffect(() => {
+    if (screen !== 'home' && screen !== 'daily') return;
+    if (!localStorage.getItem('token')) return;
+    import('./api').then(({ default: api }) => {
+      api.get('/api/guide/checkins')
+        .then(res => setPendingCheckin((res.data.data || []).some(s => !s.checkedToday)))
+        .catch(() => {});
+    });
+  }, [screen]);
+
   /* OAuth callback */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -227,14 +240,17 @@ export default function App() {
     toastTimer.current = setTimeout(() => setToastState(null), 2400);
   }, []);
 
-  const go = useCallback((s) => {
+  const go = useCallback((s, intent) => {
     if (s === 'premium') setPremiumReturn(prev => (screen === 'premium' ? prev : screen));
     setMore(false);
     setScreen(s);
-    setTimeout(() => {
-      const scroller = document.querySelector('[data-screen-label]');
-      if (scroller && scroller.scrollTo) scroller.scrollTo(0, 0);
-    }, 50);
+    setScreenIntent(intent || null);
+    if (!intent) {
+      setTimeout(() => {
+        const scroller = document.querySelector('[data-screen-label]');
+        if (scroller && scroller.scrollTo) scroller.scrollTo(0, 0);
+      }, 50);
+    }
   }, [screen]);
 
   const runAnalysis = useCallback((method) => {
@@ -281,10 +297,10 @@ export default function App() {
     go('login');
   }, [go]);
 
-  const goWrapped = useCallback((s) => {
+  const goWrapped = useCallback((s, intent) => {
     if (s === 'login') { setConsent(false); localStorage.removeItem('aiConsent'); }
-    if (s === 'report' && !consent) { requireConsent(() => go('report')); return; }
-    go(s);
+    if (s === 'report' && !consent) { requireConsent(() => go('report', intent)); return; }
+    go(s, intent);
   }, [go, consent, requireConsent]);
 
   const withNav = NAV_SCREENS.includes(screen);
@@ -299,9 +315,8 @@ export default function App() {
       case 'reset':      return <ResetPw onNav={go} toast={toast} />;
       case 'home':       return <Home onNav={goWrapped} toast={toast} />;
       case 'input':      return <Input onAnalyze={analyze} toast={toast} />;
-      case 'report':     return <Report source={reportSource} onPremium={() => go('premium')} toast={toast} />;
-      case 'daily':      return <Daily toast={toast} initialMode="맞춤 가이드" onNav={goWrapped} />;
-      case 'trends':     return <Daily toast={toast} initialMode="검진 트렌드" onNav={goWrapped} />;
+      case 'report':     return <Report source={reportSource} onPremium={() => go('premium')} onNav={goWrapped} toast={toast} />;
+      case 'daily':      return <Daily onNav={goWrapped} focusGuide={screenIntent === 'guide'} onConsumeFocusGuide={() => setScreenIntent(null)} />;
       case 'premium':    return <Premium onClose={() => go(premiumReturn)} toast={toast} onNav={goWrapped} />;
       case 'premiumReport': return <PremiumReport onNav={goWrapped} toast={toast} />;
       case 'my':         return <Mypage onNav={goWrapped} onLogout={() => setLogout(true)} toast={toast} consent={consent} />;
@@ -324,7 +339,7 @@ export default function App() {
         <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           {renderPage()}
         </div>
-        {withNav && <BottomNav active={screen} onNav={goWrapped} onMore={() => setMore(true)} />}
+        {withNav && <BottomNav active={screen} onNav={goWrapped} onMore={() => setMore(true)} hasPendingCheckin={pendingCheckin} />}
         <MoreSheet open={more} onClose={() => setMore(false)} onNav={goWrapped} />
         <ConfirmModal
           open={logout} title="로그아웃 하시겠어요?"

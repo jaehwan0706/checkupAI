@@ -182,15 +182,13 @@ function CheckupDetail({ r, isLatest, onNav, onClose }) {
         </div>
       )}
 
-      {/* 최신 검진이면 리포트 버튼 */}
-      {isLatest && (
-        <button
-          onClick={() => { if (r.id) localStorage.setItem('lastCheckupId', String(r.id)); onClose(); onNav('report'); }}
-          style={{ width: '100%', marginTop: 20, height: 52, borderRadius: 15, background: T.blue, color: '#fff', fontSize: '0.9688rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-        >
-          <Icon name="spark" size={18} color="#fff" stroke={2} /> AI 리포트 보기
-        </button>
-      )}
+      {/* AI 리포트 보기 — 과거 검진도 그때 받은 분석을 다시 볼 수 있어야 한다 */}
+      <button
+        onClick={() => { if (r.id) localStorage.setItem('lastCheckupId', String(r.id)); onClose(); onNav('report'); }}
+        style={{ width: '100%', marginTop: 20, height: 52, borderRadius: 15, background: T.blue, color: '#fff', fontSize: '0.9688rem', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+      >
+        <Icon name="spark" size={18} color="#fff" stroke={2} /> AI 리포트 보기
+      </button>
     </>
   );
 }

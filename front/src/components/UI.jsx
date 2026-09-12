@@ -75,6 +75,32 @@ export function Icon({ name, size = 24, color = 'currentColor', stroke = 2 }) {
   );
 }
 
+/* ── HealthMascot — 건강 상태에 반응하는 캐릭터 (홈/건강/리포트 공통) ── */
+export function HealthMascot({ mood = 'happy', size = 74 }) {
+  const mouth = {
+    happy:   'M26 46 Q38 57 50 46',
+    neutral: 'M27 47 L49 47',
+    worried: 'M26 51 Q38 42 50 51',
+  }[mood] || 'M27 47 L49 47';
+  const cheeks = mood === 'happy';
+  return (
+    <svg width={size} height={size} viewBox="0 0 76 76" style={{ flexShrink: 0 }}>
+      <circle cx="38" cy="40" r="33" fill="rgba(255,255,255,0.16)" />
+      <circle cx="38" cy="40" r="26" fill="#fff" />
+      <circle cx="29" cy="36" r="3.4" fill="#1F6B54" />
+      <circle cx="47" cy="36" r="3.4" fill="#1F6B54" />
+      <path d={mouth} stroke="#1F6B54" strokeWidth="3.2" fill="none" strokeLinecap="round" />
+      {cheeks && (
+        <>
+          <circle cx="21" cy="44" r="4.2" fill="#FF9E9E" opacity="0.55" />
+          <circle cx="55" cy="44" r="4.2" fill="#FF9E9E" opacity="0.55" />
+        </>
+      )}
+      <path d="M38 60c-4.4-3.3-7.6-6-7.6-9.4a3.6 3.6 0 0 1 6.6-2.1 3.6 3.6 0 0 1 6.6 2.1c0 3.4-3.2 6.1-7.6 9.4Z" fill="#FF8686" opacity="0.9" />
+    </svg>
+  );
+}
+
 /* ── Badge ── */
 export function Badge({ status, small }) {
   const s = STATUS[status] || STATUS['정상'];
@@ -289,7 +315,7 @@ export function Toast({ toast: t }) {
 }
 
 /* ── BottomNav ── */
-export function BottomNav({ active, onNav, onMore }) {
+export function BottomNav({ active, onNav, onMore, hasPendingCheckin }) {
   const tabs = [
     { id: 'home',    label: '홈',    icon: 'home' },
     { id: 'input',   label: '입력',  icon: 'plus' },
@@ -298,7 +324,7 @@ export function BottomNav({ active, onNav, onMore }) {
     { id: 'history', label: '기록',  icon: 'doc' },
   ];
   const historyScreens = ['history', 'premium', 'my', 'goals', 'notifications', 'consent', 'privacy', 'terms', 'profile'];
-  const activeTab = historyScreens.includes(active) ? 'history' : (active === 'trends' ? 'daily' : active);
+  const activeTab = historyScreens.includes(active) ? 'history' : active;
   return (
     <div style={{
       flexShrink: 0, background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
@@ -310,7 +336,12 @@ export function BottomNav({ active, onNav, onMore }) {
           <button key={t.id} onClick={() => onNav && onNav(t.id)} style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, flex: 1, padding: '4px 0', color: on ? T.blue : T.inkSoft,
           }}>
-            <Icon name={t.icon} size={24} color={on ? T.blue : '#A6B1C2'} stroke={on ? 2.2 : 1.9} />
+            <span style={{ position: 'relative', display: 'flex' }}>
+              <Icon name={t.icon} size={24} color={on ? T.blue : '#A6B1C2'} stroke={on ? 2.2 : 1.9} />
+              {t.id === 'daily' && hasPendingCheckin && (
+                <span style={{ position: 'absolute', top: -1, right: -2, width: 7, height: 7, borderRadius: 999, background: T.warn, border: '1.5px solid #fff' }} />
+              )}
+            </span>
             <span style={{ fontSize: '0.6562rem', fontWeight: on ? 700 : 600, letterSpacing: '-0.01em' }}>{t.label}</span>
           </button>
         );

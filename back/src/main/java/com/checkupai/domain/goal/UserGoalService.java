@@ -78,7 +78,13 @@ public class UserGoalService {
 
         List<UserGoal> goals = request.getGoals().stream()
                 .map(dto -> {
-                    GoalType type = inferGoalType(dto.getId(), dto.getDetail());
+                    GoalType type = dto.getGoalType() != null ? dto.getGoalType() : inferGoalType(dto.getId(), dto.getDetail());
+                    Integer startValue = type == GoalType.NUMERIC
+                            ? (dto.getStartValue() != null ? dto.getStartValue() : parseStartValue(dto.getDetail()))
+                            : null;
+                    Integer targetValue = type == GoalType.NUMERIC
+                            ? (dto.getTargetValue() != null ? dto.getTargetValue() : parseTargetValue(dto.getDetail()))
+                            : null;
                     return UserGoal.builder()
                             .user(user)
                             .goalKey(dto.getId())
@@ -88,8 +94,8 @@ public class UserGoalService {
                             .pct(dto.getPct())
                             .aiRecommended(dto.isAi())
                             .goalType(type)
-                            .startValue(type == GoalType.NUMERIC ? parseStartValue(dto.getDetail()) : null)
-                            .targetValue(type == GoalType.NUMERIC ? parseTargetValue(dto.getDetail()) : null)
+                            .startValue(startValue)
+                            .targetValue(targetValue)
                             .exerciseType(dto.getExerciseType())
                             .frequencyPerWeek(dto.getFrequencyPerWeek())
                             .durationMinutes(dto.getDurationMinutes())
@@ -107,7 +113,9 @@ public class UserGoalService {
     public @NonNull GoalItemDto updateGoal(@NonNull Long userId, @NonNull Long goalId, @NonNull GoalUpdateRequest request) {
         UserGoal goal = goalRepository.findByIdAndUserId(goalId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.GOAL_NOT_FOUND));
-        goal.update(request.getTitle(), request.getDetail(), request.getPct());
+        goal.update(request.getTitle(), request.getDetail(), request.getPct(), request.getGoalType(),
+                request.getStartValue(), request.getTargetValue(),
+                request.getExerciseType(), request.getFrequencyPerWeek(), request.getDurationMinutes(), request.getIntensity());
         return GoalItemDto.from(goal);
     }
 
@@ -134,7 +142,7 @@ public class UserGoalService {
             return Math.min(100, (int) Math.round((double) weeklyMealCount / 21 * 100));
         } else {
             // BEHAVIORAL (null goalType 포함 — 기존 데이터 호환)
-            int weeklyTarget = parseWeeklyTarget(g.getDetail());
+            int weeklyTarget = g.getFrequencyPerWeek() != null ? g.getFrequencyPerWeek() : parseWeeklyTarget(g.getDetail());
             long checkIns = weeklyCount.getOrDefault(g.getId(), 0L);
             return Math.min(100, (int) Math.round((double) checkIns / weeklyTarget * 100));
         }

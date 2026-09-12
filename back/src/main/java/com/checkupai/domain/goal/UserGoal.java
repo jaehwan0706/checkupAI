@@ -46,10 +46,19 @@ public class UserGoal {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    public void update(String title, String detail, int pct) {
+    public void update(String title, String detail, int pct, GoalType goalType,
+                        Integer startValue, Integer targetValue,
+                        String exerciseType, Integer frequencyPerWeek, Integer durationMinutes, String intensity) {
         this.title = title;
         this.detail = detail;
         this.pct = pct;
+        if (goalType != null) this.goalType = goalType;
+        this.startValue = startValue;
+        this.targetValue = targetValue;
+        this.exerciseType = exerciseType;
+        this.frequencyPerWeek = frequencyPerWeek;
+        this.durationMinutes = durationMinutes;
+        this.intensity = intensity;
     }
 
     @Builder

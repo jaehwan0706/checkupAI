@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "검진AI",
+    "slug": "checkupai",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#00B894"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.checkupai.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "약국 봉투 및 병원 진료 기록 촬영에 사용합니다.",
+        "NSPhotoLibraryUsageDescription": "건강 기록 사진을 선택하는데 사용합니다.",
+        "NSPhotoLibraryAddUsageDescription": "분석 결과를 저장하는데 사용합니다."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#00B894"
+      },
+      "package": "com.checkupai.app",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "checkupai",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "약국 봉투 및 병원 진료 기록 촬영에 사용합니다."
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "extra": {
+      "apiBaseUrl": "https://checkupai-api.kro.kr",
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}

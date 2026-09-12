@@ -2,8 +2,10 @@ package com.checkupai.domain.payment;
 
 import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
+import com.checkupai.domain.ai.AiReportService;
 import com.checkupai.domain.checkup.HealthCheckup;
 import com.checkupai.domain.checkup.HealthCheckupRepository;
+import com.checkupai.domain.notification.NotificationService;
 import com.checkupai.domain.report.AiReport;
 import com.checkupai.domain.report.AiReportRepository;
 import com.checkupai.domain.user.User;
@@ -33,14 +35,22 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final HealthCheckupRepository checkupRepository;
     private final AiReportRepository aiReportRepository;
+    private final AiReportService aiReportService;
+    private final NotificationService notificationService;
 
     public @NonNull PaymentResponse confirmSingle(@NonNull Long userId, @NonNull PaymentConfirmRequest req) {
         if (!req.getAmount().equals(SINGLE_PRICE)) {
             throw new CustomException(ErrorCode.PAYMENT_AMOUNT_MISMATCH);
         }
 
+        // 결제 시점까지 AI 리포트가 아직 생성되지 않았다면(사용자가 미리보기만 보고 바로 구매한 경우)
+        // 여기서 생성한다 — analyze()는 이미 존재하면 재사용하는 find-or-create 로직이라 안전하다.
         AiReport report = aiReportRepository.findByCheckupIdAndUserId(req.getCheckupId(), userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.AI_REPORT_NOT_FOUND));
+                .orElseGet(() -> {
+                    aiReportService.analyze(userId, req.getCheckupId());
+                    return aiReportRepository.findByCheckupIdAndUserId(req.getCheckupId(), userId)
+                            .orElseThrow(() -> new CustomException(ErrorCode.AI_REPORT_NOT_FOUND));
+                });
 
         if (Boolean.TRUE.equals(report.getIsPaid())) {
             throw new CustomException(ErrorCode.PAYMENT_ALREADY_COMPLETED);
@@ -66,6 +76,9 @@ public class PaymentService {
                 .build());
 
         report.unlock();
+
+        notificationService.create(userId, "결제가 완료됐어요",
+                "AI 리포트 전체 분석 결과를 확인할 수 있어요.");
 
         return PaymentResponse.builder()
                 .paymentId(payment.getId())
@@ -100,6 +113,9 @@ public class PaymentService {
 
         LocalDateTime expiry = LocalDateTime.now().plusMonths(1);
         user.grantAnnualPass(expiry);
+
+        notificationService.create(userId, "프리미엄 결제가 완료됐어요",
+                "이제 모든 AI 분석과 맞춤 가이드를 이용할 수 있어요.");
 
         return PaymentResponse.builder()
                 .paymentId(payment.getId())

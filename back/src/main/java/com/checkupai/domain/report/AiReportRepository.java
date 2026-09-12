@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface AiReportRepository extends JpaRepository<AiReport, Long> {
     List<AiReport> findByUserIdOrderByCreatedAtDesc(Long userId);
     Optional<AiReport> findByCheckupIdAndUserId(Long checkupId, Long userId);
+    boolean existsByCheckupIdAndUserId(Long checkupId, Long userId);
 }

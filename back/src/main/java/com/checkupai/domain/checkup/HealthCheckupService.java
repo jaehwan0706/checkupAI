@@ -2,7 +2,10 @@ package com.checkupai.domain.checkup;
 
 import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
+import com.checkupai.common.HealthStatus;
+import com.checkupai.domain.notification.NotificationService;
 import com.checkupai.domain.pdf.PdfParseResult;
+import com.checkupai.domain.report.AiReportRepository;
 import com.checkupai.domain.user.User;
 import com.checkupai.domain.user.UserRepository;
 import com.checkupai.dto.checkup.CheckupRequest;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +27,8 @@ public class HealthCheckupService {
 
     private final HealthCheckupRepository checkupRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+    private final AiReportRepository aiReportRepository;
 
     @Transactional
     public @NonNull CheckupResponse save(@NonNull Long userId, @NonNull CheckupRequest request) {
@@ -51,13 +57,15 @@ public class HealthCheckupService {
                 .creatinine(request.getCreatinine())
                 .build();
 
-        return CheckupResponse.from(checkupRepository.save(checkup));
+        HealthCheckup saved = checkupRepository.save(checkup);
+        notifyIfAbnormal(userId, saved);
+        return CheckupResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
     public @NonNull List<CheckupResponse> findAll(@NonNull Long userId) {
         return checkupRepository.findByUserIdOrderByCheckupDateDesc(userId).stream()
-                .map(CheckupResponse::from)
+                .map(c -> CheckupResponse.from(c, aiReportRepository.existsByCheckupIdAndUserId(c.getId(), userId)))
                 .toList();
     }
 
@@ -65,7 +73,7 @@ public class HealthCheckupService {
     public @NonNull CheckupResponse findById(@NonNull Long userId, @NonNull Long checkupId) {
         HealthCheckup checkup = checkupRepository.findByIdAndUserId(checkupId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHECKUP_NOT_FOUND));
-        return CheckupResponse.from(checkup);
+        return CheckupResponse.from(checkup, aiReportRepository.existsByCheckupIdAndUserId(checkupId, userId));
     }
 
     @Transactional
@@ -102,7 +110,9 @@ public class HealthCheckupService {
                 .creatinine(pdf.getCreatinine())
                 .build();
 
-        return CheckupResponse.from(checkupRepository.save(checkup));
+        HealthCheckup saved = checkupRepository.save(checkup);
+        notifyIfAbnormal(userId, saved);
+        return CheckupResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
@@ -114,8 +124,34 @@ public class HealthCheckupService {
     public CheckupResponse findLatest(@NonNull Long userId) {
         return checkupRepository
                 .findFirstByUserIdOrderByCheckupDateDesc(userId)
-                .map(CheckupResponse::from)
+                .map(c -> CheckupResponse.from(c, aiReportRepository.existsByCheckupIdAndUserId(c.getId(), userId)))
                 .orElse(null);
+    }
+
+    private void notifyIfAbnormal(Long userId, HealthCheckup c) {
+        List<String> abnormal = new ArrayList<>();
+        if (c.getSystolicBp() != null && c.getDiastolicBp() != null
+                && CheckupStatusClassifier.bpStatus(c.getSystolicBp(), c.getDiastolicBp()) != HealthStatus.NORMAL) {
+            abnormal.add("혈압");
+        }
+        if (c.getFastingBloodSugar() != null
+                && CheckupStatusClassifier.bsStatus(c.getFastingBloodSugar()) != HealthStatus.NORMAL) {
+            abnormal.add("혈당");
+        }
+        if (c.getTotalCholesterol() != null
+                && CheckupStatusClassifier.cholesterolStatus(c.getTotalCholesterol()) != HealthStatus.NORMAL) {
+            abnormal.add("콜레스테롤");
+        }
+        if (c.getAlt() != null
+                && CheckupStatusClassifier.altStatus(c.getAlt()) != HealthStatus.NORMAL) {
+            abnormal.add("간수치(ALT)");
+        }
+
+        if (!abnormal.isEmpty()) {
+            String joined = String.join(", ", abnormal);
+            notificationService.createIfAllowed(userId, "abnormal", "주의가 필요한 수치가 있어요",
+                    joined + " 수치가 정상 범위를 벗어났어요. 리포트 탭에서 자세히 확인해보세요.");
+        }
     }
 
     private double calcBmi(double weight, double height) {

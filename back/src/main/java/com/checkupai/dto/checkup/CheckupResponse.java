@@ -30,8 +30,13 @@ public class CheckupResponse {
     private Integer alt;
     private Double creatinine;
     private LocalDateTime createdAt;
+    private boolean hasAiReport;
 
     public static @NonNull CheckupResponse from(@NonNull HealthCheckup c) {
+        return from(c, false);
+    }
+
+    public static @NonNull CheckupResponse from(@NonNull HealthCheckup c, boolean hasAiReport) {
         return CheckupResponse.builder()
                 .id(c.getId())
                 .checkupDate(c.getCheckupDate())
@@ -49,6 +54,7 @@ public class CheckupResponse {
                 .alt(c.getAlt())
                 .creatinine(c.getCreatinine())
                 .createdAt(c.getCreatedAt())
+                .hasAiReport(hasAiReport)
                 .build();
     }
 }

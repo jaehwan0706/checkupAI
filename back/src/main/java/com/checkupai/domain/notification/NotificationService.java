@@ -14,6 +14,7 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final NotificationSettingsService notificationSettingsService;
 
     @Transactional(readOnly = true)
     public List<NotificationResponse> getMyNotifications(Long userId) {
@@ -47,5 +48,12 @@ public class NotificationService {
     @Transactional(readOnly = true)
     public boolean hasUnread(Long userId) {
         return notificationRepository.existsByUserIdAndIsReadFalse(userId);
+    }
+
+    /** 사용자의 알림 설정(카테고리·야간 방해 금지)을 확인한 뒤에만 알림을 생성한다. */
+    @Transactional
+    public NotificationResponse createIfAllowed(Long targetUserId, String category, String title, String message) {
+        if (!notificationSettingsService.isEnabled(targetUserId, category)) return null;
+        return create(targetUserId, title, message);
     }
 }

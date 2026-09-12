@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { T, Card, SubHeader, Toggle } from '../components/UI';
+import api from '../api';
 
 const FONT_SIZES = [
   { key: 'small',  label: '작게' },
@@ -7,10 +8,37 @@ const FONT_SIZES = [
   { key: 'large',  label: '크게' },
 ];
 
+// 프론트 토글 키 ↔ 백엔드 필드명 매핑 (일부는 이름이 달라 그대로 매핑할 수 없음)
+const TO_BACKEND = { checkup: 'checkupReminder', reportDone: 'reportDone', abnormal: 'abnormalAlert', tips: 'tipsReminder', weekly: 'weeklyReport', marketing: 'marketing', dnd: 'dnd' };
+const FROM_BACKEND = { checkupReminder: 'checkup', reportDone: 'reportDone', abnormalAlert: 'abnormal', tipsReminder: 'tips', weeklyReport: 'weekly', marketing: 'marketing', dnd: 'dnd' };
+
 export default function NotificationSettings({ onNav }) {
   const [n, setN] = useState({ checkup: true, reportDone: true, abnormal: true, tips: true, weekly: false, marketing: false, dnd: false });
-  const set = k => v => setN(s => ({ ...s, [k]: v }));
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('fontSize') || 'medium');
+
+  useEffect(() => {
+    api.get('/api/notification-settings')
+      .then(res => {
+        const data = res.data?.data;
+        if (!data) return;
+        setN(prev => {
+          const next = { ...prev };
+          Object.entries(FROM_BACKEND).forEach(([backendKey, feKey]) => { next[feKey] = data[backendKey]; });
+          return next;
+        });
+      })
+      .catch(() => { /* 조회 실패 시 기본값 유지 */ });
+  }, []);
+
+  const set = k => v => {
+    setN(s => {
+      const next = { ...s, [k]: v };
+      const payload = {};
+      Object.entries(TO_BACKEND).forEach(([feKey, backendKey]) => { payload[backendKey] = next[feKey]; });
+      api.put('/api/notification-settings', payload).catch(() => {});
+      return next;
+    });
+  };
 
   const changeFontSize = (key) => {
     setFontSize(key);

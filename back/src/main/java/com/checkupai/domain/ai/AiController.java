@@ -59,6 +59,24 @@ public class AiController {
                 "운동 목표 추천이 완료되었습니다.");
     }
 
+    @PostMapping("/goals/dietary")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @NonNull ApiResponse<com.checkupai.dto.goal.DietaryGoalRecommendation> recommendDietaryGoal(
+            @AuthenticationPrincipal @NonNull Long userId) {
+        return ApiResponse.success(
+                aiReportService.recommendDietaryGoal(userId),
+                "식단 목표 추천이 완료되었습니다.");
+    }
+
+    @PostMapping("/guide")
+    @ResponseStatus(HttpStatus.CREATED)
+    public @NonNull ApiResponse<LifestyleGuideResponse> recommendLifestyleGuide(
+            @AuthenticationPrincipal @NonNull Long userId) {
+        return ApiResponse.success(
+                aiReportService.recommendLifestyleGuide(userId),
+                "맞춤 가이드 생성이 완료되었습니다.");
+    }
+
     @Getter
     static class AnalyzeRequest {
         @NotNull(message = "검진 ID를 입력해주세요.")

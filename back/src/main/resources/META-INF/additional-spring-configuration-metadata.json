@@ -11,19 +11,19 @@
       "description": "JWT 만료 시간 (밀리초 단위, 기본값 86400000 = 24시간)"
     },
     {
-      "name": "claude.api.key",
+      "name": "gemini.api.key",
       "type": "java.lang.String",
-      "description": "Anthropic Claude API 키"
+      "description": "Google Gemini API 키"
     },
     {
-      "name": "claude.api.url",
+      "name": "gemini.api.url",
       "type": "java.lang.String",
-      "description": "Claude API 엔드포인트 URL"
+      "description": "Gemini API 엔드포인트 베이스 URL (모델 경로 앞부분)"
     },
     {
-      "name": "claude.api.model",
+      "name": "gemini.api.model",
       "type": "java.lang.String",
-      "description": "사용할 Claude 모델 ID (예: claude-sonnet-4-6)"
+      "description": "사용할 Gemini 모델 ID (예: gemini-2.0-flash)"
     },
     {
       "name": "toss.client-key",

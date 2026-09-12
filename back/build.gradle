@@ -41,7 +41,7 @@ dependencies {
 	// 카카오 소셜 로그인
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-	// Claude API (HTTP 클라이언트)
+	// Gemini API (HTTP 클라이언트)
 	implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 
@@ -66,13 +66,21 @@ dependencies {
 }
 
 bootRun {
-    environment 'CLAUDE_API_KEY', project.findProperty('CLAUDE_API_KEY') ?: System.getenv('CLAUDE_API_KEY') ?: ''
-    environment 'TOSS_CLIENT_KEY', project.findProperty('TOSS_CLIENT_KEY') ?: System.getenv('TOSS_CLIENT_KEY') ?: ''
-    environment 'TOSS_SECRET_KEY', project.findProperty('TOSS_SECRET_KEY') ?: System.getenv('TOSS_SECRET_KEY') ?: ''
+    // 값이 있을 때만 환경변수를 주입한다 — 빈 문자열을 넣으면 Spring 프로퍼티 우선순위상
+    // application-local.properties의 실제 값을 덮어써버린다.
+    def geminiKey = project.findProperty('GEMINI_API_KEY') ?: System.getenv('GEMINI_API_KEY')
+    if (geminiKey) environment 'GEMINI_API_KEY', geminiKey
+
+    def tossClientKey = project.findProperty('TOSS_CLIENT_KEY') ?: System.getenv('TOSS_CLIENT_KEY')
+    if (tossClientKey) environment 'TOSS_CLIENT_KEY', tossClientKey
+
+    def tossSecretKey = project.findProperty('TOSS_SECRET_KEY') ?: System.getenv('TOSS_SECRET_KEY')
+    if (tossSecretKey) environment 'TOSS_SECRET_KEY', tossSecretKey
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << '-Xlint:-classfile'
+    options.compilerArgs << '-Xlint:deprecation'
 }
 
 tasks.withType(JavaExec) {

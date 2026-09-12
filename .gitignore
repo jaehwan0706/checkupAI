@@ -15,6 +15,7 @@ back/bin/
 .env
 *.env
 application-secret.properties
+back/src/main/resources/application-local.properties
 
 # JVM 크래시 로그
 hs_err_pid*.log

@@ -10,6 +10,7 @@ import com.checkupai.domain.daily.DailyRecordRepository;
 import com.checkupai.domain.medical.MedicalRecord;
 import com.checkupai.domain.medical.MedicalRecordRepository;
 import com.checkupai.domain.medical.MedicalRecordType;
+import com.checkupai.domain.notification.NotificationService;
 import com.checkupai.domain.vitals.Vitals;
 import com.checkupai.domain.vitals.VitalsRepository;
 import com.checkupai.domain.report.AiReport;
@@ -39,8 +40,9 @@ public class AiReportService {
     private final DailyRecordRepository dailyRecordRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final VitalsRepository vitalsRepository;
-    private final ClaudeApiService claudeApiService;
+    private final GeminiApiService geminiApiService;
     private final ObjectMapper objectMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public @NonNull AiReportResponse analyze(@NonNull Long userId, @NonNull Long checkupId) {
@@ -62,7 +64,7 @@ public class AiReportService {
                     List<MedicalRecord> medicalRecords = allMedical.size() > 5
                             ? allMedical.subList(0, 5) : allMedical;
 
-                    String reportContent = claudeApiService.analyze(checkup, user, dailyRecords, medicalRecords);
+                    String reportContent = geminiApiService.analyze(checkup, user, dailyRecords, medicalRecords);
 
                     AiReport saved = aiReportRepository.save(
                             AiReport.builder()
@@ -72,6 +74,8 @@ public class AiReportService {
                                     .isPaid(user.hasAnnualPass())
                                     .build()
                     );
+                    notificationService.createIfAllowed(userId, "reportDone", "AI 리포트 분석이 완료됐어요",
+                            "건강검진 결과에 대한 AI 분석이 준비됐어요. 지금 확인해보세요.");
                     return toResponse(saved);
                 });
     }
@@ -89,7 +93,7 @@ public class AiReportService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         List<Vitals> vitals = vitalsRepository.findAllByUserId(userId);
         if (vitals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
-        return claudeApiService.analyzeVitals(user, vitals);
+        return geminiApiService.analyzeVitals(user, vitals);
     }
 
     @Transactional(readOnly = true)
@@ -98,7 +102,25 @@ public class AiReportService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         HealthCheckup checkup = checkupRepository.findFirstByUserIdOrderByCheckupDateDesc(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CHECKUP_NOT_FOUND));
-        return claudeApiService.recommendExerciseGoal(user, checkup);
+        return geminiApiService.recommendExerciseGoal(user, checkup);
+    }
+
+    @Transactional(readOnly = true)
+    public @NonNull com.checkupai.dto.goal.DietaryGoalRecommendation recommendDietaryGoal(@NonNull Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        HealthCheckup checkup = checkupRepository.findFirstByUserIdOrderByCheckupDateDesc(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHECKUP_NOT_FOUND));
+        return geminiApiService.recommendDietaryGoal(user, checkup);
+    }
+
+    @Transactional(readOnly = true)
+    public @NonNull LifestyleGuideResponse recommendLifestyleGuide(@NonNull Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        HealthCheckup checkup = checkupRepository.findFirstByUserIdOrderByCheckupDateDesc(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHECKUP_NOT_FOUND));
+        return geminiApiService.recommendLifestyleGuide(user, checkup);
     }
 
     @Transactional(readOnly = true)
@@ -112,7 +134,7 @@ public class AiReportService {
                      .collect(Collectors.toList())
                 : all;
         if (medicals.isEmpty()) throw new CustomException(ErrorCode.NO_RECORDS);
-        return claudeApiService.analyzeMedical(user, medicals, type);
+        return geminiApiService.analyzeMedical(user, medicals, type);
     }
 
     private @NonNull AiReportResponse toResponse(@NonNull AiReport report) {

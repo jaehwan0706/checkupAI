@@ -2,7 +2,7 @@ package com.checkupai.domain.meal;
 
 import com.checkupai.common.CustomException;
 import com.checkupai.common.ErrorCode;
-import com.checkupai.domain.ai.ClaudeApiService;
+import com.checkupai.domain.ai.GeminiApiService;
 import com.checkupai.domain.user.User;
 import com.checkupai.domain.user.UserRepository;
 import com.checkupai.dto.meal.MealLogResponse;
@@ -33,7 +33,7 @@ public class MealLogService {
 
     private final MealLogRepository mealLogRepository;
     private final UserRepository userRepository;
-    private final ClaudeApiService claudeApiService;
+    private final GeminiApiService geminiApiService;
 
     @Value("${file.upload.path:uploads/meals}")
     private String uploadPath;
@@ -50,7 +50,7 @@ public class MealLogService {
 
         String aiAnalysis = null;
         try {
-            aiAnalysis = claudeApiService.analyzeMealText(content);
+            aiAnalysis = geminiApiService.analyzeMealText(content);
         } catch (Exception e) {
             log.warn("식단 텍스트 AI 분석 실패 — 저장은 계속 진행", e);
         }
@@ -77,7 +77,7 @@ public class MealLogService {
             byte[] bytes = image.getBytes();
             String base64 = Base64.getEncoder().encodeToString(bytes);
             String mediaType = image.getContentType() != null ? image.getContentType() : "image/jpeg";
-            String[] result = claudeApiService.analyzeFoodImage(base64, mediaType);
+            String[] result = geminiApiService.analyzeFoodImage(base64, mediaType);
             content = result[0];
             aiAnalysis = result[1];
         } catch (Exception e) {

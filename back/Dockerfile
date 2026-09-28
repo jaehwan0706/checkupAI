@@ -15,4 +15,4 @@ COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=render
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]

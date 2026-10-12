@@ -15,4 +15,4 @@ COPY --from=build /app/build/libs/*.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=render
 EXPOSE 8080
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=50", "-XX:MaxMetaspaceSize=160m", "-Xss512k", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-XX:CICompilerCount=1", "-XX:+ExitOnOutOfMemoryError", "-jar", "/app/app.jar"]
